@@ -12,6 +12,23 @@ $conversationId = (int)($_GET['id'] ?? 0);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf();
     $conversationId = (int)($_POST['conversation_id'] ?? 0);
+    $action = (string)($_POST['action'] ?? 'send');
+
+    if ($action === 'toggle_status' && $conversationId > 0) {
+        $statusStmt = $pdo->prepare('SELECT status FROM conversations WHERE id = ? LIMIT 1');
+        $statusStmt->execute([$conversationId]);
+        $currentStatus = $statusStmt->fetchColumn();
+
+        if ($currentStatus === false) {
+            $mensagemErro = 'Esta conversa não existe.';
+        } else {
+            $newStatus = $currentStatus === 'open' ? 'closed' : 'open';
+            $pdo->prepare('UPDATE conversations SET status = ?, updated_at = NOW() WHERE id = ?')
+                ->execute([$newStatus, $conversationId]);
+            redirect('chat.php?id=' . $conversationId);
+        }
+    }
+
     $message = trim((string)($_POST['message'] ?? ''));
 
     if ($conversationId <= 0 || $message === '') {
@@ -127,7 +144,15 @@ layout_start('Gestão de Conversas');
                 <h2>Seleciona uma conversa</h2>
                 <p class="muted">Escolhe uma conversa na coluna ao lado para ver as mensagens.</p>
             <?php else: ?>
-                <h2>Conversa · <?= e($conversa['order_number'] ?: ('Pedido #' . $conversa['order_id'])) ?></h2>
+                <div class="toolbar">
+                    <h2>Conversa · <?= e($conversa['order_number'] ?: ('Pedido #' . $conversa['order_id'])) ?></h2>
+                    <form method="post">
+                        <?= csrf_field() ?>
+                        <input type="hidden" name="conversation_id" value="<?= (int)$conversa['id'] ?>">
+                        <input type="hidden" name="action" value="toggle_status">
+                        <button type="submit" class="btn small secondary"><?= $conversa['status'] === 'open' ? 'Fechar conversa' : 'Reabrir conversa' ?></button>
+                    </form>
+                </div>
                 <div class="messages" aria-live="polite">
                     <?php if (!$mensagens): ?><p class="empty">Ainda não existem mensagens.</p><?php endif; ?>
                     <?php foreach ($mensagens as $msg): $minha = $msg['sender_type'] === 'staff' && (int)$msg['user_sender_id'] === $userId; ?>
