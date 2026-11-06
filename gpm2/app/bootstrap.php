@@ -132,7 +132,25 @@ function current_user(): ?array
 
 function require_login(): void
 {
-    if (!current_user()) {
+    $user = current_user();
+
+    if (!$user || empty($user['id'])) {
+        redirect(BASE_URL . '/admin/login.php');
+    }
+
+    try {
+        $statement = db()->prepare('SELECT active FROM users WHERE id = ? LIMIT 1');
+        $statement->execute([(int)$user['id']]);
+        $active = $statement->fetchColumn();
+    } catch (Throwable $e) {
+        error_log('[GPM auth] ' . $e->getMessage());
+        http_response_code(503);
+        exit('Não foi possível validar a sessão. Tenta novamente dentro de instantes.');
+    }
+
+    if ((int)$active !== 1) {
+        unset($_SESSION['gpm_user']);
+        session_regenerate_id(true);
         redirect(BASE_URL . '/admin/login.php');
     }
 }
