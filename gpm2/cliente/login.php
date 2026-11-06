@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             | Caso contrário, abre o novo painel do cliente.
             */
             $destino = $_SESSION['gpm_redirect_after_login']
-                ?? '../cliente/painel-cliente/index.php';
+                ?? 'painel-cliente/index.php';
 
             unset($_SESSION['gpm_redirect_after_login']);
 
@@ -89,10 +89,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $destinosPermitidos = [
                 'finalizar-pedido.php',
                 'pedidos.php',
+                'painel-cliente/index.php',
+                'painel-cliente/pedidos.php',
+                'painel-cliente/dados.php',
+                'painel-cliente/alterar-senha.php',
             ];
 
             if (!in_array($destino, $destinosPermitidos, true)) {
-                $destino = '../cliente/painel-cliente/index.php';
+                $destino = 'painel-cliente/index.php';
             }
 
             redirect($destino);
