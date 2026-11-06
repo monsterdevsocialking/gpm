@@ -86,6 +86,11 @@ try {
     error_log($e->getMessage());
 }
 
+$carrinhoHome = $_SESSION['gpm_cart'] ?? [];
+$quantidadeCarrinhoHome = is_array($carrinhoHome)
+    ? array_sum(array_map('intval', $carrinhoHome))
+    : 0;
+
 function imagemPublica(?string $imagem): string
 {
     if (!$imagem) return '';
@@ -298,9 +303,9 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
         <div class="flex items-center gap-4">
             <span class="hidden md:inline">Seg - Sáb: 08:00 - 18:00</span>
             <div class="flex gap-3 border-l border-gray-600 pl-4">
-                <span class="hover:text-[#f96b21] cursor-pointer transition"><i class="fa-brands fa-facebook-f"></i></span>
-                <span class="hover:text-[#f96b21] cursor-pointer transition"><i class="fa-brands fa-instagram"></i></span>
-                <span class="hover:text-[#f96b21] cursor-pointer transition"><i class="fa-brands fa-linkedin-in"></i></span>
+                <span aria-hidden="true"><i class="fa-brands fa-facebook-f"></i></span>
+                <span aria-hidden="true"><i class="fa-brands fa-instagram"></i></span>
+                <span aria-hidden="true"><i class="fa-brands fa-linkedin-in"></i></span>
             </div>
         </div>
     </div>
@@ -324,14 +329,23 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
         </nav>
 
         <div class="flex items-center space-x-5">
-            <a href="cliente/index.php" class="flex items-center gap-2 text-[#0d233f] hover:text-[#f96b21] transition">
+            <a href="cliente/carrinho.php" class="flex items-center gap-2 text-[#0d233f] hover:text-[#f96b21] transition">
                 <i class="fa-solid fa-cart-shopping"></i>
-                <span class="bg-[#f96b21] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
+                <span class="bg-[#f96b21] text-white text-[10px] font-bold px-2 py-0.5 rounded-full"><?= (int) $quantidadeCarrinhoHome ?></span>
             </a>
-            <button class="lg:hidden text-[#0d233f] text-xl"><i class="fa-solid fa-bars"></i></button>
+            <button id="gpm-home-menu-btn" type="button" class="lg:hidden text-[#0d233f] text-xl" aria-label="Abrir menu" aria-controls="gpm-home-mobile-nav" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
         </div>
     </div>
 </header>
+
+<nav id="gpm-home-mobile-nav" class="hidden lg:hidden bg-white border-b border-gray-100 px-6 py-5 flex-col gap-5 text-xs font-bold uppercase tracking-wider text-[#0d233f]" aria-label="Menu móvel">
+    <a href="#inicio">Início</a>
+    <a href="#servicos">Serviços</a>
+    <a href="#solucoes">Soluções</a>
+    <a href="#projetos">Projetos</a>
+    <a href="#contactos">Contactos</a>
+    <a href="cliente/index.php" class="text-[#f96b21]">Entrar no Marketplace</a>
+</nav>
 
 <main>
 
@@ -968,6 +982,30 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         
+        const homeMenuButton = document.getElementById('gpm-home-menu-btn');
+        const homeMobileMenu = document.getElementById('gpm-home-mobile-nav');
+
+        if (homeMenuButton && homeMobileMenu) {
+            homeMenuButton.addEventListener('click', function () {
+                const isOpen = homeMenuButton.getAttribute('aria-expanded') === 'true';
+                homeMenuButton.setAttribute('aria-expanded', String(!isOpen));
+                homeMobileMenu.classList.toggle('hidden', isOpen);
+                homeMobileMenu.classList.toggle('flex', !isOpen);
+                homeMenuButton.innerHTML = isOpen
+                    ? '<i class="fa-solid fa-bars"></i>'
+                    : '<i class="fa-solid fa-xmark"></i>';
+            });
+
+            homeMobileMenu.querySelectorAll('a').forEach(function (link) {
+                link.addEventListener('click', function () {
+                    homeMenuButton.setAttribute('aria-expanded', 'false');
+                    homeMobileMenu.classList.add('hidden');
+                    homeMobileMenu.classList.remove('flex');
+                    homeMenuButton.innerHTML = '<i class="fa-solid fa-bars"></i>';
+                });
+            });
+        }
+
         // 1. Animação de Revelação ao Scroll
         const reveals = document.querySelectorAll(".reveal");
         const revealOnScroll = new IntersectionObserver(function(entries, observer) {
