@@ -266,7 +266,7 @@ try {
                 price,
                 stock_quantity,
                 unit,
-                image_path
+                main_image
              FROM products
              WHERE category_id = :categoria_id
                AND id != :produto_id
