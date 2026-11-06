@@ -4,7 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/iniciar.php';
 
 if (cliente_atual()) {
-    redirect('pedidos.php');
+    redirect('painel-cliente/index.php');
     exit;
 }
 
@@ -99,17 +99,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ];
 
                 $destino = $_SESSION['gpm_redirect_after_login']
-                    ?? 'pedidos.php';
+                    ?? 'painel-cliente/index.php';
 
                 unset($_SESSION['gpm_redirect_after_login']);
 
                 $destinosPermitidos = [
                     'finalizar-pedido.php',
                     'pedidos.php',
+                    'painel-cliente/index.php',
+                    'painel-cliente/pedidos.php',
+                    'painel-cliente/dados.php',
+                    'painel-cliente/alterar-senha.php',
                 ];
 
                 if (!in_array($destino, $destinosPermitidos, true)) {
-                    $destino = 'pedidos.php';
+                    $destino = 'painel-cliente/index.php';
                 }
 
                 redirect($destino);
