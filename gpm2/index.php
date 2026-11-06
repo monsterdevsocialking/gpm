@@ -318,8 +318,8 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
 <div class="bg-[#0d233f] text-white text-[11px] py-2 border-b border-gray-700">
     <div class="max-w-site mx-auto px-6 flex justify-between items-center">
         <div class="flex items-center gap-6">
-            <span><i class="fa-solid fa-phone text-[#f96b21] mr-2"></i> (+244) 923 000 111</span>
-            <span class="hidden sm:inline"><i class="fa-solid fa-envelope text-[#f96b21] mr-2"></i> geral@gpmconecta.ao</span>
+            <?php if ($empresa['telefone'] !== ''): ?><a href="tel:<?= e($empresa['telefone']) ?>"><i class="fa-solid fa-phone text-[#f96b21] mr-2"></i><?= e($empresa['telefone']) ?></a><?php endif; ?>
+            <?php if ($empresa['email'] !== ''): ?><a class="hidden sm:inline" href="mailto:<?= e($empresa['email']) ?>"><i class="fa-solid fa-envelope text-[#f96b21] mr-2"></i><?= e($empresa['email']) ?></a><?php endif; ?>
         </div>
         <div class="flex items-center gap-4">
             <span class="hidden md:inline">Seg - Sáb: 08:00 - 18:00</span>
@@ -893,7 +893,7 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
                             </div>
                             <div>
                                 <h3 class="font-bold text-[#0d233f] text-lg mb-1">Localização</h3>
-                                <p class="text-sm text-gray-500">Luanda, Angola<br>Coordenadas: -8.910353, 13.200112</p>
+                                <p class="text-sm text-gray-500"><?= $localizacaoEmpresa !== '' ? e($localizacaoEmpresa) : 'Morada a configurar. Contacte a nossa equipa.' ?></p>
                             </div>
                         </div>
 
@@ -904,8 +904,10 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
                             </div>
                             <div>
                                 <h3 class="font-bold text-[#0d233f] text-lg mb-1">Telefone / WhatsApp</h3>
-                                <p class="text-sm text-gray-500 mb-1">(+244) 923 000 111</p>
-                                <p class="text-sm text-gray-500">(+244) 931 222 333</p>
+                                <?php if ($empresa['telefone'] !== ''): ?>
+                                    <p class="text-sm text-gray-500 mb-1"><a href="tel:<?= e($empresa['telefone']) ?>"><?= e($empresa['telefone']) ?></a></p>
+                                    <?php if ($empresa['whatsapp'] !== ''): ?><p class="text-sm text-gray-500"><a href="https://wa.me/<?= e($empresa['whatsapp']) ?>" target="_blank" rel="noopener">Falar pelo WhatsApp</a></p><?php endif; ?>
+                                <?php else: ?><p class="text-sm text-gray-500">Telefone a configurar.</p><?php endif; ?>
                             </div>
                         </div>
 
@@ -915,7 +917,7 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
                             </div>
                             <div>
                                 <h3 class="font-bold text-[#0d233f] text-lg mb-1">E-mail</h3>
-                                <p class="text-sm text-gray-500">geral@gpmconecta.ao</p>
+                                <?php if ($empresa['email'] !== ''): ?><p class="text-sm text-gray-500"><a href="mailto:<?= e($empresa['email']) ?>"><?= e($empresa['email']) ?></a></p><?php else: ?><p class="text-sm text-gray-500">E-mail a configurar.</p><?php endif; ?>
                             </div>
                         </div>
 
@@ -950,18 +952,19 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
     </section>
 
     <!-- Localização (Mapa em Largura Total Abaixo do Contacto) -->
+    <?php if ($urlMapaEmpresa !== ''): ?>
     <section class="w-full h-[400px] relative bg-gray-200">
-        <iframe 
-            src="https://maps.google.com/maps?q=-8.910353,13.200112&t=&z=15&ie=UTF8&iwloc=&output=embed" 
-            width="100%" 
-            height="100%" 
-            style="border:0;" 
-            allowfullscreen="" 
-            aria-hidden="false" 
-            tabindex="0"
-            title="Localização da GPM Conecta">
+        <iframe
+            src="<?= e($urlMapaEmpresa) ?>"
+            width="100%"
+            height="100%"
+            style="border:0;"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Localização da <?= e($empresa['nome']) ?>">
         </iframe>
     </section>
+    <?php endif; ?>
 
 </main>
 
