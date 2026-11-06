@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
         }
 
         $stmt = $pdo->prepare(
-            'SELECT id, name, stock_quantity, active
+            'SELECT id, name, stock_quantity, is_active
              FROM products
              WHERE id = :id
              LIMIT 1'
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
         $stmt->execute(['id' => $produtoId]);
         $produtoAjax = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$produtoAjax || (int)$produtoAjax['active'] !== 1) {
+        if (!$produtoAjax || (int)$produtoAjax['is_active'] !== 1) {
             http_response_code(404);
             echo json_encode([
                 'ok' => false,
@@ -144,17 +144,17 @@ function gpmImagem(?string $imagem): string
 
 try {
     $stmt = $pdo->query(
-        'SELECT id, name FROM categories WHERE active = 1 ORDER BY name'
+        'SELECT id, name FROM categories WHERE is_active = 1 ORDER BY name'
     );
     $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $sql = "
         SELECT p.id, p.category_id, p.name, p.description, p.price,
-               p.stock_quantity, p.unit, p.main_image,
+               p.stock_quantity, p.unit, p.image_path,
                c.name AS category_name
         FROM products p
         LEFT JOIN categories c ON c.id = p.category_id
-        WHERE p.active = 1
+        WHERE p.is_active = 1
     ";
 
     $parametros = [];
@@ -298,7 +298,7 @@ require_once __DIR__ . '/includes/header-marketplace.php';
 
                 <?php foreach ($produtos as $produto): ?>
                     <?php
-                    $imagem = gpmImagem($produto['main_image'] ?? null);
+                    $imagem = gpmImagem($produto['image_path'] ?? null);
                     $descricao = trim((string) ($produto['description'] ?? ''));
                     $stock = (float) ($produto['stock_quantity'] ?? 0);
                     ?>
