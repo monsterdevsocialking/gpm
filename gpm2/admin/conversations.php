@@ -1,5 +1,5 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__ . '/../app/bootstrap.php';
-require_admin();
+require_role(['admin', 'seller']);
 redirect('chat.php');
