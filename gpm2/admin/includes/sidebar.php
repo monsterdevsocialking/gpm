@@ -9,6 +9,7 @@ $menuAdmin = [
     ['label' => 'Stock', 'icon' => '↗', 'file' => 'stock.php'],
     ['label' => 'Pedidos', 'icon' => '▣', 'file' => 'orders.php'],
     ['label' => 'Conversas', 'icon' => '◌', 'file' => 'chat.php'],
+    ['label' => 'Contactos', 'icon' => '✉', 'file' => 'contacts.php'],
     ['label' => 'Clientes', 'icon' => '♙', 'file' => 'customers.php'],
     ['label' => 'Dados da empresa', 'icon' => '⌂', 'file' => 'company.php'],
     ['label' => 'Utilizadores', 'icon' => '♧', 'file' => 'users.php'],
