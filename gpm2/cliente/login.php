@@ -181,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="p-8 flex justify-start">
             <a
-                href="../public/index.php"
+                href="index.php"
                 class="inline-flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-[#f96b21] transition uppercase tracking-wider"
             >
                 <i class="fa-solid fa-arrow-left"></i>
