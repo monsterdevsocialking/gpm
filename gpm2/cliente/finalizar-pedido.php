@@ -290,7 +290,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             $subtotal = round($subtotal, 2);
-            $taxaEntrega = 0.00;
+            $stmtTaxaEntrega = $pdo->query('SELECT delivery_fee FROM company_settings ORDER BY id LIMIT 1');
+            $taxaEntrega = max(0, (float)($stmtTaxaEntrega->fetchColumn() ?: 0));
             $desconto = 0.00;
             $total = round($subtotal + $taxaEntrega - $desconto, 2);
 
