@@ -32,7 +32,7 @@ if (!defined('BASE_PATH')) {
 }
 
 if (!defined('BASE_URL')) {
-    $scriptDirectory = str_replace('\\\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/'));
+    $scriptDirectory = dirname($_SERVER['SCRIPT_NAME'] ?? '/');
     $baseDirectory = preg_replace('~/(?:admin|cliente)(?:/.*)?$~', '', $scriptDirectory);
     if (!is_string($baseDirectory)) {
         $baseDirectory = $scriptDirectory;
