@@ -34,7 +34,8 @@ try {
     error_log('[GPM homepage company settings] ' . $e->getMessage());
 }
 
-$localizacaoEmpresa = implode(', ', array_filter([$empresa['endereco'], $empresa['cidade'], $empresa['provincia'], 'Angola']));
+$partesLocalizacao = array_values(array_filter([$empresa['endereco'], $empresa['cidade'], $empresa['provincia']]));
+$localizacaoEmpresa = $partesLocalizacao ? implode(', ', array_merge($partesLocalizacao, ['Angola'])) : '';
 $urlMapaEmpresa = $localizacaoEmpresa !== '' ? 'https://maps.google.com/maps?q=' . rawurlencode($localizacaoEmpresa) . '&t=&z=15&ie=UTF8&iwloc=&output=embed' : '';
 
 $produtos = [];
