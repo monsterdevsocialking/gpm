@@ -32,7 +32,12 @@ if (!defined('BASE_PATH')) {
 }
 
 if (!defined('BASE_URL')) {
-    define('BASE_URL', '/gpm2');
+    $scriptDirectory = str_replace('\\\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/'));
+    $baseDirectory = preg_replace('~/(?:admin|cliente)(?:/.*)?$~', '', $scriptDirectory);
+    if (!is_string($baseDirectory)) {
+        $baseDirectory = $scriptDirectory;
+    }
+    define('BASE_URL', rtrim($baseDirectory, '/'));
 }
 
 /*
