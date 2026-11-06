@@ -11,10 +11,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = trim((string)($_POST['email'] ?? ''));
         $password = (string)($_POST['password'] ?? '');
         $role = (string)($_POST['role'] ?? 'seller');
-        if ($name === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($password) < 10 || !in_array($role, ['admin', 'seller'], true)) {
+        if ($name === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($password) < 10 || !in_array($role, ['admin', 'seller', 'stock_manager'], true)) {
             throw new RuntimeException('Preenche os campos corretamente. A palavra-passe deve ter pelo menos 10 caracteres.');
         }
-        $stmt = $pdo->prepare('INSERT INTO users (name, email, password, role, is_active) VALUES (?, ?, ?, ?, 1)');
+        $stmt = $pdo->prepare('INSERT INTO users (name, email, password, role, active) VALUES (?, ?, ?, ?, 1)');
         $stmt->execute([$name, $email, password_hash($password, PASSWORD_DEFAULT), $role]);
         flash('Utilizador criado com sucesso.');
     } catch (Throwable $e) {
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     redirect('users.php');
 }
-$rows = $pdo->query('SELECT id, name, email, role, is_active, created_at FROM users ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC);
+$rows = $pdo->query('SELECT id, name, email, role, active, created_at FROM users ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC);
 layout_start('Utilizadores');
 ?>
 <section class="panel">
@@ -41,7 +41,7 @@ layout_start('Utilizadores');
 <section class="panel">
     <h2>Contas internas</h2>
     <div class="table-wrap"><table><thead><tr><th>Nome</th><th>Email</th><th>Perfil</th><th>Estado</th><th>Criado</th></tr></thead><tbody>
-    <?php foreach ($rows as $row): ?><tr><td><?= e($row['name']) ?></td><td><?= e($row['email']) ?></td><td><?= e($row['role']) ?></td><td><span class="badge"><?= (int)$row['is_active'] === 1 ? 'Ativo' : 'Inativo' ?></span></td><td><?= e($row['created_at']) ?></td></tr><?php endforeach; ?>
+    <?php foreach ($rows as $row): ?><tr><td><?= e($row['name']) ?></td><td><?= e($row['email']) ?></td><td><?= e($row['role']) ?></td><td><span class="badge"><?= (int)$row['active'] === 1 ? 'Ativo' : 'Inativo' ?></span></td><td><?= e($row['created_at']) ?></td></tr><?php endforeach; ?>
     </tbody></table></div>
 </section>
 <?php layout_end(); ?>
