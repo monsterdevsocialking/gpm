@@ -6,8 +6,8 @@ require_once dirname(__DIR__, 2) . '/cliente/includes/iniciar.php';
 $cliente = cliente_atual();
 
 if (!$cliente) {
-    $_SESSION['gpm_redirect_after_login'] = '../painel-cliente/index.php';
-    header('Location: ../cliente/login.php');
+    $_SESSION['gpm_redirect_after_login'] = 'painel-cliente/index.php';
+    header('Location: ../login.php');
     exit;
 }
 
