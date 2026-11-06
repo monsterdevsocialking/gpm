@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare(
                 "SELECT stock_quantity
                  FROM products
-                 WHERE id = ? AND active = 1"
+                 WHERE id = ? AND is_active = 1"
             );
 
             $stmt->execute([$id]);
@@ -92,7 +92,7 @@ if (!empty($_SESSION['gpm_cart'])) {
         $stmt = $pdo->prepare(
             "SELECT id, name, price, stock_quantity, unit
              FROM products
-             WHERE active = 1
+             WHERE is_active = 1
                AND id IN ($placeholders)
              ORDER BY name"
         );
