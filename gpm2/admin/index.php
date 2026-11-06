@@ -16,7 +16,7 @@ try {
         'Pedidos' => (int)$pdo->query('SELECT COUNT(*) FROM orders')->fetchColumn(),
         'Pendentes' => (int)$pdo->query("SELECT COUNT(*) FROM orders WHERE status = 'pending'")->fetchColumn(),
     ];
-    $low = (int)$pdo->query('SELECT COUNT(*) FROM products WHERE active = 1 AND stock_quantity <= 0')->fetchColumn();
+    $low = (int)$pdo->query('SELECT COUNT(*) FROM products WHERE active = 1 AND stock_quantity <= min_stock')->fetchColumn();
     $recent = $pdo->query(
         'SELECT id, order_number, customer_name, total, status, created_at
          FROM orders ORDER BY created_at DESC, id DESC LIMIT 8'
