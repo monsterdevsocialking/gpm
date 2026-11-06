@@ -1,6 +1,10 @@
 <?php
 require_once __DIR__ . '/iniciar.php';
 
+$empresaMarketplace = db()->query('SELECT phone, email FROM company_settings ORDER BY id LIMIT 1')->fetch(PDO::FETCH_ASSOC) ?: [];
+$telefoneMarketplace = (string)($empresaMarketplace['phone'] ?? '');
+$emailMarketplace = (string)($empresaMarketplace['email'] ?? '');
+
 $baseMarketplace = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
 
 if ($baseMarketplace === '.' || $baseMarketplace === '/') {
@@ -72,8 +76,8 @@ if (is_array($carrinho)) {
 <div class="bg-[#0d233f] text-white text-[11px] py-2 border-b border-gray-700">
     <div class="max-w-site mx-auto px-6 flex justify-between items-center">
         <div class="flex items-center gap-6">
-            <span><i class="fa-solid fa-phone text-[#f96b21] mr-2"></i> (+244) 923 000 111</span>
-            <span class="hidden sm:inline"><i class="fa-solid fa-envelope text-[#f96b21] mr-2"></i> geral@gpmconecta.ao</span>
+            <?php if ($telefoneMarketplace !== ''): ?><a href="tel:<?= htmlspecialchars($telefoneMarketplace, ENT_QUOTES, 'UTF-8') ?>"><i class="fa-solid fa-phone text-[#f96b21] mr-2"></i><?= htmlspecialchars($telefoneMarketplace, ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>
+            <?php if ($emailMarketplace !== ''): ?><a class="hidden sm:inline" href="mailto:<?= htmlspecialchars($emailMarketplace, ENT_QUOTES, 'UTF-8') ?>"><i class="fa-solid fa-envelope text-[#f96b21] mr-2"></i><?= htmlspecialchars($emailMarketplace, ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>
         </div>
         <div class="flex items-center gap-4">
             <span class="hidden md:inline">Seg - Sáb: 08:00 - 18:00</span>
