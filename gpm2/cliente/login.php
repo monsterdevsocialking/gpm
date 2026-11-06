@@ -41,7 +41,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (
             !$cliente ||
-            !password_verify($senha, $cliente['password'])
+            !is_string($cliente['password'] ?? null) ||
+            $cliente['password'] === '' ||
+            !password_verify($senha, (string)$cliente['password'])
         ) {
             $erro = 'Email ou palavra-passe incorretos.';
         } elseif (!(int) $cliente['active']) {
