@@ -14,7 +14,28 @@ $empresa = [
     'email'      => '',
     'endereco'   => '',
     'cidade'     => '',
+    'provincia'  => '',
 ];
+
+try {
+    $stmtEmpresa = $pdo->query('SELECT company_name, phone, email, address, city, province FROM company_settings ORDER BY id LIMIT 1');
+    $dadosEmpresa = $stmtEmpresa->fetch(PDO::FETCH_ASSOC);
+    if ($dadosEmpresa) {
+        $empresa['nome'] = $dadosEmpresa['company_name'] ?: $empresa['nome'];
+        $empresa['nome_completo'] = $empresa['nome'];
+        $empresa['telefone'] = (string)($dadosEmpresa['phone'] ?? '');
+        $empresa['whatsapp'] = preg_replace('/[^0-9]/', '', $empresa['telefone']) ?: '';
+        $empresa['email'] = (string)($dadosEmpresa['email'] ?? '');
+        $empresa['endereco'] = (string)($dadosEmpresa['address'] ?? '');
+        $empresa['cidade'] = (string)($dadosEmpresa['city'] ?? '');
+        $empresa['provincia'] = (string)($dadosEmpresa['province'] ?? '');
+    }
+} catch (PDOException $e) {
+    error_log('[GPM homepage company settings] ' . $e->getMessage());
+}
+
+$localizacaoEmpresa = implode(', ', array_filter([$empresa['endereco'], $empresa['cidade'], $empresa['provincia'], 'Angola']));
+$urlMapaEmpresa = $localizacaoEmpresa !== '' ? 'https://maps.google.com/maps?q=' . rawurlencode($localizacaoEmpresa) . '&t=&z=15&ie=UTF8&iwloc=&output=embed' : '';
 
 $produtos = [];
 $erroContacto = '';
@@ -112,7 +133,7 @@ function precoKz(mixed $valor): string
     return number_format((float) $valor, 2, ',', '.') . ' Kz';
 }
 
-$seoTitle = 'GPM Conecta | Parceiro Estratégico em Suprimentos e Procurement';
+$seoTitle = $empresa['nome'] . ' | Parceiro Estratégico em Suprimentos e Procurement';
 $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecimento de equipamentos, insumos e serviços para indústria, obras e empresas em Angola.';
 ?>
 <!DOCTYPE html>
