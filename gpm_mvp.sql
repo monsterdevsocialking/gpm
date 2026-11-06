@@ -509,6 +509,27 @@ ALTER TABLE `proformas`
 ALTER TABLE `stock_movements`
   ADD CONSTRAINT `fk_stock_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),
   ADD CONSTRAINT `fk_stock_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+
+-- --------------------------------------------------------
+-- Configurações da empresa utilizadas pelo painel administrativo
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `company_settings` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `company_name` varchar(190) NOT NULL DEFAULT 'GPM',
+  `nif` varchar(40) DEFAULT NULL,
+  `address` text DEFAULT NULL,
+  `city` varchar(120) DEFAULT NULL,
+  `province` varchar(120) DEFAULT NULL,
+  `phone` varchar(30) DEFAULT NULL,
+  `email` varchar(190) DEFAULT NULL,
+  `delivery_fee` decimal(12,2) NOT NULL DEFAULT 0.00,
+  `currency` char(3) NOT NULL DEFAULT 'AOA',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
