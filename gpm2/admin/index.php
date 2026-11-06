@@ -1,9 +1,48 @@
 <?php
-declare(strict_types=1); require_once __DIR__.'/../app/bootstrap.php'; require_admin();
-$stats=[]; $queries=['Produtos'=>'SELECT COUNT(*) FROM products WHERE active=1','Clientes'=>'SELECT COUNT(*) FROM customers WHERE active=1','Pedidos'=>'SELECT COUNT(*) FROM orders','Pendentes'=>'SELECT COUNT(*) FROM orders WHERE status="pending"'];
-try { foreach($queries as $label=>$sql) $stats[$label]=(int)db()->query($sql)->fetchColumn(); $low=(int)db()->query('SELECT COUNT(*) FROM products WHERE active=1 AND stock_quantity<=min_stock')->fetchColumn(); $recent=db()->query('SELECT id,order_number,customer_name,total,status,ordered_at FROM orders ORDER BY id DESC LIMIT 8')->fetchAll(); } catch(Throwable $e) { $dbError='Não foi possível carregar os indicadores. Confirme se importou o SQL correto e se os nomes das tabelas correspondem.'; $low=0; $recent=[]; }
-layout_start('Visão geral'); if(isset($dbError)) echo '<div class="alert error">'.e($dbError).'</div>';
-echo '<section class="grid">'; foreach($stats as $label=>$value) echo '<article class="stat"><span>'.e($label).'</span><strong>'.number_format($value,0,',','.').'</strong></article>'; echo '<article class="stat"><span>Stock baixo/zero</span><strong>'.number_format($low,0,',','.').'</strong></article></section>';
-echo '<section class="panel"><div class="toolbar"><h2>Pedidos recentes</h2><a class="btn" href="orders.php">Ver todos</a></div><div class="table-wrap"><table><thead><tr><th>Número</th><th>Cliente</th><th>Total</th><th>Estado</th><th>Data</th><th></th></tr></thead><tbody>';
-if(!$recent) echo '<tr><td colspan="6" class="empty">Ainda não existem pedidos.</td></tr>'; foreach($recent as $r) echo '<tr><td>'.e($r['order_number']).'</td><td>'.e($r['customer_name']).'</td><td>'.e(money($r['total'])).'</td><td><span class="badge">'.e($r['status']).'</span></td><td>'.e($r['ordered_at']).'</td><td><a class="btn small secondary" href="order.php?id='.(int)$r['id'].'">Abrir</a></td></tr>';
-echo '</tbody></table></div></section>'; layout_end();
+declare(strict_types=1);
+require_once __DIR__ . '/../app/bootstrap.php';
+require_admin();
+
+$pdo = db();
+$stats = [];
+$low = 0;
+$recent = [];
+$dbError = null;
+
+try {
+    $stats = [
+        'Produtos' => (int)$pdo->query('SELECT COUNT(*) FROM products WHERE is_active = 1')->fetchColumn(),
+        'Clientes' => (int)$pdo->query('SELECT COUNT(*) FROM customers')->fetchColumn(),
+        'Pedidos' => (int)$pdo->query('SELECT COUNT(*) FROM orders')->fetchColumn(),
+        'Pendentes' => (int)$pdo->query("SELECT COUNT(*) FROM orders WHERE status = 'pendente'")->fetchColumn(),
+    ];
+    $low = (int)$pdo->query('SELECT COUNT(*) FROM products WHERE is_active = 1 AND stock_quantity <= 0')->fetchColumn();
+    $recent = $pdo->query(
+        'SELECT id, order_number, customer_name, total, status, created_at
+         FROM orders ORDER BY created_at DESC, id DESC LIMIT 8'
+    )->fetchAll(PDO::FETCH_ASSOC);
+} catch (Throwable $e) {
+    error_log('[GPM dashboard] ' . $e->getMessage());
+    $dbError = 'Não foi possível carregar os indicadores. Verifica a ligação e a estrutura da base de dados.';
+}
+
+layout_start('Visão geral');
+if ($dbError !== null) {
+    echo '<div class="alert error" role="alert">' . e($dbError) . '</div>';
+}
+echo '<section class="grid">';
+foreach ($stats as $label => $value) {
+    echo '<article class="stat"><span>' . e($label) . '</span><strong>' . number_format($value, 0, ',', '.') . '</strong></article>';
+}
+echo '<article class="stat"><span>Produtos sem stock</span><strong>' . number_format($low, 0, ',', '.') . '</strong></article>';
+echo '</section>';
+echo '<section class="panel"><div class="toolbar"><h2>Pedidos recentes</h2><a class="btn" href="orders.php">Ver todos</a></div>';
+echo '<div class="table-wrap"><table><thead><tr><th>Número</th><th>Cliente</th><th>Total</th><th>Estado</th><th>Data</th><th></th></tr></thead><tbody>';
+if (!$recent) {
+    echo '<tr><td colspan="6" class="empty">Ainda não existem pedidos.</td></tr>';
+}
+foreach ($recent as $row) {
+    echo '<tr><td>' . e($row['order_number']) . '</td><td>' . e($row['customer_name']) . '</td><td>' . e(money($row['total'])) . '</td><td><span class="badge">' . e($row['status']) . '</span></td><td>' . e($row['created_at']) . '</td><td><a class="btn small secondary" href="order.php?id=' . (int)$row['id'] . '">Abrir</a></td></tr>';
+}
+echo '</tbody></table></div></section>';
+layout_end();
