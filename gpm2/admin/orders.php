@@ -1,2 +1,36 @@
 <?php
-declare(strict_types=1); require_once __DIR__.'/../app/bootstrap.php'; require_admin();$q=trim((string)($_GET['q']??''));$status=(string)($_GET['status']??'');$sql='SELECT id,order_number,customer_name,customer_nif,customer_phone,total,status,payment_status,ordered_at FROM orders WHERE 1=1';$args=[];if($q!==''){$sql.=' AND (order_number LIKE ? OR customer_name LIKE ? OR customer_nif LIKE ?)';$args=array_merge($args,['%'.$q.'%','%'.$q.'%','%'.$q.'%']);}if(in_array($status,['pending','confirmed','preparing','shipped','completed','cancelled'],true)){$sql.=' AND status=?';$args[]=$status;}$sql.=' ORDER BY id DESC LIMIT 300';$s=db()->prepare($sql);$s->execute($args);$rows=$s->fetchAll();layout_start('Pedidos');echo '<section class="panel"><div class="toolbar"><h2>Pedidos registados</h2><form><input name="q" placeholder="N.º, cliente ou NIF" value="'.e($q).'" style="min-width:220px"><select name="status"><option value="">Todos os estados</option>';foreach(['pending'=>'Pendente','confirmed'=>'Confirmado','preparing'=>'Em preparação','shipped'=>'Enviado','completed'=>'Concluído','cancelled'=>'Cancelado'] as $k=>$v)echo '<option value="'.e($k).'"'.($status===$k?' selected':'').'>'.e($v).'</option>';echo '</select><button>Filtrar</button></form></div><div class="table-wrap"><table><thead><tr><th>Número</th><th>Cliente / NIF</th><th>Telefone</th><th>Total</th><th>Estado</th><th>Pagamento</th><th>Data</th><th></th></tr></thead><tbody>';if(!$rows)echo '<tr><td colspan="8" class="empty">Nenhum pedido encontrado.</td></tr>';foreach($rows as $r)echo '<tr><td>'.e($r['order_number']).'</td><td>'.e($r['customer_name']).'<br><span class="muted">NIF: '.e($r['customer_nif']?:'—').'</span></td><td>'.e($r['customer_phone']).'</td><td>'.e(money($r['total'])).'</td><td><span class="badge">'.e($r['status']).'</span></td><td>'.e($r['payment_status']).'</td><td>'.e($r['ordered_at']).'</td><td><a class="btn small secondary" href="order.php?id='.(int)$r['id'].'">Detalhes</a></td></tr>';echo '</tbody></table></div></section>';layout_end();
+declare(strict_types=1);
+require_once __DIR__ . '/../app/bootstrap.php';
+require_admin();
+
+$q = trim((string)($_GET['q'] ?? ''));
+$status = (string)($_GET['status'] ?? '');
+$allowed = ['pendente', 'confirmada', 'em_preparacao', 'pronta_para_entrega', 'concluida', 'cancelada'];
+$sql = 'SELECT o.id, o.order_number, o.customer_name, o.customer_phone, o.total, o.status, o.created_at, c.nif
+        FROM orders o LEFT JOIN customers c ON c.id = o.customer_id WHERE 1 = 1';
+$args = [];
+if ($q !== '') {
+    $sql .= ' AND (o.order_number LIKE ? OR o.customer_name LIKE ? OR o.customer_phone LIKE ? OR c.nif LIKE ?)';
+    $term = '%' . $q . '%';
+    $args = [$term, $term, $term, $term];
+}
+if (in_array($status, $allowed, true)) {
+    $sql .= ' AND o.status = ?';
+    $args[] = $status;
+}
+$sql .= ' ORDER BY o.created_at DESC, o.id DESC LIMIT 300';
+$stmt = db()->prepare($sql);
+$stmt->execute($args);
+$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$labels = ['pendente'=>'Pendente','confirmada'=>'Confirmada','em_preparacao'=>'Em preparação','pronta_para_entrega'=>'Pronta para entrega','concluida'=>'Concluída','cancelada'=>'Cancelada'];
+
+layout_start('Pedidos');
+?>
+<section class="panel">
+    <div class="toolbar"><h2>Pedidos registados</h2><form method="get"><input name="q" placeholder="Número, cliente, telefone ou NIF" value="<?= e($q) ?>" style="min-width:220px"><select name="status"><option value="">Todos os estados</option><?php foreach ($labels as $key=>$label): ?><option value="<?= e($key) ?>"<?= $status === $key ? ' selected' : '' ?>><?= e($label) ?></option><?php endforeach; ?></select><button type="submit">Filtrar</button></form></div>
+    <div class="table-wrap"><table><thead><tr><th>Número</th><th>Cliente / NIF</th><th>Telefone</th><th>Total</th><th>Estado</th><th>Data</th><th></th></tr></thead><tbody>
+    <?php if (!$rows): ?><tr><td colspan="7" class="empty">Nenhum pedido encontrado.</td></tr><?php endif; ?>
+    <?php foreach ($rows as $row): ?><tr><td><?= e($row['order_number']) ?></td><td><?= e($row['customer_name']) ?><br><span class="muted">NIF: <?= e($row['nif'] ?: '—') ?></span></td><td><?= e($row['customer_phone']) ?></td><td><?= e(money($row['total'])) ?></td><td><span class="badge"><?= e($labels[$row['status']] ?? $row['status']) ?></span></td><td><?= e($row['created_at']) ?></td><td><a class="btn small secondary" href="order.php?id=<?= (int)$row['id'] ?>">Detalhes</a></td></tr><?php endforeach; ?>
+    </tbody></table></div>
+</section>
+<?php layout_end(); ?>
