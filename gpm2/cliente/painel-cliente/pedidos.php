@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__ . '/../includes/iniciar.php';
-require_once __DIR__ . '/../includes/header.php';
+
 $cliente = cliente_atual();
 if (!$cliente) { $_SESSION['gpm_redirect_after_login'] = 'painel-cliente/pedidos.php'; header('Location: ../login.php'); exit; }
 $pdo = db();
