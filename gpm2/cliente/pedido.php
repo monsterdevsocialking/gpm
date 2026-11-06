@@ -9,7 +9,7 @@ $clienteId = (int) cliente_atual()['id'];
 $pedidoId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
 if (!$pedidoId) {
-    redirect('../cliente/painel-cliente/index.php');
+    redirect('painel-cliente/index.php');
     exit;
 }
 
@@ -24,7 +24,7 @@ $pedido = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$pedido) {
     flash('error', 'Pedido não encontrado.');
-    redirect('../cliente/painel-cliente/index.php');
+    redirect('painel-cliente/index.php');
     exit;
 }
 
@@ -54,7 +54,7 @@ function estado_pedido_detalhe(string $estado): string
         'confirmed' => 'Confirmado',
         'preparing' => 'Em preparação',
         'shipped' => 'Enviado',
-        'delivered' => 'Entregue',
+        'completed' => 'Entregue',
         'completed' => 'Concluído',
         'cancelled' => 'Cancelado',
     ];
@@ -69,7 +69,7 @@ require_once __DIR__ . '/includes/header-marketplace.php';
 
     <!-- Voltar (Agora aponta para o painel do cliente) -->
     <div class="mb-8 reveal">
-        <a href="../cliente/painel-cliente/index.php" class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-[#f96b21] transition">
+        <a href="painel-cliente/index.php" class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-[#f96b21] transition">
             <i class="fa-solid fa-arrow-left"></i> Ir para o painel de controle de pedidos
         </a>
     </div>
@@ -106,31 +106,31 @@ require_once __DIR__ . '/includes/header-marketplace.php';
                     <div class="absolute top-1/2 left-0 w-full h-0.5 bg-gray-100 -z-10"></div>
                     
                     <div class="flex flex-col items-center gap-2 bg-white px-2">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs <?= in_array($pedido['status'], ['pending','confirmed','preparing','shipped','delivered','completed']) ? 'bg-[#f96b21] text-white' : 'bg-gray-200 text-gray-400' ?>">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs <?= in_array($pedido['status'], ['pending','confirmed','preparing','shipped','completed','completed']) ? 'bg-[#f96b21] text-white' : 'bg-gray-200 text-gray-400' ?>">
                             <i class="fa-solid fa-check"></i>
                         </div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider <?= in_array($pedido['status'], ['pending','confirmed','preparing','shipped','delivered','completed']) ? 'text-[#0d233f]' : 'text-gray-400' ?>">Pendente</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider <?= in_array($pedido['status'], ['pending','confirmed','preparing','shipped','completed','completed']) ? 'text-[#0d233f]' : 'text-gray-400' ?>">Pendente</span>
                     </div>
 
                     <div class="flex flex-col items-center gap-2 bg-white px-2">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs <?= in_array($pedido['status'], ['preparing','shipped','delivered','completed']) ? 'bg-[#f96b21] text-white' : 'bg-gray-200 text-gray-400' ?>">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs <?= in_array($pedido['status'], ['preparing','shipped','completed','completed']) ? 'bg-[#f96b21] text-white' : 'bg-gray-200 text-gray-400' ?>">
                             <i class="fa-solid fa-box"></i>
                         </div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider <?= in_array($pedido['status'], ['preparing','shipped','delivered','completed']) ? 'text-[#0d233f]' : 'text-gray-400' ?>">Em Preparação</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider <?= in_array($pedido['status'], ['preparing','shipped','completed','completed']) ? 'text-[#0d233f]' : 'text-gray-400' ?>">Em Preparação</span>
                     </div>
 
                     <div class="flex flex-col items-center gap-2 bg-white px-2">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs <?= in_array($pedido['status'], ['shipped','delivered','completed']) ? 'bg-[#f96b21] text-white' : 'bg-gray-200 text-gray-400' ?>">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs <?= in_array($pedido['status'], ['shipped','completed','completed']) ? 'bg-[#f96b21] text-white' : 'bg-gray-200 text-gray-400' ?>">
                             <i class="fa-solid fa-truck"></i>
                         </div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider <?= in_array($pedido['status'], ['shipped','delivered','completed']) ? 'text-[#0d233f]' : 'text-gray-400' ?>">Enviado</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider <?= in_array($pedido['status'], ['shipped','completed','completed']) ? 'text-[#0d233f]' : 'text-gray-400' ?>">Enviado</span>
                     </div>
 
                     <div class="flex flex-col items-center gap-2 bg-white px-2">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs <?= in_array($pedido['status'], ['delivered','completed']) ? 'bg-[#f96b21] text-white' : 'bg-gray-200 text-gray-400' ?>">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs <?= in_array($pedido['status'], ['completed','completed']) ? 'bg-[#f96b21] text-white' : 'bg-gray-200 text-gray-400' ?>">
                             <i class="fa-solid fa-house-chimney"></i>
                         </div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider <?= in_array($pedido['status'], ['delivered','completed']) ? 'text-[#0d233f]' : 'text-gray-400' ?>">Entregue</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider <?= in_array($pedido['status'], ['completed','completed']) ? 'text-[#0d233f]' : 'text-gray-400' ?>">Entregue</span>
                     </div>
                 </div>
                 
