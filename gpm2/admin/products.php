@@ -327,7 +327,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $statement = $pdo->prepare(
                         'INSERT INTO products
                          (category_id, name, slug, sku, description, price,
-                          stock_quantity, unit, active)
+                          stock_quantity, min_stock, unit, active)
                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
                     );
 
