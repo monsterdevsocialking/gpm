@@ -40,7 +40,7 @@ $menuAdmin = [
     </div>
 </aside>
 <script>
-(function () {
+document.addEventListener('DOMContentLoaded', function () {
     const sidebar = document.getElementById('gpmSidebar');
     const overlay = document.getElementById('gpmSidebarOverlay');
     const toggle = document.getElementById('gpmSidebarToggle');
@@ -60,5 +60,5 @@ $menuAdmin = [
     });
     overlay.addEventListener('click', closeMenu);
     document.addEventListener('keydown', event => { if (event.key === 'Escape') closeMenu(); });
-})();
+});
 </script>
