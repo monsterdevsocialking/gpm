@@ -348,6 +348,7 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
             <a href="#servicos" class="hover:text-[#f96b21] transition">Serviços</a>
             <a href="#solucoes" class="hover:text-[#f96b21] transition">Soluções</a>
             <a href="#projetos" class="hover:text-[#f96b21] transition">Projetos</a>
+            <a href="cliente/index.php" class="hover:text-[#f96b21] transition">Ir ao Marketplace</a>
         </nav>
 
         <div class="flex items-center space-x-5">
@@ -366,7 +367,7 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
     <a href="#solucoes">Soluções</a>
     <a href="#projetos">Projetos</a>
     <a href="#contactos">Contactos</a>
-    <a href="cliente/index.php" class="text-[#f96b21]">Entrar no Marketplace</a>
+    <a href="cliente/index.php" class="text-[#f96b21]">Ir ao Marketplace</a>
 </nav>
 
 <main>
