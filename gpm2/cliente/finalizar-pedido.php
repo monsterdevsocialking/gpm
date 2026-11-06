@@ -279,7 +279,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'unit' => $produto['unit'],
                     'quantity' => $quantidade,
                     'price' => $preco,
-                    'subtotal' => $valorLinha
+                    'subtotal' => $valorLinha,
+                    'stock_before' => (float)$produto['stock_quantity'],
+                    'stock_after' => (float)$produto['stock_quantity'] - $quantidade
                 ];
             }
 
@@ -306,10 +308,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     delivery_address, delivery_city, delivery_province,
                     delivery_street, delivery_neighborhood, delivery_reference,
                     delivery_fee, discount, subtotal, total,
-                    payment_method, notes, ordered_at, created_at, updated_at
+                    payment_method, payment_status, status, stock_deducted, notes, ordered_at, created_at, updated_at
                 ) VALUES (
                     ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                    ?, ?, ?, ?, ?, ?, NOW(), NOW(), NOW()
+                    ?, ?, ?, ?, ?, 'pending', 'pending', 1, ?, NOW(), NOW(), NOW()
                 )"
             );
 
@@ -336,6 +338,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmtItem->execute([
                     $pedidoId, $linha['id'], $linha['name'], $linha['sku'],
                     $linha['quantity'], $linha['unit'], $linha['price'], $linha['subtotal']
+                ]);
+            }
+
+            $stmtMovimento = $pdo->prepare(
+                "INSERT INTO stock_movements (
+                    product_id, user_id, order_id, movement_type,
+                    quantity, stock_before, stock_after, reason, created_at
+                ) VALUES (?, NULL, ?, 'sale', ?, ?, ?, ?, NOW())"
+            );
+
+            foreach ($linhas as $linha) {
+                $stmtMovimento->execute([
+                    $linha['id'],
+                    $pedidoId,
+                    $linha['quantity'],
+                    $linha['stock_before'],
+                    $linha['stock_after'],
+                    'Venda registada no pedido ' . $numeroPedido
                 ]);
             }
 
