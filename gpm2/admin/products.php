@@ -345,6 +345,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ]);
 
                     $id = (int) $pdo->lastInsertId();
+
+                    if ($stock > 0) {
+                        $pdo->prepare(
+                            'INSERT INTO stock_movements
+                             (product_id, user_id, movement_type, quantity, stock_before, stock_after, reason)
+                             VALUES (?, ?, ?, ?, ?, ?, ?)'
+                        )->execute([
+                            $id,
+                            (int)current_user()['id'],
+                            'entry',
+                            $stock,
+                            0,
+                            $stock,
+                            'Stock inicial do produto',
+                        ]);
+                    }
                 }
 
                 if ($mainExtension !== null && is_array($mainFile)) {
