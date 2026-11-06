@@ -61,8 +61,8 @@ h1{font-size:27px;margin:0 0 7px}.muted{color:var(--muted);font-size:14px}.cards
 </style></head>
 <body>
 <header>
-<a class="brand" href="painel.php">G<span>PM</span> <small style="font-size:12px;color:#697386">Área do Cliente</small></a>
-<nav><a href="painel.php">Painel</a><a href="pedidos.php">Minhas compras</a><a href="dados.php">Meus dados</a><a href="logout.php">Sair</a></nav>
+<a class="brand" href="index.php">G<span>PM</span> <small style="font-size:12px;color:#697386">Área do Cliente</small></a>
+<nav><a href="index.php">Painel</a><a href="pedidos.php">Minhas compras</a><a href="dados.php">Meus dados</a><a href="../logout.php">Sair</a></nav>
 </header>
 <main>
 <div class="welcome">
@@ -86,7 +86,7 @@ h1{font-size:27px;margin:0 0 7px}.muted{color:var(--muted);font-size:14px}.cards
 <td><?= htmlspecialchars(date('d/m/Y H:i', strtotime((string)$p['ordered_at'])), ENT_QUOTES, 'UTF-8') ?></td>
 <td><?= dinheiro_cliente($p['total']) ?></td>
 <td><span class="badge"><?= htmlspecialchars(estado_pedido_cliente((string)$p['status']), ENT_QUOTES, 'UTF-8') ?></span></td>
-<td><a class="link" href="pedido.php?id=<?= (int)$p['id'] ?>">Detalhes</a> · <a class="link" href="chat.php?pedido=<?= (int)$p['id'] ?>">Chat</a></td>
+<td><a class="link" href="../pedido.php?id=<?= (int)$p['id'] ?>">Detalhes</a> · <a class="link" href="../chat.php?pedido=<?= (int)$p['id'] ?>">Chat</a></td>
 </tr>
 <?php endforeach; ?>
 </tbody></table></div>
