@@ -34,7 +34,7 @@ echo '<section class="grid">';
 foreach ($stats as $label => $value) {
     echo '<article class="stat"><span>' . e($label) . '</span><strong>' . number_format($value, 0, ',', '.') . '</strong></article>';
 }
-echo '<article class="stat"><span>Produtos sem stock</span><strong>' . number_format($low, 0, ',', '.') . '</strong></article>';
+echo '<article class="stat"><span>Produtos com stock baixo</span><strong>' . number_format($low, 0, ',', '.') . '</strong></article>';
 echo '</section>';
 echo '<section class="panel"><div class="toolbar"><h2>Pedidos recentes</h2><a class="btn" href="orders.php">Ver todos</a></div>';
 echo '<div class="table-wrap"><table><thead><tr><th>Número</th><th>Cliente</th><th>Total</th><th>Estado</th><th>Data</th><th></th></tr></thead><tbody>';
