@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__ . '/../includes/iniciar.php';
-require_once __DIR__ . '/../includes/header.php';
+
 $cliente = cliente_atual();
 if (!$cliente) { $_SESSION['gpm_redirect_after_login'] = 'painel-cliente/dados.php'; header('Location: ../login.php'); exit; }
 $pdo = db();
 $stmt = $pdo->prepare("SELECT id, customer_type, name, nif, phone, email, address, city, province FROM customers WHERE id = ? LIMIT 1");
 $stmt->execute([(int)$cliente['id']]); $dados = $stmt->fetch(PDO::FETCH_ASSOC);
-if (!$dados) { session_destroy(); header('Location: login.php'); exit; }
+if (!$dados) { session_destroy(); header('Location: ../login.php'); exit; }
 $erro = ''; $sucesso = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf();
