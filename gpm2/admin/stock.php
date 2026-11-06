@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $type = (string)($_POST['movement_type'] ?? '');
         $reason = trim((string)($_POST['reason'] ?? ''));
 
-        if ($productId <= 0 || $quantity <= 0 || !in_array($type, ['entry', 'exit', 'adjustment'], true)) {
+        if ($productId <= 0 || !is_finite($quantity) || $quantity < 0 || ($type !== 'adjustment' && $quantity <= 0) || !in_array($type, ['entry', 'exit', 'adjustment'], true)) {
             throw new RuntimeException('Confirma o produto, o tipo e a quantidade.');
         }
 
@@ -120,7 +120,7 @@ layout_start('Movimentos de stock');
             </div>
             <div class="field">
                 <label for="quantity">Quantidade</label>
-                <input id="quantity" name="quantity" type="number" min="0.001" step="0.001" required>
+                <input id="quantity" name="quantity" type="number" min="0" step="0.001" required>
             </div>
             <div class="field">
                 <label for="reason">Motivo / observação</label>
