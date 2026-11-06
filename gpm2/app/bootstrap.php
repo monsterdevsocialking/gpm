@@ -218,70 +218,31 @@ function layout_start(string $title): void
     echo '<head>';
     echo '<meta charset="utf-8">';
     echo '<meta name="viewport" content="width=device-width,initial-scale=1">';
+    echo '<meta name="theme-color" content="#111827">';
     echo '<title>' . e($title) . ' | GPM</title>';
+    echo '<link rel="preconnect" href="https://fonts.googleapis.com">';
+    echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>';
+    echo '<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">';
     echo '<link rel="stylesheet" href="' . BASE_URL . '/admin/assets/css/admin.css">';
     echo '</head>';
-    echo '<body>';
+    echo '<body class="admin-body">';
 
-    echo '<aside class="sidebar">';
-    echo '<a class="brand" href="' . BASE_URL . '/admin/index.php">';
-    echo 'GPM <small>PAINEL</small>';
-    echo '</a>';
-
-    echo '<nav>';
-
-    $links = [
-        'index.php'        => 'Visão geral',
-        'products.php'     => 'Produtos',
-        'categories.php'   => 'Categorias',
-        'stock.php'        => 'Movimentos de stock',
-        'orders.php'       => 'Pedidos',
-        'customers.php'    => 'Clientes',
-        'conversations.php'=> 'Conversas',
-        'company.php'      => 'Dados da empresa',
-        'users.php'        => 'Utilizadores',
-    ];
-
-    foreach ($links as $file => $label) {
-        echo '<a href="' . BASE_URL . '/admin/' . e($file) . '">'
-            . e($label)
-            . '</a>';
-    }
-
-    echo '</nav>';
-
-    echo '<a class="logout" href="' . BASE_URL . '/logout.php">';
-    echo 'Terminar sessão';
-    echo '</a>';
-
-    echo '</aside>';
+    require BASE_PATH . '/admin/includes/sidebar.php';
 
     echo '<main class="main">';
-
     echo '<header class="topbar">';
-    echo '<div>';
-    echo '<span class="muted">Gestão comercial</span>';
-    echo '<h1>' . e($title) . '</h1>';
+    echo '<div class="topbar-heading">';
+    echo '<button class="sidebar-toggle" type="button" aria-label="Abrir menu" aria-controls="gpmSidebar" aria-expanded="false" id="gpmSidebarToggle"><span></span><span></span><span></span></button>';
+    echo '<div><span class="eyebrow">GESTÃO COMERCIAL</span><h1>' . e($title) . '</h1></div>';
     echo '</div>';
-
-    echo '<div class="user-chip">'
-        . e($user['name'] ?? 'Utilizador')
-        . '</div>';
-
+    echo '<div class="user-chip"><span class="user-avatar">' . e(mb_strtoupper(mb_substr((string)($user['name'] ?? 'U'), 0, 1))) . '</span><span><strong>' . e($user['name'] ?? 'Utilizador') . '</strong><small>Administrador</small></span></div>';
     echo '</header>';
 
     if ($flash !== null) {
-        echo '<div class="alert ' . e($flash['type'] ?? 'success') . '">';
-        echo e($flash['message'] ?? '');
-        echo '</div>';
+        $type = ($flash['type'] ?? 'success') === 'error' ? 'error' : 'success';
+        echo '<div class="alert ' . $type . '" role="status">' . e($flash['message'] ?? '') . '</div>';
     }
 }
-
-/*
-|--------------------------------------------------------------------------
-| Final do layout administrativo
-|--------------------------------------------------------------------------
-*/
 
 function layout_end(): void
 {
