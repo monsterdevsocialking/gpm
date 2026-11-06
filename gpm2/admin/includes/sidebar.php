@@ -33,7 +33,7 @@ $menuAdmin = [
     </nav>
     <div class="sidebar-bottom">
         <div class="sidebar-user">
-            <span class="sidebar-user-avatar"><?= e(mb_strtoupper(mb_substr((string)(current_user()['name'] ?? 'U'), 0, 1))) ?></span>
+            <span class="sidebar-user-avatar"><?= e(strtoupper(substr((string)(current_user()['name'] ?? 'U'), 0, 1))) ?></span>
             <span><strong><?= e(current_user()['name'] ?? 'Utilizador') ?></strong><small>Conta administrativa</small></span>
         </div>
         <a class="sidebar-logout" href="<?= e(BASE_URL) ?>/admin/logout.php"><span>↪</span> Terminar sessão</a>
