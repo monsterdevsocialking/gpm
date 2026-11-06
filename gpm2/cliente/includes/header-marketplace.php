@@ -28,9 +28,9 @@ if (is_array($carrinho)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title><?= isset($tituloPagina) ? htmlspecialchars($tituloPagina, ENT_QUOTES, 'UTF-8') . ' | GPM' : 'GPM — Materiais de Construção' ?></title>
+    <title><?= isset($tituloPagina) ? htmlspecialchars($tituloPagina, ENT_QUOTES, 'UTF-8') . ' | GPM' : 'GPM — Equipamentos e Suprimentos' ?></title>
 
-    <meta name="description" content="GPM — Materiais de Construção. Consulte produtos, preços e encontre os materiais de que precisa.">
+    <meta name="description" content="GPM — Marketplace de equipamentos, materiais, ferramentas e suprimentos para empresas e profissionais.">
 
     <!-- Tailwind + Font Awesome + Google Fonts -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -95,13 +95,13 @@ if (is_array($carrinho)) {
             </div>
             <div>
                 <span class="text-2xl font-black text-[#0d233f] tracking-tighter block leading-none">GPM.</span>
-                <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest block mt-1">Materiais</span>
+                <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest block mt-1">Equipamentos &amp; Suprimentos</span>
             </div>
         </a>
 
         <!-- Barra de Pesquisa (Desktop) -->
         <form action="<?= $baseMarketplace ?>/index.php" method="GET" class="hidden md:flex flex-1 max-w-md bg-gray-50 border border-gray-200 focus-within:border-[#f96b21] transition">
-            <input type="search" name="q" placeholder="Pesquisar materiais, ferramentas..." class="w-full px-4 py-2 text-sm text-[#0d233f] bg-transparent focus:outline-none placeholder-gray-400" value="<?= isset($_GET['q']) ? htmlspecialchars($_GET['q'], ENT_QUOTES, 'UTF-8') : '' ?>">
+            <input type="search" name="q" placeholder="Pesquisar equipamentos, materiais, ferramentas..." class="w-full px-4 py-2 text-sm text-[#0d233f] bg-transparent focus:outline-none placeholder-gray-400" value="<?= isset($_GET['q']) ? htmlspecialchars($_GET['q'], ENT_QUOTES, 'UTF-8') : '' ?>">
             <button type="submit" class="bg-[#0d233f] hover:bg-[#163154] text-white px-5 flex items-center justify-center transition" aria-label="Pesquisar">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </button>
