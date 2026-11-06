@@ -214,7 +214,7 @@ try {
          LEFT JOIN categories c
             ON c.id = p.category_id
          WHERE p.id = :id
-           AND p.is_active = 1
+           AND p.active = 1
          LIMIT 1"
     );
 
@@ -270,7 +270,7 @@ try {
              FROM products
              WHERE category_id = :categoria_id
                AND id != :produto_id
-               AND is_active = 1
+               AND active = 1
              ORDER BY id DESC
              LIMIT 8"
         );
@@ -306,7 +306,7 @@ try {
 $galeria = [];
 
 $imagemPrincipal = gpmImagemDetalhe(
-    $produto['image_path'] ?? null
+    $produto['main_image'] ?? null
 );
 
 if ($imagemPrincipal !== '') {
@@ -578,7 +578,7 @@ require_once __DIR__ . '/includes/header-marketplace.php';
 
                     <?php
                     $imagemRelacionado = gpmImagemDetalhe(
-                        $relacionado['image_path'] ?? null
+                        $relacionado['main_image'] ?? null
                     );
 
                     $stockRelacionado = (int)(
