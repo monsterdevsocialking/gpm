@@ -5,7 +5,7 @@ require_admin();
 
 $q = trim((string)($_GET['q'] ?? ''));
 $status = (string)($_GET['status'] ?? '');
-$allowed = ['pendente', 'confirmada', 'em_preparacao', 'pronta_para_entrega', 'concluida', 'cancelada'];
+$allowed = ['pending', 'confirmed', 'preparing', 'shipped', 'completed', 'cancelled'];
 $sql = 'SELECT o.id, o.order_number, o.customer_name, o.customer_phone, o.total, o.status, o.created_at, c.nif
         FROM orders o LEFT JOIN customers c ON c.id = o.customer_id WHERE 1 = 1';
 $args = [];
@@ -22,7 +22,7 @@ $sql .= ' ORDER BY o.created_at DESC, o.id DESC LIMIT 300';
 $stmt = db()->prepare($sql);
 $stmt->execute($args);
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-$labels = ['pendente'=>'Pendente','confirmada'=>'Confirmada','em_preparacao'=>'Em preparação','pronta_para_entrega'=>'Pronta para entrega','concluida'=>'Concluída','cancelada'=>'Cancelada'];
+$labels = ['pending'=>'Pendente','confirmed'=>'Confirmado','preparing'=>'Em preparação','shipped'=>'Enviado','completed'=>'Concluído','cancelled'=>'Cancelado'];
 
 layout_start('Pedidos');
 ?>
