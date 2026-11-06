@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/app/bootstrap.php';
-require_admin();
+require_role(['admin', 'seller']);
 
 $pdo = db();
 $userId = (int)(current_user()['id'] ?? 0);
