@@ -116,7 +116,7 @@ function product_save_uploaded_image(
 */
 
 $cats = $pdo->query(
-    'SELECT id, name FROM categories WHERE is_active = 1 ORDER BY name'
+    'SELECT id, name FROM categories WHERE active = 1 ORDER BY name'
 )->fetchAll(PDO::FETCH_ASSOC);
 
 /*
@@ -205,7 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($categoryId !== null) {
                 $statement = $pdo->prepare(
-                    'SELECT id FROM categories WHERE id = ? AND is_active = 1'
+                    'SELECT id FROM categories WHERE id = ? AND active = 1'
                 );
                 $statement->execute([$categoryId]);
 
@@ -300,7 +300,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'UPDATE products
                          SET category_id = ?, name = ?, slug = ?, sku = ?,
                              description = ?, price = ?,
-                             unit = ?, is_active = ?
+                             unit = ?, active = ?
                          WHERE id = ?'
                     );
 
@@ -323,7 +323,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $statement = $pdo->prepare(
                         'INSERT INTO products
                          (category_id, name, slug, sku, description, price,
-                          stock_quantity, unit, is_active)
+                          stock_quantity, unit, active)
                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
                     );
 
@@ -354,7 +354,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $relativePath = 'uploads/produtos/' . $filename;
 
                     $statement = $pdo->prepare(
-                        'UPDATE products SET image_path = ? WHERE id = ?'
+                        'UPDATE products SET main_image = ? WHERE id = ?'
                     );
                     $statement->execute([$relativePath, $id]);
                 }
@@ -409,7 +409,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ((int) $statement->fetchColumn() > 0) {
                 $statement = $pdo->prepare(
-                    'UPDATE products SET is_active = 0 WHERE id = ?'
+                    'UPDATE products SET active = 0 WHERE id = ?'
                 );
                 $statement->execute([$id]);
 
@@ -420,7 +420,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             $statement = $pdo->prepare(
-                'SELECT image_path FROM products WHERE id = ?'
+                'SELECT main_image FROM products WHERE id = ?'
             );
             $statement->execute([$id]);
             $product = $statement->fetch(PDO::FETCH_ASSOC);
@@ -464,9 +464,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
 
-            if (!empty($product['image_path'])) {
+            if (!empty($product['main_image'])) {
                 $path = $publicDirectory . ltrim(
-                    (string) $product['image_path'],
+                    (string) $product['main_image'],
                     '/'
                 );
 
@@ -599,7 +599,7 @@ layout_start('Produtos');
                         name="active"
                         value="1"
                         style="width:auto"
-                        <?= (int) ($edit['is_active'] ?? 1) === 1 ? 'checked' : '' ?>
+                        <?= (int) ($edit['active'] ?? 1) === 1 ? 'checked' : '' ?>
                     >
                     Produto ativo
                 </label>
@@ -628,10 +628,10 @@ layout_start('Produtos');
                 Formatos: JPG, PNG ou WEBP. Máximo de 5 MB.
             </p>
 
-            <?php if (!empty($edit['image_path'])): ?>
+            <?php if (!empty($edit['main_image'])): ?>
                 <p>Imagem atual:</p>
                 <img
-                    src="../public/<?= e($edit['image_path']) ?>"
+                    src="../public/<?= e($edit['main_image']) ?>"
                     alt="Imagem principal atual"
                     style="width:140px;height:120px;object-fit:contain"
                 >
@@ -721,9 +721,9 @@ layout_start('Produtos');
                 <?php foreach ($rows as $product): ?>
                     <tr>
                         <td>
-                            <?php if (!empty($product['image_path'])): ?>
+                            <?php if (!empty($product['main_image'])): ?>
                                 <img
-                                    src="../public/<?= e($product['image_path']) ?>"
+                                    src="../public/<?= e($product['main_image']) ?>"
                                     alt="<?= e($product['name']) ?>"
                                     style="width:55px;height:55px;object-fit:contain"
                                 >
@@ -746,8 +746,8 @@ layout_start('Produtos');
                         </td>
 
                         <td>
-                            <span class="badge <?= (int) $product['is_active'] ? 'green' : 'red' ?>">
-                                <?= (int) $product['is_active'] ? 'Ativo' : 'Inativo' ?>
+                            <span class="badge <?= (int) $product['active'] ? 'green' : 'red' ?>">
+                                <?= (int) $product['active'] ? 'Ativo' : 'Inativo' ?>
                             </span>
                         </td>
 
