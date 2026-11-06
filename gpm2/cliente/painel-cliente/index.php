@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__ . '/../includes/iniciar.php';
-require_once __DIR__ . '/../includes/header.php';
+
 
 $cliente = cliente_atual();
 if (!$cliente) {
-    $_SESSION['gpm_redirect_after_login'] = 'painel.php';
-    header('Location: login.php');
+    $_SESSION['gpm_redirect_after_login'] = 'painel-cliente/index.php';
+    header('Location: ../login.php');
     exit;
 }
 $pdo = db();
@@ -92,4 +92,4 @@ h1{font-size:27px;margin:0 0 7px}.muted{color:var(--muted);font-size:14px}.cards
 </tbody></table></div>
 <?php endif; ?>
 </section>
-</main></body><?php require __DIR__ . '/../includes/footer.php'; ?></html>
+</main></body></html>
