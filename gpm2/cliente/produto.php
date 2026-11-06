@@ -214,7 +214,7 @@ try {
          LEFT JOIN categories c
             ON c.id = p.category_id
          WHERE p.id = :id
-           AND p.active = 1
+           AND p.is_active = 1
          LIMIT 1"
     );
 
@@ -234,7 +234,7 @@ try {
     */
 
     $stmtImagens = $pdo->prepare(
-        "SELECT image_path, alt_text
+        "SELECT image_path, sort_order
          FROM product_images
          WHERE product_id = :produto_id
          ORDER BY sort_order ASC, id ASC"
@@ -266,11 +266,11 @@ try {
                 price,
                 stock_quantity,
                 unit,
-                main_image
+                image_path
              FROM products
              WHERE category_id = :categoria_id
                AND id != :produto_id
-               AND active = 1
+               AND is_active = 1
              ORDER BY id DESC
              LIMIT 8"
         );
@@ -306,7 +306,7 @@ try {
 $galeria = [];
 
 $imagemPrincipal = gpmImagemDetalhe(
-    $produto['main_image'] ?? null
+    $produto['image_path'] ?? null
 );
 
 if ($imagemPrincipal !== '') {
@@ -324,7 +324,7 @@ foreach ($imagensAdicionais as $imagemExtra) {
     if ($caminho !== '') {
         $galeria[] = [
             'imagem' => $caminho,
-            'alt' => $imagemExtra['alt_text'] ?: $produto['name']
+            'alt' => $produto['name']
         ];
     }
 }
@@ -578,7 +578,7 @@ require_once __DIR__ . '/includes/header-marketplace.php';
 
                     <?php
                     $imagemRelacionado = gpmImagemDetalhe(
-                        $relacionado['main_image'] ?? null
+                        $relacionado['image_path'] ?? null
                     );
 
                     $stockRelacionado = (int)(
