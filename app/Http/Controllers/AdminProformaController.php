@@ -55,7 +55,7 @@ class AdminProformaController extends Controller
                 'discount' => $record->discount,
                 'total' => $record->total,
                 'currency' => $record->currency ?: 'AOA',
-                'status' => 'issued',
+                'status' => 'draft',
                 'issue_date' => today(),
                 'valid_until' => $validated['valid_until'] ?? null,
                 'notes' => $validated['notes'] ?? null,
@@ -64,6 +64,7 @@ class AdminProformaController extends Controller
 
             $proforma->update([
                 'proforma_number' => 'PF-'.now()->format('Y').'-'.str_pad((string) $proforma->id, 6, '0', STR_PAD_LEFT),
+                'status' => 'issued',
             ]);
 
             ActivityLog::query()->create([
