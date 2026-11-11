@@ -87,6 +87,7 @@ New workflow tables added after the baseline:
 - suppliers, supplier_inquiries, supplier_responses, and supplier_response_items: manual supplier sourcing and price/availability capture.
 - proposals, proposal_versions, proposal_items, and proposal_decisions: immutable issued versions and customer decisions attached to a specific version.
 - orders.currency and orders.proposal_version_id: currency-aware order totals and a unique link from an explicitly confirmed order to the exact accepted proposal version.
+- proformas.currency: preserves the order's currency in issued commercial documents; legacy rows default to AOA.
 - integration_events: idempotent event receipt ledger for future payment and external API webhooks, uniquely keyed by provider and external event ID.
 
 The current proposal workflow does not create an order when a customer accepts. An explicit staff confirmation workflow is still required before a new order is created from an accepted proposal. Payment integrations remain inactive.
