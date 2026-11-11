@@ -84,6 +84,33 @@ class CommercialWorkflowGuardTest extends TestCase
         $version->update(['notes' => 'Tentativa de alterar versão emitida.']);
     }
 
+
+    public function test_draft_with_an_issue_timestamp_is_also_immutable(): void
+    {
+        [, $request] = $this->createCustomerAndRequest();
+
+        $proposal = Proposal::query()->create([
+            'quote_request_id' => $request->id,
+            'proposal_number' => 'GPM-PROP-TEST-0003',
+            'status' => 'draft',
+        ]);
+
+        $version = ProposalVersion::query()->create([
+            'proposal_id' => $proposal->id,
+            'version_number' => 1,
+            'status' => 'draft',
+            'currency' => 'AOA',
+            'subtotal' => 1000,
+            'valid_until' => today()->addDays(7),
+            'issued_at' => now(),
+        ]);
+
+        $this->expectException(LogicException::class);
+
+        $version->update(['notes' => 'Tentativa de alterar uma versão marcada como emitida.']);
+    }
+
+
     public function test_customer_decision_is_an_immutable_historical_record(): void
     {
         [$customer, $request] = $this->createCustomerAndRequest();
