@@ -6,7 +6,6 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Proposal;
 use App\Models\ProposalVersion;
-use App\Models\ProposalItem;
 use App\Models\QuoteRequest;
 use App\Models\QuoteRequestItem;
 use App\Models\User;
@@ -75,7 +74,7 @@ class ProposalOrderConfirmationTest extends TestCase
             'created_by' => $staff->id,
         ]);
 
-        ProposalItem::withoutEvents(fn () => $version->items()->create([
+        $version->items()->create([
             'quote_request_item_id' => $requestItem->id,
             'product_name' => 'Material de teste',
             'product_sku' => 'TEST-01',
@@ -83,7 +82,7 @@ class ProposalOrderConfirmationTest extends TestCase
             'quantity' => 2,
             'unit_price' => 1000,
             'line_total' => 2000,
-        ]));
+        ]);
 
         $version->update(['status' => 'sent', 'issued_at' => now()]);
 
