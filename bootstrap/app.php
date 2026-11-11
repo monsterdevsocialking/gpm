@@ -17,6 +17,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'staff.active' => \App\Http\Middleware\EnsureStaffIsActive::class,
             'staff.role' => \App\Http\Middleware\EnsureStaffRole::class,
         ]);
+
+        $middleware->redirectGuestsTo(function (Request $request): string {
+            return $request->is('admin', 'admin/*')
+                ? route('admin.login')
+                : route('customer.login');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
