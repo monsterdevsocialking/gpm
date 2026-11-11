@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use LogicException;
 
 class Proforma extends Model
 {
@@ -25,6 +27,26 @@ class Proforma extends Model
             'issue_date' => 'date',
             'valid_until' => 'date',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::updating(function (self $proforma): void {
+            if ($proforma->getOriginal('status') === 'issued') {
+                throw new LogicException('Uma proforma emitida é imutável. Emita um novo documento para alterações.');
+            }
+        });
+
+        static::deleting(function (self $proforma): void {
+            if ($proforma->status === 'issued') {
+                throw new LogicException('Uma proforma emitida não pode ser eliminada.');
+            }
+        });
+    }
+
+    public function items(): HasMany
+    {
+        return $this->hasMany(ProformaItem::class);
     }
 
     public function order(): BelongsTo
