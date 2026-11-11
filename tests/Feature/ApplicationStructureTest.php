@@ -21,6 +21,7 @@ use App\Http\Controllers\StaffAuthController;
 use App\Http\Middleware\EnsureCustomerIsActive;
 use App\Http\Middleware\EnsureStaffIsActive;
 use App\Http\Middleware\EnsureStaffRole;
+use App\Models\IntegrationEvent;
 use App\Models\Proposal;
 use App\Models\ProposalDecision;
 use App\Models\ProposalItem;
@@ -29,6 +30,7 @@ use App\Models\QuoteRequest;
 use App\Models\QuoteRequestItem;
 use App\Models\QuoteRequestStatusHistory;
 use App\Models\Supplier;
+use App\Services\Integrations\IntegrationEventRecorder;
 use App\Models\SupplierInquiry;
 use App\Models\SupplierResponse;
 use App\Models\SupplierResponseItem;
@@ -69,6 +71,8 @@ class ApplicationStructureTest extends TestCase
             ProposalVersion::class,
             ProposalItem::class,
             ProposalDecision::class,
+            IntegrationEvent::class,
+            IntegrationEventRecorder::class,
         ] as $class) {
             $this->assertTrue(class_exists($class), "Expected {$class} to autoload.");
         }
