@@ -27,4 +27,9 @@ class QuoteRequest extends Model
     {
         return $this->hasMany(QuoteRequestItem::class);
     }
+
+    public function statusHistory(): HasMany
+    {
+        return $this->hasMany(QuoteRequestStatusHistory::class);
+    }
 }
