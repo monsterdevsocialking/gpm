@@ -51,9 +51,15 @@ class AdminProposalController extends Controller
             if ($latest) {
                 $decision = $latest->decisions->sortByDesc('decided_at')->first();
 
-                if (! $decision || ! in_array($decision->decision, ['rejected', 'revision_requested'], true)) {
+                $customerRequestedChanges = $decision
+                    && in_array($decision->decision, ['rejected', 'revision_requested'], true);
+                $expiredWithoutDecision = ! $decision
+                    && $latest->valid_until
+                    && $latest->valid_until->lt(today());
+
+                if (! $customerRequestedChanges && ! $expiredWithoutDecision) {
                     throw ValidationException::withMessages([
-                        'proposal' => 'A versão atual ainda aguarda decisão ou já foi aceite. Não é possível abrir outra versão.',
+                        'proposal' => 'A versão atual ainda aguarda decisão ou já foi aceite. Só pode criar outra versão após pedido de alteração, rejeição ou expiração sem decisão.',
                     ]);
                 }
             }
