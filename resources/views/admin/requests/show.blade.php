@@ -62,7 +62,7 @@
                             <p class="text-xs text-gray-500 mt-3">Decisão do cliente: {{ ['accepted'=>'Aceite','rejected'=>'Rejeitada','revision_requested'=>'Alterações solicitadas'][$latestDecision->decision] ?? $latestDecision->decision }}</p>
                         @endif
                     @endif
-                    @if($quoteRequest->status === 'proposal_preparation' && (!$latestProposalVersion || ($latestDecision && in_array($latestDecision->decision,['rejected','revision_requested'],true))))
+                    @if($quoteRequest->status === 'proposal_preparation' && (!$latestProposalVersion || ($latestDecision && in_array($latestDecision->decision,['rejected','revision_requested'],true)) || ($latestProposalVersion->valid_until && $latestProposalVersion->valid_until->lt(today()) && !$latestDecision)))
                         <form method="post" action="{{ route('admin.requests.proposals.store',$quoteRequest) }}" class="{{ $latestProposalVersion ? 'mt-4' : '' }}">@csrf<button class="w-full bg-gpm-orange text-white text-xs font-bold uppercase py-4">{{ $latestProposalVersion ? 'Criar nova versão' : 'Preparar proposta' }}</button></form>
                     @elseif(!$latestProposalVersion)
                         <p class="text-xs text-gray-400">Mude o pedido para “Preparação da proposta” para iniciar esta etapa.</p>
