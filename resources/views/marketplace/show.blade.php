@@ -32,7 +32,7 @@
             <span class="text-[10px] font-extrabold uppercase tracking-[.2em] text-gpm-orange">{{ $product->category?->name ?: 'GPM Conecta' }}</span>
             <h1 class="text-3xl md:text-4xl font-black text-gpm-navy mt-3">{{ $product->name }}</h1>
             @if($product->sku)<p class="text-xs text-gray-400 mt-3">Referência: {{ $product->sku }}</p>@endif
-            <div class="text-2xl font-black text-gpm-navy mt-7">{{ number_format((float)$product->price, 2, ',', '.') }} Kz</div>
+            <div class="text-2xl font-black text-gpm-navy mt-7">{{ number_format((float)$product->price, 2, ',', '.') }} {{ $currency }}</div>
             <p class="text-xs text-gray-500 mt-2">Preço indicativo. Confirme disponibilidade, condições e prazo com a equipa GPM.</p>
             <div class="border-t border-b border-gray-100 py-5 my-7"><h2 class="text-xs font-black uppercase text-gpm-navy mb-3">Descrição</h2><div class="text-sm text-gray-600 leading-7 whitespace-pre-line">{{ $product->description ?: 'Consulte a equipa GPM para obter mais informações sobre este produto.' }}</div></div>
             <form method="post" action="{{ route('cart.items.store', $product) }}" class="bg-gpm-soft border border-gray-100 p-5 mt-7">
