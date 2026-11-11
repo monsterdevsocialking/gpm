@@ -26,6 +26,7 @@ class AdminDashboardController extends Controller
 
         $staff = Auth::guard('web')->user();
         $canReviewRequests = in_array($staff?->role, ['admin', 'seller'], true);
+        $stats['suppliers'] = $canReviewRequests ? Supplier::query()->where('active', true)->count() : null;
         $stats['quote_requests'] = $canReviewRequests ? QuoteRequest::query()->count() : null;
         $stats['submitted_requests'] = $canReviewRequests
             ? QuoteRequest::query()->where('status', 'submitted')->count()
