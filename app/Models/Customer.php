@@ -31,6 +31,11 @@ class Customer extends Authenticatable
         return $this->hasMany(QuoteRequest::class);
     }
 
+    public function proposalDecisions(): HasMany
+    {
+        return $this->hasMany(ProposalDecision::class);
+    }
+
     public function addresses(): HasMany
     {
         return $this->hasMany(CustomerAddress::class);
