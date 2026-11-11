@@ -34,7 +34,7 @@ Route::group(function (): void {
         ->name('customer.register.store');
 });
 
-Route::middleware('auth:customer')->prefix('conta')->name('customer.')->group(function (): void {
+Route::middleware(['auth:customer', 'customer.active'])->prefix('conta')->name('customer.')->group(function (): void {
     Route::get('/', [CustomerPortalController::class, 'index'])->name('dashboard');
     Route::post('/sair', [CustomerAuthController::class, 'logout'])->name('logout');
 });
