@@ -20,6 +20,12 @@ Route::get('/media/products/{filename}', [ProductMediaController::class, 'show']
     ->where('filename', '[A-Za-z0-9._-]+')
     ->name('media.products.show');
 
+Route::get('/carrinho', [QuoteCartController::class, 'index'])->name('cart.index');
+Route::post('/carrinho/produtos/{product}', [QuoteCartController::class, 'store'])->whereNumber('product')->name('cart.items.store');
+Route::patch('/carrinho', [QuoteCartController::class, 'update'])->name('cart.update');
+Route::delete('/carrinho/produtos/{product}', [QuoteCartController::class, 'destroy'])->whereNumber('product')->name('cart.items.destroy');
+Route::post('/carrinho/enviar', [QuoteCartController::class, 'submit'])->name('cart.submit');
+
 Route::prefix('marketplace')->name('marketplace.')->group(function (): void {
     Route::get('/', [MarketplaceController::class, 'index'])->name('index');
     Route::get('/produtos/{product}', [MarketplaceController::class, 'show'])
@@ -42,6 +48,7 @@ Route::middleware(['auth:customer', 'customer.active'])->prefix('conta')->name('
     Route::get('/', [CustomerPortalController::class, 'index'])->name('dashboard');
     Route::get('/pedidos/{order}', [CustomerOrderController::class, 'show'])->whereNumber('order')->name('orders.show');
     Route::get('/proformas/{proforma}', [CustomerOrderController::class, 'showProforma'])->whereNumber('proforma')->name('proformas.show');
+    Route::get('/solicitacoes/{quoteRequest}', [CustomerQuoteRequestController::class, 'show'])->whereNumber('quoteRequest')->name('requests.show');
     Route::post('/sair', [CustomerAuthController::class, 'logout'])->name('logout');
 });
 
@@ -55,6 +62,11 @@ Route::middleware(['auth:web', 'staff.active'])->prefix('admin')->name('admin.')
 
     Route::middleware('staff.role:admin,seller,stock_manager')->group(function (): void {
         Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+    });
+
+    Route::middleware('staff.role:admin,seller')->prefix('solicitacoes')->name('requests.')->group(function (): void {
+        Route::get('/', [AdminQuoteRequestController::class, 'index'])->name('index');
+        Route::get('/{quoteRequest}', [AdminQuoteRequestController::class, 'show'])->whereNumber('quoteRequest')->name('show');
     });
 
     Route::middleware('staff.role:admin,seller')->prefix('pedidos')->name('orders.')->group(function (): void {
