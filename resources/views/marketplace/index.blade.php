@@ -50,7 +50,7 @@
                             <span class="text-[10px] font-bold uppercase tracking-wider text-gpm-orange">{{ $product->category?->name ?: 'GPM Conecta' }}</span>
                             <h3 class="font-bold text-gpm-navy mt-2">{{ $product->name }}</h3>
                             <p class="text-xs text-gray-500 mt-2 leading-relaxed">{{ \Illuminate\Support\Str::limit(strip_tags((string)$product->description), 90) }}</p>
-                            <div class="mt-4 text-lg font-black text-gpm-navy">{{ number_format((float)$product->price, 2, ',', '.') }} Kz</div>
+                            <div class="mt-4 text-lg font-black text-gpm-navy">{{ number_format((float)$product->price, 2, ',', '.') }} {{ $currency }}</div>
                             <span class="inline-block mt-2 text-[10px] font-bold {{ (float)$product->stock_quantity > 0 ? 'text-emerald-700' : 'text-gray-400' }}">{{ (float)$product->stock_quantity > 0 ? 'Disponibilidade sob consulta' : 'Consultar disponibilidade' }}</span>
                         </div>
                         <div class="px-5 pb-5"><a href="{{ route('marketplace.products.show', $product) }}" class="block bg-gpm-navy text-white text-center text-xs font-bold uppercase py-3 hover:bg-slate-800 transition">Ver detalhes</a></div>
