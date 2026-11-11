@@ -15,7 +15,7 @@ class CustomerOrderController extends Controller
 
         $order = Order::query()
             ->where('customer_id', $customerId)
-            ->with(['items', 'proformas', 'statusHistory', 'conversation.messages'])
+            ->with(['items', 'proformas', 'statusHistory', 'conversation.messages', 'proposalVersion.proposal'])
             ->findOrFail($order);
 
         $proforma = $order->proformas->sortByDesc('id')->first();
