@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\QuoteRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -34,6 +35,12 @@ class CustomerPortalController extends Controller
             ->where('customer_id', $customer->getKey())
             ->count();
 
-        return view('customer.dashboard', compact('customer', 'orders', 'totalOrders', 'requests', 'totalRequests'));
+        return view('customer.dashboard', compact(
+            'customer',
+            'orders',
+            'totalOrders',
+            'requests',
+            'totalRequests'
+        ));
     }
 }
