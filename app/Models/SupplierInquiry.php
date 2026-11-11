@@ -10,7 +10,7 @@ class SupplierInquiry extends Model
 {
     protected $fillable = [
         'quote_request_id', 'supplier_id', 'created_by', 'reference',
-        'status', 'message', 'sent_at', 'response_due_at',
+        'status', 'message', 'sent_at', 'response_due_at', 'responded_at',
     ];
 
     protected function casts(): array
