@@ -47,6 +47,6 @@ A pasta `gpm2/gpm/` contém um pacote anterior/alternativo do lado do cliente. N
 - Os formulários de alteração devem usar CSRF.
 - Os valores apresentados devem ser escapados com `e()` ou `htmlspecialchars()`.
 - Páginas administrativas devem verificar o perfil autorizado antes de ler ou alterar dados.
-- O checkout regista o pedido, itens, proforma e conversa sem baixar stock; a confirmação comercial/saída de stock pertence ao painel administrativo.
+- O checkout regista o pedido, itens, proforma e conversa sem baixar stock. O stock é validado e baixado quando a equipa confirma o pedido (ou avança para preparação/envio/conclusão); se um pedido confirmado for cancelado, o stock é reposto automaticamente.
 - A proforma HTML é imprimível e não substitui uma fatura fiscal.
 - Testa os fluxos com uma cópia da base de dados antes de publicar em produção.
