@@ -1,9 +1,9 @@
 <?php
 
-namespace App\\Models;
+namespace App\Models;
 
-use Illuminate\\Foundation\\Auth\\User as Authenticatable;
-use Illuminate\\Database\\Eloquent\\Relations\\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Customer extends Authenticatable
 {
