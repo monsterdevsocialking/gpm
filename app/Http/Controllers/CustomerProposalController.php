@@ -33,13 +33,21 @@ class CustomerProposalController extends Controller
         DB::transaction(function () use ($proposalVersion, $validated): void {
             $version = ProposalVersion::query()
                 ->whereHas('proposal.quoteRequest', fn ($query) => $query->where('customer_id', Auth::guard('customer')->id()))
-                ->with('proposal')
+                ->with('proposal.quoteRequest')
                 ->lockForUpdate()
                 ->findOrFail($proposalVersion);
 
             if ($version->status !== 'sent' || ! $version->issued_at) {
                 throw ValidationException::withMessages([
                     'decision' => 'Só pode responder a uma versão de proposta que tenha sido emitida.',
+                ]);
+            }
+
+            $quoteRequest = $version->proposal->quoteRequest;
+
+            if ($quoteRequest->status !== 'proposal_sent') {
+                throw ValidationException::withMessages([
+                    'decision' => 'Este pedido já não está à espera de uma decisão sobre a proposta.',
                 ]);
             }
 
@@ -69,6 +77,18 @@ class CustomerProposalController extends Controller
             };
 
             $version->proposal->update(['status' => $proposalStatus]);
+
+            if (in_array($validated['decision'], ['rejected', 'revision_requested'], true)) {
+                $quoteRequest->update(['status' => 'proposal_preparation']);
+                $quoteRequest->statusHistory()->create([
+                    'user_id' => null,
+                    'old_status' => 'proposal_sent',
+                    'new_status' => 'proposal_preparation',
+                    'note' => $validated['decision'] === 'revision_requested'
+                        ? 'O cliente solicitou alterações à proposta. Preparar uma nova versão.'
+                        : 'O cliente rejeitou a proposta. A equipa pode preparar uma nova versão se houver continuidade comercial.',
+                ]);
+            }
         });
 
         return redirect()->route('customer.proposals.show', $proposalVersion)
