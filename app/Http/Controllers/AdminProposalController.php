@@ -103,7 +103,7 @@ class AdminProposalController extends Controller
 
         $validated = $request->validate([
             'currency' => ['nullable', 'string', 'size:3', 'alpha'],
-            'valid_until' => ['nullable', 'date'],
+            'valid_until' => ['nullable', 'date', 'after_or_equal:today'],
             'terms' => ['nullable', 'string', 'max:10000'],
             'notes' => ['nullable', 'string', 'max:5000'],
             'items' => ['required', 'array', 'min:1'],
@@ -163,6 +163,10 @@ class AdminProposalController extends Controller
 
             if (! $version->isEditable()) {
                 throw ValidationException::withMessages(['proposal' => 'Esta versão já foi emitida.']);
+            }
+
+            if (! $version->valid_until || $version->valid_until->lt(today())) {
+                throw ValidationException::withMessages(['valid_until' => 'Defina uma validade igual ou posterior à data de hoje.']);
             }
 
             if (! $version->currency || ! preg_match('/^[A-Z]{3}$/', $version->currency)) {
