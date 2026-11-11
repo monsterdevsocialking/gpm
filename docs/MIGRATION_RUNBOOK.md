@@ -82,7 +82,10 @@ UNION ALL SELECT 'order_items', COUNT(*) FROM order_items
 UNION ALL SELECT 'proformas', COUNT(*) FROM proformas
 UNION ALL SELECT 'conversations', COUNT(*) FROM conversations
 UNION ALL SELECT 'messages', COUNT(*) FROM messages
-UNION ALL SELECT 'stock_movements', COUNT(*) FROM stock_movements;
+UNION ALL SELECT 'stock_movements', COUNT(*) FROM stock_movements
+UNION ALL SELECT 'quote_requests', COUNT(*) FROM quote_requests
+UNION ALL SELECT 'quote_request_items', COUNT(*) FROM quote_request_items
+UNION ALL SELECT 'quote_request_status_history', COUNT(*) FROM quote_request_status_history;
 ```
 
 Also verify that order totals, order item snapshots, proforma numbers, customer
@@ -104,8 +107,10 @@ those tables:
 - Audit: `ActivityLog`
 
 These models are a compatibility layer, not proof that all legacy pages have been
-migrated. Controllers, authorization, business actions, views, and feature tests
-still need to be implemented and verified.
+migrated. The public catalog, customer authentication/portal, supply-request cart and initial
+staff review workflow are now implemented in Laravel. Supplier management, proposal
+versioning, customer decisions, order confirmation, payment and the remaining legacy
+admin operations still need to be implemented and verified.
 
 ## 7. New supply-request tables
 
@@ -124,7 +129,7 @@ Submitting the cart creates a supply request only. It does not create an entry i
 legacy `orders`, does not create a proforma, does not charge a payment method and
 does not deduct stock. The initial and subsequent status events are audited.
 
-## 7. Cutover criteria
+## 8. Cutover criteria
 
 Do not switch the public site to Laravel until:
 
