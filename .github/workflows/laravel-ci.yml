@@ -41,5 +41,8 @@ jobs:
       - name: Run automated tests
         run: php artisan test
 
+      - name: Verify supplier sourcing workflow explicitly
+        run: php artisan test tests/Feature/SupplierSourcingWorkflowTest.php
+
       - name: Compile Blade views
         run: php artisan view:cache
