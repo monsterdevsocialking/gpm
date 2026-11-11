@@ -31,5 +31,11 @@ jobs:
       - name: Validate Composer configuration
         run: composer validate --no-check-publish
 
+      - name: Validate registered routes
+        run: php artisan route:list --except-vendor
+
       - name: Run automated tests
         run: php artisan test
+
+      - name: Compile Blade views
+        run: php artisan view:cache
