@@ -44,6 +44,7 @@ return new class extends Migration
             $table->text('message')->nullable();
             $table->timestamp('sent_at')->nullable();
             $table->timestamp('response_due_at')->nullable();
+            $table->timestamp('responded_at')->nullable();
             $table->timestamps();
 
             $table->index(['quote_request_id', 'supplier_id']);
