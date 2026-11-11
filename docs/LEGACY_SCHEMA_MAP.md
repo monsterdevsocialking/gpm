@@ -86,5 +86,6 @@ New workflow tables added after the baseline:
 - quote_request_status_history: staff transition audit.
 - suppliers, supplier_inquiries, supplier_responses, and supplier_response_items: manual supplier sourcing and price/availability capture.
 - proposals, proposal_versions, proposal_items, and proposal_decisions: immutable issued versions and customer decisions attached to a specific version.
+- orders.currency and orders.proposal_version_id: currency-aware order totals and a unique link from an explicitly confirmed order to the exact accepted proposal version.
 
 The current proposal workflow does not create an order when a customer accepts. An explicit staff confirmation workflow is still required before a new order is created from an accepted proposal. Payment integrations remain inactive.
