@@ -3,6 +3,7 @@ name: GPM PHP syntax check
 on:
   push:
     branches:
+      - main
       - preview/gpm2-organizado
   pull_request:
     branches:
@@ -24,7 +25,11 @@ jobs:
           php-version: '8.2'
           coverage: none
 
-      - name: Check active GPM PHP files
+      - name: Check Laravel PHP syntax
+        run: |
+          find app bootstrap config database/migrations routes tests -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: Check legacy GPM2 PHP syntax
         run: |
           find gpm2/admin gpm2/cliente gpm2/app gpm2/config gpm2/database -type f -name '*.php' -print0 | xargs -0 -n1 php -l
           php -l gpm2/index.php
