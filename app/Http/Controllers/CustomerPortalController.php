@@ -19,10 +19,21 @@ class CustomerPortalController extends Controller
             ->limit(10)
             ->get();
 
+        $requests = QuoteRequest::query()
+            ->where('customer_id', $customer->getKey())
+            ->withCount('items')
+            ->latest('submitted_at')
+            ->limit(10)
+            ->get();
+
+        $totalRequests = QuoteRequest::query()
+            ->where('customer_id', $customer->getKey())
+            ->count();
+
         $totalOrders = Order::query()
             ->where('customer_id', $customer->getKey())
             ->count();
 
-        return view('customer.dashboard', compact('customer', 'orders', 'totalOrders'));
+        return view('customer.dashboard', compact('customer', 'orders', 'totalOrders', 'requests', 'totalRequests'));
     }
 }
