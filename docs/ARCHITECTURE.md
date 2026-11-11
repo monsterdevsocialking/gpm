@@ -52,7 +52,7 @@ staff member, and closes the supply request. It does not deduct stock or start a
 payment.
 
 After confirmation, authorized staff can move an order through preparation,
-shipment and completion (or cancellation where allowed). Each transition is locked,
+shipment and completion (or cancellation where allowed). Staff can issue a currency-aware proforma from a confirmed order; the document snapshots the order and company/customer details. Each transition is locked,
 validated against the current state and appended to the order status history. The
 customer order page displays this history. The initial conversion uses the approved proposal subtotal as the order
 total; delivery, tax and discount calculations are not yet separate fields and must
