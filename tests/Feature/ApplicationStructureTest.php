@@ -20,6 +20,7 @@ use App\Http\Controllers\AdminQuoteRequestController;
 use App\Http\Controllers\AdminSupplierController;
 use App\Http\Controllers\AdminSupplierInquiryController;
 use App\Http\Controllers\CustomerAuthController;
+use App\Http\Controllers\CustomerAccountController;
 use App\Http\Controllers\CustomerOrderController;
 use App\Http\Controllers\CustomerPortalController;
 use App\Http\Controllers\CustomerProposalController;
@@ -61,6 +62,7 @@ class ApplicationStructureTest extends TestCase
             ProductMediaController::class,
             QuoteCartController::class,
             CustomerAuthController::class,
+            CustomerAccountController::class,
             CustomerPortalController::class,
             CustomerOrderController::class,
             CustomerQuoteRequestController::class,
