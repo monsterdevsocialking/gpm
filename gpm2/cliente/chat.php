@@ -23,7 +23,7 @@ $stmt->execute([$pedidoId, $clienteId]);
 $conversa = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$conversa) {
-    flash('error', 'Não tens acesso a esta conversa.');
+    flash('Não tens acesso a esta conversa.', 'error');
     redirect('pedidos.php');
 }
 
