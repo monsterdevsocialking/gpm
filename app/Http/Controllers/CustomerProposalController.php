@@ -15,6 +15,7 @@ class CustomerProposalController extends Controller
     public function show(int $proposalVersion): View
     {
         $version = ProposalVersion::query()
+            ->where('status', 'sent')
             ->whereHas('proposal.quoteRequest', fn ($query) => $query->where('customer_id', Auth::guard('customer')->id()))
             ->with(['proposal.quoteRequest', 'items', 'decisions'])
             ->findOrFail($proposalVersion);
