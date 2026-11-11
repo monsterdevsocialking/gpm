@@ -8,6 +8,7 @@
         <a href="{{ route('home') }}" class="font-black text-2xl text-gpm-navy">GPM<span class="text-gpm-orange">.</span></a>
         <nav class="flex items-center gap-4 text-xs font-bold uppercase">
             <a href="{{ route('customer.dashboard') }}" class="text-gray-500 hover:text-gpm-orange">A minha conta</a>
+            <a href="{{ route('customer.addresses.index') }}" class="text-gray-500 hover:text-gpm-orange">Moradas de entrega</a>
             <a href="{{ route('customer.password.edit') }}" class="text-gray-500 hover:text-gpm-orange">Segurança</a>
         </nav>
     </div>
@@ -50,6 +51,7 @@
             </div>
             <div class="flex flex-wrap items-center gap-4 mt-7">
                 <button class="bg-gpm-orange text-white text-xs font-bold uppercase px-7 py-4">Guardar alterações</button>
+                <a href="{{ route('customer.addresses.index') }}" class="text-xs font-bold uppercase text-gpm-navy">Gerir moradas de entrega</a>
                 <a href="{{ route('customer.password.edit') }}" class="text-xs font-bold uppercase text-gpm-navy">Alterar palavra-passe</a>
             </div>
         </form>
