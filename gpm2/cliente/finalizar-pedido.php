@@ -256,18 +256,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     throw new RuntimeException('Stock insuficiente para o produto: ' . $produto['name']);
                 }
 
-                $stmtStock = $pdo->prepare(
-                    "UPDATE products SET stock_quantity = stock_quantity - ?
-                     WHERE id = ? AND stock_quantity >= ? AND active = 1"
-                );
-                $stmtStock->execute([$quantidade, $id, $quantidade]);
-
-                if ($stmtStock->rowCount() !== 1) {
-                    throw new RuntimeException(
-                        'O stock do produto ' . $produto['name'] . ' foi alterado. Atualiza o carrinho e tenta novamente.'
-                    );
-                }
-
                 $preco = (float) $produto['price'];
                 $valorLinha = round($quantidade * $preco, 2);
                 $subtotal += $valorLinha;
@@ -280,8 +268,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'quantity' => $quantidade,
                     'price' => $preco,
                     'subtotal' => $valorLinha,
-                    'stock_before' => (float)$produto['stock_quantity'],
-                    'stock_after' => (float)$produto['stock_quantity'] - $quantidade
                 ];
             }
 
@@ -312,7 +298,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     payment_method, payment_status, status, stock_deducted, notes, ordered_at, created_at, updated_at
                 ) VALUES (
                     ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                    ?, ?, ?, ?, ?, 'pending', 'pending', 1, ?, NOW(), NOW(), NOW()
+                    ?, ?, ?, ?, ?, 'pending', 'pending', 0, ?, NOW(), NOW(), NOW()
                 )"
             );
 
@@ -339,24 +325,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmtItem->execute([
                     $pedidoId, $linha['id'], $linha['name'], $linha['sku'],
                     $linha['quantity'], $linha['unit'], $linha['price'], $linha['subtotal']
-                ]);
-            }
-
-            $stmtMovimento = $pdo->prepare(
-                "INSERT INTO stock_movements (
-                    product_id, user_id, order_id, movement_type,
-                    quantity, stock_before, stock_after, reason, created_at
-                ) VALUES (?, NULL, ?, 'sale', ?, ?, ?, ?, NOW())"
-            );
-
-            foreach ($linhas as $linha) {
-                $stmtMovimento->execute([
-                    $linha['id'],
-                    $pedidoId,
-                    $linha['quantity'],
-                    $linha['stock_before'],
-                    $linha['stock_after'],
-                    'Venda registada no pedido ' . $numeroPedido
                 ]);
             }
 
