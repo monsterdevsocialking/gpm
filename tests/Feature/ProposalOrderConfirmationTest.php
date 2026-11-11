@@ -135,5 +135,21 @@ class ProposalOrderConfirmationTest extends TestCase
             1,
             Order::query()->where('proposal_version_id', $version->id)->count()
         );
+
+        $this->actingAs($staff, 'web')
+            ->patch(route('admin.orders.status.update', $order), ['status' => 'preparing'])
+            ->assertRedirect(route('admin.orders.show', $order));
+
+        $this->actingAs($staff, 'web')
+            ->patch(route('admin.orders.status.update', $order), ['status' => 'shipped'])
+            ->assertRedirect(route('admin.orders.show', $order));
+
+        $this->actingAs($staff, 'web')
+            ->patch(route('admin.orders.status.update', $order), ['status' => 'completed'])
+            ->assertRedirect(route('admin.orders.show', $order));
+
+        $this->assertSame('completed', $order->fresh()->status);
+        $this->assertNotNull($order->fresh()->completed_at);
+        $this->assertSame(4, $order->statusHistory()->count());
     }
 }
