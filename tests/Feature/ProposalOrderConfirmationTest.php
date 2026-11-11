@@ -152,4 +152,102 @@ class ProposalOrderConfirmationTest extends TestCase
         $this->assertNotNull($order->fresh()->completed_at);
         $this->assertSame(4, $order->statusHistory()->count());
     }
+
+    public function test_revision_request_returns_proposal_to_preparation_and_allows_a_new_version(): void
+    {
+        $customer = Customer::query()->create([
+            'customer_type' => 'company',
+            'name' => 'Empresa de Revisão',
+            'phone' => '+244900000011',
+            'email' => 'revision-customer@example.test',
+            'password' => 'password',
+            'active' => true,
+        ]);
+
+        $staff = User::query()->create([
+            'name' => 'Comercial de Teste',
+            'email' => 'revision-staff@example.test',
+            'password' => 'password',
+        ]);
+        $staff->forceFill(['role' => 'admin', 'active' => true])->save();
+
+        $request = QuoteRequest::query()->create([
+            'request_number' => 'GPM-REVISION-0001',
+            'customer_id' => $customer->id,
+            'customer_name' => $customer->name,
+            'customer_email' => $customer->email,
+            'customer_phone' => $customer->phone,
+            'status' => 'proposal_sent',
+            'submitted_at' => now(),
+        ]);
+
+        $requestItem = QuoteRequestItem::query()->create([
+            'quote_request_id' => $request->id,
+            'product_name' => 'Equipamento industrial',
+            'product_sku' => 'EQ-REV-01',
+            'unit' => 'unidade',
+            'quantity' => 1,
+        ]);
+
+        $proposal = Proposal::query()->create([
+            'quote_request_id' => $request->id,
+            'proposal_number' => 'GPM-PROP-REV-0001',
+            'status' => 'sent',
+            'created_by' => $staff->id,
+        ]);
+
+        $version = ProposalVersion::query()->create([
+            'proposal_id' => $proposal->id,
+            'version_number' => 1,
+            'status' => 'sent',
+            'currency' => 'AOA',
+            'subtotal' => 1000,
+            'valid_until' => today()->addDays(7),
+            'issued_at' => now(),
+            'created_by' => $staff->id,
+        ]);
+
+        $version->items()->create([
+            'quote_request_item_id' => $requestItem->id,
+            'product_name' => $requestItem->product_name,
+            'product_sku' => $requestItem->product_sku,
+            'unit' => $requestItem->unit,
+            'quantity' => 1,
+            'unit_price' => 1000,
+            'line_total' => 1000,
+        ]);
+
+        $this->actingAs($customer, 'customer')
+            ->post(route('customer.proposals.decide', $version), [
+                'decision' => 'revision_requested',
+                'comment' => 'Solicito uma alternativa com prazo de entrega menor.',
+            ])
+            ->assertRedirect(route('customer.proposals.show', $version));
+
+        $this->assertDatabaseHas('quote_requests', [
+            'id' => $request->id,
+            'status' => 'proposal_preparation',
+        ]);
+        $this->assertDatabaseHas('quote_request_status_history', [
+            'quote_request_id' => $request->id,
+            'old_status' => 'proposal_sent',
+            'new_status' => 'proposal_preparation',
+        ]);
+
+        $this->actingAs($staff, 'web')
+            ->post(route('admin.requests.proposals.store', $request))
+            ->assertRedirect();
+
+        $newVersion = ProposalVersion::query()
+            ->where('proposal_id', $proposal->id)
+            ->orderByDesc('version_number')
+            ->firstOrFail();
+
+        $this->assertSame(2, $newVersion->version_number);
+        $this->assertSame('draft', $newVersion->status);
+        $this->assertCount(1, $newVersion->items);
+        $this->assertSame('Equipamento industrial', $newVersion->items->first()->product_name);
+    }
+
+
 }
