@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\Supplier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -34,7 +35,15 @@ class AdminSupplierController extends Controller
         $validated = $this->validateSupplier($request);
         $validated['active'] = $request->boolean('active', true);
 
-        Supplier::query()->create($validated);
+        $record = Supplier::query()->create($validated);
+        ActivityLog::query()->create([
+            'user_id' => Auth::guard('web')->id(),
+            'action' => 'supplier_created',
+            'entity_type' => 'supplier',
+            'entity_id' => $record->id,
+            'description' => 'Fornecedor registado: '.$record->name.'.',
+            'ip_address' => $request->ip(),
+        ]);
 
         return redirect()->route('admin.suppliers.index')->with('success', 'Fornecedor registado.');
     }
@@ -46,6 +55,14 @@ class AdminSupplierController extends Controller
         $validated['active'] = $request->boolean('active');
 
         $record->update($validated);
+        ActivityLog::query()->create([
+            'user_id' => Auth::guard('web')->id(),
+            'action' => 'supplier_updated',
+            'entity_type' => 'supplier',
+            'entity_id' => $record->id,
+            'description' => 'Dados do fornecedor atualizados: '.$record->name.'.',
+            'ip_address' => $request->ip(),
+        ]);
 
         return redirect()->route('admin.suppliers.index')->with('success', 'Fornecedor atualizado.');
     }
