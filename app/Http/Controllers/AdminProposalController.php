@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Proposal;
 use App\Models\ProposalVersion;
+use App\Models\Order;
 use App\Models\QuoteRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -218,4 +219,117 @@ class AdminProposalController extends Controller
         return redirect()->route('admin.proposals.show', $proposalVersion)
             ->with('success', 'Proposta emitida. O cliente poderá analisar esta versão na sua área.');
     }
+    public function confirmOrder(int $proposalVersion): RedirectResponse
+    {
+        $order = DB::transaction(function () use ($proposalVersion): Order {
+            $version = ProposalVersion::query()
+                ->with(['proposal.quoteRequest.customer', 'items', 'decisions'])
+                ->lockForUpdate()
+                ->findOrFail($proposalVersion);
+
+            $proposal = $version->proposal;
+            $quoteRequest = QuoteRequest::query()
+                ->lockForUpdate()
+                ->findOrFail($proposal->quote_request_id);
+
+            $existingOrder = Order::query()
+                ->where('proposal_version_id', $version->id)
+                ->first();
+
+            if ($existingOrder) {
+                return $existingOrder;
+            }
+
+            $accepted = $version->decisions()
+                ->where('customer_id', $quoteRequest->customer_id)
+                ->where('decision', 'accepted')
+                ->exists();
+
+            if (! $accepted || $version->status !== 'sent' || ! $version->issued_at) {
+                throw ValidationException::withMessages([
+                    'confirmation' => 'Só é possível confirmar uma proposta emitida e aceite pelo cliente associado ao pedido.',
+                ]);
+            }
+
+            if ($quoteRequest->status !== 'proposal_sent') {
+                throw ValidationException::withMessages([
+                    'confirmation' => 'O pedido já não está à espera de confirmação comercial.',
+                ]);
+            }
+
+            if ($version->items->isEmpty() || $version->items->contains(fn ($item) => $item->unit_price === null || $item->line_total === null)) {
+                throw ValidationException::withMessages([
+                    'confirmation' => 'A proposta contém artigos sem preço final. Reveja a versão antes de confirmar.',
+                ]);
+            }
+
+            $customer = $quoteRequest->customer;
+            $subtotal = (float) $version->subtotal;
+
+            $order = Order::query()->create([
+                'order_number' => 'GPM-'.now()->format('Ymd').'-'.Str::upper(Str::random(6)),
+                'proposal_version_id' => $version->id,
+                'customer_id' => $customer->id,
+                'responsible_user_id' => Auth::guard('web')->id(),
+                'customer_type' => $customer->customer_type,
+                'customer_name' => $quoteRequest->customer_name,
+                'customer_nif' => $customer->nif,
+                'customer_phone' => $quoteRequest->customer_phone,
+                'customer_email' => $quoteRequest->customer_email,
+                'delivery_address' => $customer->address,
+                'delivery_city' => $customer->city,
+                'delivery_province' => $customer->province,
+                'delivery_fee' => 0,
+                'discount' => 0,
+                'subtotal' => $subtotal,
+                'total' => $subtotal,
+                'currency' => $version->currency,
+                'payment_status' => 'pending',
+                'status' => 'confirmed',
+                'stock_deducted' => false,
+                'ordered_at' => now(),
+                'confirmed_at' => now(),
+                'notes' => trim(implode("\n\n", array_filter([
+                    $quoteRequest->notes,
+                    'Encomenda confirmada a partir da proposta '.$proposal->proposal_number.' versão '.$version->version_number.'.',
+                    $version->terms ? 'Condições comerciais: '.$version->terms : null,
+                    $version->notes,
+                ]))) ?: null,
+            ]);
+
+            foreach ($version->items as $item) {
+                $order->items()->create([
+                    'product_id' => $item->product_id,
+                    'product_name' => $item->product_name,
+                    'product_sku' => $item->product_sku,
+                    'unit' => $item->unit,
+                    'quantity' => $item->quantity,
+                    'unit_price' => $item->unit_price,
+                    'subtotal' => $item->line_total,
+                ]);
+            }
+
+            $order->statusHistory()->create([
+                'user_id' => Auth::guard('web')->id(),
+                'old_status' => null,
+                'new_status' => 'confirmed',
+                'note' => 'Encomenda confirmada manualmente pela equipa GPM após aceitação da proposta '.$proposal->proposal_number.' versão '.$version->version_number.'.',
+            ]);
+
+            $proposal->update(['status' => 'confirmed']);
+            $quoteRequest->update(['status' => 'closed']);
+            $quoteRequest->statusHistory()->create([
+                'user_id' => Auth::guard('web')->id(),
+                'old_status' => 'proposal_sent',
+                'new_status' => 'closed',
+                'note' => 'Convertido na encomenda '.$order->order_number.' após confirmação explícita da GPM.',
+            ]);
+
+            return $order;
+        });
+
+        return redirect()->route('admin.orders.show', $order)
+            ->with('success', 'Encomenda confirmada e criada a partir da proposta aceite.');
+    }
+
 }
