@@ -32,6 +32,7 @@
             @auth('customer')<a href="{{ route('customer.dashboard') }}" class="hover:text-gpm-orange">A minha conta</a>@else<a href="{{ route('customer.login') }}" class="hover:text-gpm-orange">Entrar</a>@endauth
         </nav>
         <div class="flex items-center gap-4">
+            <a href="{{ route('cart.index') }}" class="text-gpm-navy hover:text-gpm-orange text-sm" aria-label="Pedido de fornecimento"><i class="fa-solid fa-clipboard-list"></i></a>
             <a href="{{ route('marketplace.index') }}" class="text-gpm-navy hover:text-gpm-orange text-sm font-bold"><i class="fa-solid fa-store mr-2"></i><span class="hidden sm:inline">Marketplace</span></a>
             <button id="gpm-menu-button" class="lg:hidden text-gpm-navy text-xl" aria-label="Abrir menu" aria-controls="gpm-mobile-menu" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
         </div>
