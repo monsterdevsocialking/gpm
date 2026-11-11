@@ -3,7 +3,7 @@
 namespace Tests\Unit\Models;
 
 use App\Models\ProposalVersion;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class ProposalVersionTest extends TestCase
 {
