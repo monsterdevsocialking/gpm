@@ -31,5 +31,5 @@ jobs:
 
       - name: Check legacy GPM2 PHP syntax
         run: |
-          find gpm2/admin gpm2/cliente gpm2/app gpm2/config gpm2/database -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+          find gpm2/admin gpm2/gpm/cliente gpm2/app gpm2/config gpm2/database -type f -name '*.php' -print0 | xargs -0 -n1 php -l
           php -l gpm2/index.php
