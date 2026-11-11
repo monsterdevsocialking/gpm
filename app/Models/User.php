@@ -28,6 +28,41 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function activityLogs(): \\Illuminate\\Database\\Eloquent\\Relations\\HasMany
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
+
+    public function stockMovements(): \\Illuminate\\Database\\Eloquent\\Relations\\HasMany
+    {
+        return $this->hasMany(StockMovement::class);
+    }
+
+    public function assignedConversations(): \\Illuminate\\Database\\Eloquent\\Relations\\HasMany
+    {
+        return $this->hasMany(Conversation::class, 'assigned_user_id');
+    }
+
+    public function sentMessages(): \\Illuminate\\Database\\Eloquent\\Relations\\HasMany
+    {
+        return $this->hasMany(Message::class, 'user_sender_id');
+    }
+
+    public function responsibleOrders(): \\Illuminate\\Database\\Eloquent\\Relations\\HasMany
+    {
+        return $this->hasMany(Order::class, 'responsible_user_id');
+    }
+
+    public function orderStatusChanges(): \\Illuminate\\Database\\Eloquent\\Relations\\HasMany
+    {
+        return $this->hasMany(OrderStatusHistory::class);
+    }
+
+    public function createdProformas(): \\Illuminate\\Database\\Eloquent\\Relations\\HasMany
+    {
+        return $this->hasMany(Proforma::class, 'created_by');
+    }
+
     protected function casts(): array
     {
         return [
