@@ -27,7 +27,7 @@ class ProposalVersion extends Model
     protected static function booted(): void
     {
         static::updating(function (self $version): void {
-            if ($version->getOriginal('status') !== 'draft') {
+            if (! $version->isEditable()) {
                 $dirtyFields = array_diff(
                     array_keys($version->getDirty()),
                     ['updated_at']
