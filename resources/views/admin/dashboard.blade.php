@@ -11,6 +11,7 @@
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 bg-white/10 px-4 py-3 text-white"><i class="fa-solid fa-chart-line w-4 text-gpm-orange"></i>Visão geral</a>
             @if($canReviewRequests)
                 <a href="{{ route('admin.requests.index') }}" class="flex items-center gap-3 px-4 py-3 text-white/70 hover:bg-white/10"><i class="fa-solid fa-inbox w-4"></i>Pedidos de fornecimento</a>
+                <a href="{{ route('admin.suppliers.index') }}" class="flex items-center gap-3 px-4 py-3 text-white/70 hover:bg-white/10"><i class="fa-solid fa-truck-field w-4"></i>Fornecedores</a>
                 <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-3 px-4 py-3 text-white/70 hover:bg-white/10"><i class="fa-solid fa-clipboard-list w-4"></i>Pedidos antigos</a>
             @endif
             <a href="{{ route('marketplace.index') }}" class="flex items-center gap-3 px-4 py-3 text-white/70 hover:bg-white/10"><i class="fa-solid fa-store w-4"></i>Ver marketplace</a>
@@ -24,6 +25,7 @@
                 <article class="bg-white border border-gray-100 p-5"><div class="flex justify-between items-center"><span class="text-xs text-gray-500">{{ $stat[0] }}</span><i class="fa-solid {{ $stat[2] }} text-gpm-orange"></i></div><strong class="block text-3xl font-black text-gpm-navy mt-4">{{ number_format($stat[1],0,',','.') }}</strong></article>
             @endforeach
             @if($canReviewRequests)
+                <article class="bg-white border border-gray-100 p-5"><div class="flex justify-between items-center"><span class="text-xs text-gray-500">Fornecedores ativos</span><i class="fa-solid fa-truck-field text-gpm-orange"></i></div><strong class="block text-3xl font-black text-gpm-navy mt-4">{{ number_format($stats['suppliers'],0,',','.') }}</strong></article>
                 <article class="bg-white border border-gray-100 p-5"><div class="flex justify-between items-center"><span class="text-xs text-gray-500">Pedidos de fornecimento</span><i class="fa-solid fa-inbox text-gpm-orange"></i></div><strong class="block text-3xl font-black text-gpm-navy mt-4">{{ number_format($stats['quote_requests'],0,',','.') }}</strong></article>
                 <article class="bg-white border border-gray-100 p-5"><div class="flex justify-between items-center"><span class="text-xs text-gray-500">Por analisar</span><i class="fa-solid fa-hourglass-half text-gpm-orange"></i></div><strong class="block text-3xl font-black text-gpm-navy mt-4">{{ number_format($stats['submitted_requests'],0,',','.') }}</strong></article>
             @endif
