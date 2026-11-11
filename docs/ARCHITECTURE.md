@@ -56,7 +56,7 @@ customer order page displays this history. The initial conversion uses the appro
 total; delivery, tax and discount calculations are not yet separate fields and must
 be reflected in the proposal prices/terms until those rules are approved.
 
-Payment collection and gateway callbacks are not active.
+Payment collection and gateway callbacks are not active. A provider-event ledger and recorder are now in place for future integrations: provider + external event ID is unique, duplicate deliveries return the original event, and processing/failure metadata is retained. Incoming payloads must be sanitized before persistence; secrets, signatures and card data must never be stored.
 
 ## Planned application areas
 
