@@ -30,12 +30,18 @@ class ProposalVersion extends Model
             if ($version->getOriginal('status') !== 'draft') {
                 $dirtyFields = array_diff(
                     array_keys($version->getDirty()),
-                    ['status', 'updated_at']
+                    ['updated_at']
                 );
 
                 if ($dirtyFields !== []) {
                     throw new LogicException('Uma versão emitida de proposta é imutável. Crie uma nova versão.');
                 }
+            }
+        });
+
+        static::deleting(function (self $version): void {
+            if (! $version->isEditable()) {
+                throw new LogicException('Uma versão emitida de proposta não pode ser eliminada.');
             }
         });
     }
