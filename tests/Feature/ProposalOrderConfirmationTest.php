@@ -66,11 +66,11 @@ class ProposalOrderConfirmationTest extends TestCase
         $version = ProposalVersion::query()->create([
             'proposal_id' => $proposal->id,
             'version_number' => 1,
-            'status' => 'sent',
+            'status' => 'draft',
             'currency' => 'AOA',
             'subtotal' => 2000,
             'valid_until' => today()->addDays(7),
-            'issued_at' => now(),
+            'issued_at' => null,
             'created_by' => $staff->id,
         ]);
 
@@ -83,6 +83,8 @@ class ProposalOrderConfirmationTest extends TestCase
             'unit_price' => 1000,
             'line_total' => 2000,
         ]);
+
+        $version->update(['status' => 'sent', 'issued_at' => now()]);
 
         $this->actingAs($customer, 'customer')
             ->post(route('customer.proposals.decide', $version), [
@@ -113,14 +115,12 @@ class ProposalOrderConfirmationTest extends TestCase
         $this->assertSame('pending', $order->payment_status);
         $this->assertSame('AOA', $order->currency);
         $this->assertFalse($order->stock_deducted);
-        $this->assertSame('2000.00', $order->total);
+        $this->assertEquals(2000.0, (float) $order->total);
 
-        $this->assertDatabaseHas('order_items', [
-            'order_id' => $order->id,
-            'product_name' => 'Material de teste',
-            'quantity' => '2.000',
-            'subtotal' => '2000.00',
-        ]);
+        $orderItem = $order->items()->firstOrFail();
+        $this->assertSame('Material de teste', $orderItem->product_name);
+        $this->assertEquals(2.0, (float) $orderItem->quantity);
+        $this->assertEquals(2000.0, (float) $orderItem->subtotal);
 
         $this->assertDatabaseHas('quote_requests', [
             'id' => $request->id,
