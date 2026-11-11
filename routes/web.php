@@ -23,7 +23,7 @@ Route::prefix('marketplace')->name('marketplace.')->group(function (): void {
         ->name('products.show');
 });
 
-Route::middleware('guest:customer')->group(function (): void {
+Route::group(function (): void {
     Route::get('/entrar', [CustomerAuthController::class, 'showLogin'])->name('customer.login');
     Route::post('/entrar', [CustomerAuthController::class, 'login'])
         ->middleware('throttle:10,1')
