@@ -107,6 +107,23 @@ These models are a compatibility layer, not proof that all legacy pages have bee
 migrated. Controllers, authorization, business actions, views, and feature tests
 still need to be implemented and verified.
 
+## 7. New supply-request tables
+
+After the legacy SQL snapshot has been imported into the cloned database, the
+Laravel migrations add:
+
+- `quote_requests`: one customer supply request, its reference, contact snapshot,
+  notes, submission date and workflow status.
+- `quote_request_items`: requested product snapshots, quantities, units and
+  per-item observations. The product foreign key becomes nullable if a catalog
+  product is later removed, while the requested description remains preserved.
+- `quote_request_status_history`: who changed the stage, previous/new status,
+  timestamp and note.
+
+Submitting the cart creates a supply request only. It does not create an entry in
+legacy `orders`, does not create a proforma, does not charge a payment method and
+does not deduct stock. The initial and subsequent status events are audited.
+
 ## 7. Cutover criteria
 
 Do not switch the public site to Laravel until:
