@@ -2,12 +2,15 @@
 
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminOrderController;
+use App\Http\Controllers\AdminQuoteRequestController;
 use App\Http\Controllers\CustomerAuthController;
 use App\Http\Controllers\CustomerOrderController;
 use App\Http\Controllers\CustomerPortalController;
+use App\Http\Controllers\CustomerQuoteRequestController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketplaceController;
 use App\Http\Controllers\ProductMediaController;
+use App\Http\Controllers\QuoteCartController;
 use App\Http\Controllers\StaffAuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,9 +24,13 @@ Route::get('/media/products/{filename}', [ProductMediaController::class, 'show']
     ->name('media.products.show');
 
 Route::get('/carrinho', [QuoteCartController::class, 'index'])->name('cart.index');
-Route::post('/carrinho/produtos/{product}', [QuoteCartController::class, 'store'])->whereNumber('product')->name('cart.items.store');
+Route::post('/carrinho/produtos/{product}', [QuoteCartController::class, 'store'])
+    ->whereNumber('product')
+    ->name('cart.items.store');
 Route::patch('/carrinho', [QuoteCartController::class, 'update'])->name('cart.update');
-Route::delete('/carrinho/produtos/{product}', [QuoteCartController::class, 'destroy'])->whereNumber('product')->name('cart.items.destroy');
+Route::delete('/carrinho/produtos/{product}', [QuoteCartController::class, 'destroy'])
+    ->whereNumber('product')
+    ->name('cart.items.destroy');
 Route::post('/carrinho/enviar', [QuoteCartController::class, 'submit'])->name('cart.submit');
 
 Route::prefix('marketplace')->name('marketplace.')->group(function (): void {
@@ -46,9 +53,15 @@ Route::group(function (): void {
 
 Route::middleware(['auth:customer', 'customer.active'])->prefix('conta')->name('customer.')->group(function (): void {
     Route::get('/', [CustomerPortalController::class, 'index'])->name('dashboard');
-    Route::get('/pedidos/{order}', [CustomerOrderController::class, 'show'])->whereNumber('order')->name('orders.show');
-    Route::get('/proformas/{proforma}', [CustomerOrderController::class, 'showProforma'])->whereNumber('proforma')->name('proformas.show');
-    Route::get('/solicitacoes/{quoteRequest}', [CustomerQuoteRequestController::class, 'show'])->whereNumber('quoteRequest')->name('requests.show');
+    Route::get('/pedidos/{order}', [CustomerOrderController::class, 'show'])
+        ->whereNumber('order')
+        ->name('orders.show');
+    Route::get('/proformas/{proforma}', [CustomerOrderController::class, 'showProforma'])
+        ->whereNumber('proforma')
+        ->name('proformas.show');
+    Route::get('/solicitacoes/{quoteRequest}', [CustomerQuoteRequestController::class, 'show'])
+        ->whereNumber('quoteRequest')
+        ->name('requests.show');
     Route::post('/sair', [CustomerAuthController::class, 'logout'])->name('logout');
 });
 
@@ -66,11 +79,15 @@ Route::middleware(['auth:web', 'staff.active'])->prefix('admin')->name('admin.')
 
     Route::middleware('staff.role:admin,seller')->prefix('solicitacoes')->name('requests.')->group(function (): void {
         Route::get('/', [AdminQuoteRequestController::class, 'index'])->name('index');
-        Route::get('/{quoteRequest}', [AdminQuoteRequestController::class, 'show'])->whereNumber('quoteRequest')->name('show');
+        Route::get('/{quoteRequest}', [AdminQuoteRequestController::class, 'show'])
+            ->whereNumber('quoteRequest')
+            ->name('show');
     });
 
     Route::middleware('staff.role:admin,seller')->prefix('pedidos')->name('orders.')->group(function (): void {
         Route::get('/', [AdminOrderController::class, 'index'])->name('index');
-        Route::get('/{order}', [AdminOrderController::class, 'show'])->whereNumber('order')->name('show');
+        Route::get('/{order}', [AdminOrderController::class, 'show'])
+            ->whereNumber('order')
+            ->name('show');
     });
 });
