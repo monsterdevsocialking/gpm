@@ -6,6 +6,7 @@ use App\Models\ActivityLog;
 use App\Models\Supplier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class AdminSupplierController extends Controller
