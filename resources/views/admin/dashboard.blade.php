@@ -17,6 +17,7 @@
                 <a href="{{ route('admin.stock.index') }}" class="flex items-center gap-3 px-4 py-3 text-white/70 hover:bg-white/10"><i class="fa-solid fa-boxes-stacked w-4"></i>Movimentos de stock</a>
             @endif
             @if($canReviewRequests)
+                <a href="{{ route('admin.customers.index') }}" class="flex items-center gap-3 px-4 py-3 text-white/70 hover:bg-white/10"><i class="fa-solid fa-users w-4"></i>Clientes</a>
                 <a href="{{ route('admin.catalog.index') }}" class="flex items-center gap-3 px-4 py-3 text-white/70 hover:bg-white/10"><i class="fa-solid fa-box w-4"></i>Produtos</a>
                 <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-3 text-white/70 hover:bg-white/10"><i class="fa-solid fa-layer-group w-4"></i>Categorias</a>
                 <a href="{{ route('admin.requests.index') }}" class="flex items-center gap-3 px-4 py-3 text-white/70 hover:bg-white/10"><i class="fa-solid fa-inbox w-4"></i>Pedidos de fornecimento</a>
