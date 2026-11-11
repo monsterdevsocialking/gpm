@@ -114,7 +114,7 @@ class AdminSupplierInquiryController extends Controller
             'payment_terms' => ['nullable', 'string', 'max:5000'],
             'valid_until' => ['nullable', 'date'],
             'notes' => ['nullable', 'string', 'max:5000'],
-            'items' => ['required', 'array', 'min:1'],
+            'items' => ['required', 'array', 'size:'.count($allowedItemIds)],
             'items.*.quote_request_item_id' => ['required', 'integer', 'distinct', Rule::in($allowedItemIds)],
             'items.*.unit_price' => ['nullable', 'numeric', 'min:0', 'max:999999999999.99'],
             'items.*.availability_status' => ['required', Rule::in(['available', 'partial', 'unavailable', 'substitute', 'unknown'])],
@@ -125,7 +125,17 @@ class AdminSupplierInquiryController extends Controller
         ]);
 
         DB::transaction(function () use ($record, $validated): void {
-            $response = $record->responses()->create([
+            $lockedInquiry = SupplierInquiry::query()
+                ->lockForUpdate()
+                ->findOrFail($record->id);
+
+            if (! in_array($lockedInquiry->status, ['sent', 'responded'], true)) {
+                throw ValidationException::withMessages([
+                    'status' => 'A consulta deixou de estar disponível para registar respostas.',
+                ]);
+            }
+
+            $response = $lockedInquiry->responses()->create([
                 'supplier_reference' => $validated['supplier_reference'] ?? null,
                 'status' => 'received',
                 'currency' => isset($validated['currency']) ? strtoupper($validated['currency']) : null,
@@ -149,7 +159,7 @@ class AdminSupplierInquiryController extends Controller
                 ]);
             }
 
-            $record->update([
+            $lockedInquiry->update([
                 'status' => 'responded',
                 'responded_at' => now(),
             ]);
