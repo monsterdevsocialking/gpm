@@ -64,7 +64,7 @@ class AdminQuoteRequestController extends Controller
             'under_review' => ['supplier_research', 'proposal_preparation', 'cancelled'],
             'supplier_research' => ['under_review', 'proposal_preparation', 'cancelled'],
             'proposal_preparation' => ['supplier_research', 'proposal_sent', 'cancelled'],
-            'proposal_sent' => ['proposal_preparation', 'closed', 'cancelled'],
+            'proposal_sent' => ['proposal_preparation', 'cancelled'],
             'closed' => [],
             'cancelled' => [],
         ];
