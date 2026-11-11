@@ -11,8 +11,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = trim((string)($_POST['email'] ?? ''));
         $password = (string)($_POST['password'] ?? '');
         $role = (string)($_POST['role'] ?? 'seller');
-        if ($name === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($password) < 10 || !in_array($role, ['admin', 'seller', 'stock_manager'], true)) {
-            throw new RuntimeException('Preenche os campos corretamente. A palavra-passe deve ter pelo menos 10 caracteres.');
+        if ($name === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($password) < 12 || !in_array($role, ['admin', 'seller', 'stock_manager'], true)) {
+            throw new RuntimeException('Preenche os campos corretamente. A palavra-passe deve ter pelo menos 12 caracteres.');
         }
         $stmt = $pdo->prepare('INSERT INTO users (name, email, password, role, active) VALUES (?, ?, ?, ?, 1)');
         $stmt->execute([$name, $email, password_hash($password, PASSWORD_DEFAULT), $role]);
@@ -32,7 +32,7 @@ layout_start('Utilizadores');
         <div class="form-grid">
             <div class="field"><label for="name">Nome</label><input id="name" name="name" required></div>
             <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" required></div>
-            <div class="field"><label for="password">Palavra-passe inicial (mínimo 10 caracteres)</label><input id="password" name="password" type="password" minlength="10" required></div>
+            <div class="field"><label for="password">Palavra-passe inicial (mínimo 12 caracteres)</label><input id="password" name="password" type="password" minlength="12" required></div>
             <div class="field"><label for="role">Perfil</label><select id="role" name="role"><option value="seller">Vendedor</option><option value="stock_manager">Gestor de stock</option><option value="admin">Administrador</option></select></div>
         </div>
         <button type="submit">Criar utilizador</button>
