@@ -117,7 +117,7 @@ php artisan test
 php artisan view:cache
 ```
 
-O workflow de CI também verifica a sintaxe PHP, executa as migrations numa base SQLite temporária e corre os testes automatizados.
+O workflow de CI instala e compila os assets Vite/Tailwind, verifica a sintaxe PHP, executa as migrations numa base SQLite temporária, valida as rotas e corre os testes automatizados.
 
 ## Documentação técnica
 
