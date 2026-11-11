@@ -18,6 +18,7 @@ use App\Http\Controllers\AdminStockController;
 use App\Http\Controllers\AdminSupplierInquiryController;
 use App\Http\Controllers\CustomerAuthController;
 use App\Http\Controllers\CustomerAccountController;
+use App\Http\Controllers\CustomerAddressController;
 use App\Http\Controllers\CustomerConversationController;
 use App\Http\Controllers\CustomerOrderController;
 use App\Http\Controllers\CustomerPortalController;
@@ -90,6 +91,11 @@ Route::middleware(['auth:customer', 'customer.active'])->prefix('conta')->name('
         ->name('requests.show');
     Route::get('/perfil', [CustomerAccountController::class, 'editProfile'])->name('profile.edit');
     Route::put('/perfil', [CustomerAccountController::class, 'updateProfile'])->name('profile.update');
+    Route::get('/moradas', [CustomerAddressController::class, 'index'])->name('addresses.index');
+    Route::post('/moradas', [CustomerAddressController::class, 'store'])->name('addresses.store');
+    Route::put('/moradas/{address}', [CustomerAddressController::class, 'update'])->whereNumber('address')->name('addresses.update');
+    Route::patch('/moradas/{address}/principal', [CustomerAddressController::class, 'makeDefault'])->whereNumber('address')->name('addresses.default');
+    Route::delete('/moradas/{address}', [CustomerAddressController::class, 'destroy'])->whereNumber('address')->name('addresses.destroy');
     Route::get('/seguranca/palavra-passe', [CustomerAccountController::class, 'editPassword'])->name('password.edit');
     Route::put('/seguranca/palavra-passe', [CustomerAccountController::class, 'updatePassword'])->name('password.update');
     Route::get('/propostas/{proposalVersion}', [CustomerProposalController::class, 'show'])
