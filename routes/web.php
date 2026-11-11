@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomerAuthController;
+use App\Http\Controllers\CustomerOrderController;
 use App\Http\Controllers\CustomerPortalController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketplaceController;
