@@ -43,7 +43,7 @@ class AdminQuoteRequestController extends Controller
     public function show(int $quoteRequest): View
     {
         $quoteRequest = QuoteRequest::query()
-            ->with(['customer', 'items.product', 'statusHistory.user', 'supplierInquiries.supplier', 'supplierInquiries.responses.items'])
+            ->with(['customer', 'items.product', 'statusHistory.user', 'supplierInquiries.supplier', 'supplierInquiries.responses.items', 'proposal.latestVersion.decisions.customer'])
             ->findOrFail($quoteRequest);
 
         $statuses = QuoteRequestStatus::cases();
