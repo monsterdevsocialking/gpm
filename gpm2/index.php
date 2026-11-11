@@ -311,6 +311,75 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
         .product-img {
             transition: transform 0.4s ease;
         }
+        /* Acabamento visual: identidade mais consistente e menos elementos genéricos */
+        :root {
+            --gpm-navy: #0d233f;
+            --gpm-orange: #f96b21;
+            --gpm-ink: #263548;
+            --gpm-muted: #687586;
+        }
+        ::selection { background: rgba(249,107,33,.2); color: var(--gpm-navy); }
+        a, button { -webkit-tap-highlight-color: transparent; }
+        a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
+            outline: 3px solid rgba(249,107,33,.45);
+            outline-offset: 3px;
+        }
+        header {
+            box-shadow: 0 5px 24px rgba(13,35,63,.035);
+            backdrop-filter: saturate(150%) blur(12px);
+        }
+        .section-title {
+            font-size: clamp(2rem, 4.2vw, 3.15rem);
+            line-height: 1.05;
+            letter-spacing: -.045em;
+        }
+        .watermark {
+            font-size: clamp(5rem, 13vw, 12rem);
+            letter-spacing: -.075em;
+            opacity: .78;
+        }
+        .service-card {
+            border-radius: 3px;
+            transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
+        }
+        .service-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 38px rgba(13,35,63,.09);
+        }
+        .product-card {
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .product-card:hover { transform: translateY(-6px); }
+        .sector-card img { transition: transform .55s cubic-bezier(.2,.7,.2,1); }
+        .sector-card:hover img { transform: scale(1.055); }
+        .sector-card > div:first-child { background: #f2f3f4; }
+        .accordion-item:last-child { border-bottom: 0; }
+        .accordion-header { gap: 1rem; }
+        .accordion-header span:first-child { line-height: 1.5; }
+        .logos-container { position: relative; }
+        .project-content-fade { will-change: opacity; }
+        #gpm-home-mobile-nav a { padding: .35rem 0; }
+        #gpm-home-mobile-nav a:focus-visible { outline-offset: 5px; }
+        @media (max-width: 767px) {
+            .watermark { top: 0; font-size: 5rem; }
+            .section-title { margin-bottom: 2.5rem; }
+            #inicio { padding-top: 3.5rem; padding-bottom: 4.5rem; }
+            #inicio h1 { font-size: clamp(2.7rem, 12vw, 4.4rem); }
+            #project-image { height: 270px; }
+            .team-image-overlay { opacity: 1; transform: none; }
+            .logos-container { padding-top: 1.4rem; padding-bottom: 1.4rem; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+                scroll-behavior: auto !important;
+            }
+            .reveal { opacity: 1; transform: none; }
+        }
     </style>
 </head>
 <body>
@@ -324,11 +393,7 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
         </div>
         <div class="flex items-center gap-4">
             <span class="hidden md:inline">Seg - Sáb: 08:00 - 18:00</span>
-            <div class="flex gap-3 border-l border-gray-600 pl-4">
-                <span aria-hidden="true"><i class="fa-brands fa-facebook-f"></i></span>
-                <span aria-hidden="true"><i class="fa-brands fa-instagram"></i></span>
-                <span aria-hidden="true"><i class="fa-brands fa-linkedin-in"></i></span>
-            </div>
+            <span class="hidden sm:inline border-l border-gray-600 pl-4 text-gray-300 tracking-wider">SUPRIMENTOS · PROCUREMENT · ANGOLA</span>
         </div>
     </div>
 </div>
@@ -384,11 +449,14 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
 
         <div class="max-w-site mx-auto px-6 relative z-10">
             <div class="max-w-2xl space-y-6 reveal pt-10">
-                <h1 class="text-5xl md:text-7xl font-black text-[#0d233f] leading-[1.1] uppercase tracking-tight">
-                    Fornecemos <br>soluções para <br>o seu negócio
+                <span class="inline-flex items-center gap-3 text-[10px] md:text-xs font-extrabold tracking-[.22em] text-[#f96b21] uppercase">
+                    <span class="w-8 h-[2px] bg-[#f96b21]"></span> Suprimentos · Procurement · Fornecimento B2B
+                </span>
+                <h1 class="text-5xl md:text-7xl font-black text-[#0d233f] leading-[1.04] uppercase tracking-tight">
+                    Fornecemos <br>soluções para <br><span class="text-[#f96b21]">o seu negócio.</span>
                 </h1>
-                <p class="text-gray-500 text-sm md:text-base max-w-md leading-relaxed">
-                    Atuamos como representante comercial e especialista em procurement, conectando a sua empresa às melhores soluções nacionais e importadas. Desde materiais e equipamentos até insumos industriais e fogões profissionais.
+                <p class="text-gray-600 text-sm md:text-base max-w-lg leading-relaxed">
+                    Ajudamos empresas a encontrar, comprar e receber o que precisam para trabalhar: materiais, equipamentos, produtos industriais e soluções profissionais, nacionais ou importadas.
                 </p>
                 <div class="flex flex-wrap gap-4 pt-4">
                     <!-- CTA Principal: Levar ao Marketplace -->
@@ -445,7 +513,7 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10 border-b border-gray-200 pb-2 gap-4 reveal">
                 <div>
                     <h2 class="text-3xl md:text-4xl font-black text-[#0d233f] uppercase tracking-tight">Produtos em Destaque</h2>
-                    <p class="text-gray-500 text-sm mt-1">Uma amostra do nosso catálogo.</p>
+                    <p class="text-gray-500 text-sm mt-1">Veja alguns dos artigos disponíveis no marketplace.</p>
                 </div>
                 <a href="cliente/index.php" class="bg-[#f96b21] hover:bg-[#e05812] text-white font-bold text-xs uppercase tracking-wider px-6 py-3 transition shadow-md flex items-center gap-2 whitespace-nowrap">
                     Ver Mais Produtos <i class="fa-solid fa-arrow-right"></i>
@@ -540,29 +608,25 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
         </div>
     </section>
 
-    <!-- Logos Strip Animada -->
-    <section class="bg-[#f96b21] py-10 overflow-hidden logos-container">
-        <div class="logos-track">
-            <div class="logos-half">
-                <div class="logo-item"><i class="fa-brands fa-aws text-white text-4xl opacity-90"></i></div>
-                <div class="logo-item"><i class="fa-brands fa-google text-white text-4xl opacity-90"></i></div>
-                <div class="logo-item"><i class="fa-brands fa-microsoft text-white text-4xl opacity-90"></i></div>
-                <div class="logo-item"><i class="fa-brands fa-salesforce text-white text-4xl opacity-90"></i></div>
-                <div class="logo-item"><i class="fa-brands fa-ibm text-white text-4xl opacity-90"></i></div>
-                <div class="logo-item"><i class="fa-brands fa-oracle text-white text-4xl opacity-90"></i></div>
-            </div>
-            <div class="logos-half">
-                <div class="logo-item"><i class="fa-brands fa-aws text-white text-4xl opacity-90"></i></div>
-                <div class="logo-item"><i class="fa-brands fa-google text-white text-4xl opacity-90"></i></div>
-                <div class="logo-item"><i class="fa-brands fa-microsoft text-white text-4xl opacity-90"></i></div>
-                <div class="logo-item"><i class="fa-brands fa-salesforce text-white text-4xl opacity-90"></i></div>
-                <div class="logo-item"><i class="fa-brands fa-ibm text-white text-4xl opacity-90"></i></div>
-                <div class="logo-item"><i class="fa-brands fa-oracle text-white text-4xl opacity-90"></i></div>
+    <!-- Faixa de áreas de atuação -->
+    <section class="bg-[#f96b21] py-7 overflow-hidden logos-container" aria-label="Áreas de atuação da GPM">
+        <div class="max-w-site mx-auto px-6">
+            <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-white">
+                <span class="text-[10px] font-extrabold tracking-[.2em] uppercase text-white/75">O que fornecemos</span>
+                <span class="font-bold text-sm md:text-base">Materiais de construção</span>
+                <span class="hidden md:block w-1 h-1 rounded-full bg-white/60"></span>
+                <span class="font-bold text-sm md:text-base">Equipamentos industriais</span>
+                <span class="hidden md:block w-1 h-1 rounded-full bg-white/60"></span>
+                <span class="font-bold text-sm md:text-base">Cozinhas profissionais</span>
+                <span class="hidden md:block w-1 h-1 rounded-full bg-white/60"></span>
+                <span class="font-bold text-sm md:text-base">Ferramentas e insumos</span>
+                <span class="hidden md:block w-1 h-1 rounded-full bg-white/60"></span>
+                <span class="font-bold text-sm md:text-base">Importação</span>
             </div>
         </div>
     </section>
 
-    <!-- Featured Solutions -->
+        <!-- Featured Solutions -->
     <section class="py-24 relative overflow-hidden bg-white" id="solucoes">
         <div class="watermark">DESTAQUES</div>
         <div class="max-w-site mx-auto px-6 relative z-10">
@@ -625,173 +689,131 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
         </div>
     </section>
 
-    <!-- Statistics (Contadores Animados) -->
+    <!-- Como trabalhamos -->
     <section class="py-20 bg-white">
-        <div class="max-w-site mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div class="reveal">
-                <span class="block text-5xl font-black text-[#f96b21] mb-2 counter" data-target="34">0</span>
-                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Projetos</span>
+        <div class="max-w-site mx-auto px-6">
+            <div class="max-w-2xl mb-12 reveal">
+                <span class="text-[10px] font-extrabold tracking-[.2em] text-[#f96b21] uppercase">Um processo simples</span>
+                <h2 class="text-3xl md:text-4xl font-black text-[#0d233f] mt-3">Da necessidade à entrega.</h2>
+                <p class="text-gray-500 text-sm mt-4 leading-relaxed">Cada pedido começa por perceber exactamente o que a sua empresa procura. Depois tratamos da pesquisa, da cotação e do fornecimento.</p>
             </div>
-            <div class="reveal" style="transition-delay: 100ms;">
-                <span class="block text-5xl font-black text-[#f96b21] mb-2 counter" data-target="97">0</span>
-                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Clientes Satisfeitos</span>
-            </div>
-            <div class="reveal" style="transition-delay: 200ms;">
-                <span class="block text-5xl font-black text-[#f96b21] mb-2 counter" data-target="15">0</span>
-                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Anos de Experiência</span>
-            </div>
-            <div class="reveal" style="transition-delay: 300ms;">
-                <span class="block text-5xl font-black text-[#f96b21] mb-2 counter" data-target="62">0</span>
-                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Parceiros</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials -->
-    <section class="py-24 bg-[#f8f9fa]">
-        <div class="max-w-site mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="bg-[#0d233f] p-10 text-white relative reveal">
-                <i class="fa-solid fa-quote-right absolute top-8 right-8 text-4xl text-white/10"></i>
-                <span class="text-[10px] font-bold text-[#f96b21] uppercase tracking-widest block mb-4">Diretor de Operações</span>
-                <h3 class="text-xl font-bold mb-4">A GPM Conecta simplificou as nossas aquisições.</h3>
-                <p class="text-sm text-gray-300 leading-relaxed mb-6 italic">
-                    "A expertise da equipa em procurement permitiu-nos otimizar custos e garantir prazos de entrega. Um parceiro essencial para o nosso negócio."
-                </p>
-                <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 bg-gray-500 rounded-full"></div>
-                    <div>
-                        <h4 class="text-sm font-bold">Nathan Marshall</h4>
-                        <span class="text-xs text-gray-400">Gestor de Compras</span>
-                    </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 border-t border-b border-gray-200">
+                <div class="py-7 pr-6 border-b lg:border-b-0 lg:border-r border-gray-200 reveal">
+                    <span class="text-3xl font-black text-[#f96b21]">01</span>
+                    <h3 class="font-bold text-[#0d233f] mt-4 mb-2">Pedido</h3>
+                    <p class="text-sm text-gray-500 leading-relaxed">Recebemos a lista, as quantidades e os detalhes do que procura.</p>
                 </div>
-            </div>
-
-            <div class="bg-white p-10 border border-gray-100 relative shadow-sm reveal" style="transition-delay: 150ms;">
-                <i class="fa-solid fa-quote-right absolute top-8 right-8 text-4xl text-gray-100"></i>
-                <span class="text-[10px] font-bold text-[#f96b21] uppercase tracking-widest block mb-4">Gestora de Projetos</span>
-                <h3 class="text-xl font-bold text-[#0d233f] mb-4">Equipamentos e materiais de alta qualidade.</h3>
-                <p class="text-sm text-gray-500 leading-relaxed mb-6 italic">
-                    "Desde a representação comercial até à entrega, o atendimento é impecável. Recomendo a GPM Conecta para qualquer empresa que precise de fornecimento."
-                </p>
-                <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 bg-gray-200 rounded-full"></div>
-                    <div>
-                        <h4 class="text-sm font-bold text-[#0d233f]">Emma Romero</h4>
-                        <span class="text-xs text-gray-400">Gestora de Projetos</span>
-                    </div>
+                <div class="py-7 px-0 sm:px-6 border-b lg:border-b-0 lg:border-r border-gray-200 reveal" style="transition-delay: 80ms;">
+                    <span class="text-3xl font-black text-[#f96b21]">02</span>
+                    <h3 class="font-bold text-[#0d233f] mt-4 mb-2">Pesquisa</h3>
+                    <p class="text-sm text-gray-500 leading-relaxed">Procuramos opções e fornecedores adequados ao pedido.</p>
+                </div>
+                <div class="py-7 px-0 sm:px-6 border-b lg:border-b-0 lg:border-r border-gray-200 reveal" style="transition-delay: 160ms;">
+                    <span class="text-3xl font-black text-[#f96b21]">03</span>
+                    <h3 class="font-bold text-[#0d233f] mt-4 mb-2">Cotação</h3>
+                    <p class="text-sm text-gray-500 leading-relaxed">Apresentamos as condições para análise e aprovação.</p>
+                </div>
+                <div class="py-7 pl-0 sm:pl-6 reveal" style="transition-delay: 240ms;">
+                    <span class="text-3xl font-black text-[#f96b21]">04</span>
+                    <h3 class="font-bold text-[#0d233f] mt-4 mb-2">Fornecimento</h3>
+                    <p class="text-sm text-gray-500 leading-relaxed">Acompanhamos o fornecimento até à entrega acordada.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Professionals (Com Hover Overlay) -->
-    <section class="py-24 relative overflow-hidden bg-white">
-        <div class="watermark">EQUIPA</div>
-        <div class="max-w-site mx-auto px-6 relative z-10">
-            <h2 class="section-title mb-12 reveal">Profissionais</h2>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Profissional 1 -->
-                <div class="team-card relative reveal">
-                    <div class="relative overflow-hidden h-[380px]">
-                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500" alt="Nathan Marshall">
-                        
-                        <!-- Overlay de Hover -->
-                        <div class="team-image-overlay absolute bottom-0 left-0 w-full bg-gradient-to-t from-[#0d233f] to-transparent p-6 text-white">
-                            <h4 class="font-bold text-lg">Nathan Marshall</h4>
-                            <p class="text-xs text-gray-300">Diretor de Engenharia</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Profissional 2 -->
-                <div class="team-card relative reveal" style="transition-delay: 100ms;">
-                    <div class="relative overflow-hidden h-[380px]">
-                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500" alt="Emma Romero">
-                        <div class="team-image-overlay absolute bottom-0 left-0 w-full bg-gradient-to-t from-[#0d233f] to-transparent p-6 text-white">
-                            <h4 class="font-bold text-lg">Emma Romero</h4>
-                            <p class="text-xs text-gray-300">Gestora de Projetos</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Profissional 3 -->
-                <div class="team-card relative reveal" style="transition-delay: 200ms;">
-                    <div class="relative overflow-hidden h-[380px]">
-                        <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500" alt="James Carter">
-                        <div class="team-image-overlay absolute bottom-0 left-0 w-full bg-gradient-to-t from-[#0d233f] to-transparent p-6 text-white">
-                            <h4 class="font-bold text-lg">James Carter</h4>
-                            <p class="text-xs text-gray-300">Representante Comercial</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Profissional 4 -->
-                <div class="team-card relative reveal" style="transition-delay: 300ms;">
-                    <div class="relative overflow-hidden h-[380px]">
-                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500" alt="Sofia Alves">
-                        <div class="team-image-overlay absolute bottom-0 left-0 w-full bg-gradient-to-t from-[#0d233f] to-transparent p-6 text-white">
-                            <h4 class="font-bold text-lg">Sofia Alves</h4>
-                            <p class="text-xs text-gray-300">Gestora de Procurement</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Circular Stats (Gráficos e Números Animados) -->
+        <!-- Pedidos empresariais -->
     <section class="py-20 bg-[#f8f9fa]">
-        <div class="max-w-site mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
-            <div class="flex flex-col items-center reveal">
-                <div class="relative w-32 h-32 flex items-center justify-center mb-4">
-                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                        <circle cx="50" cy="50" r="45" fill="none" stroke="#e5e7eb" stroke-width="6" />
-                        <circle cx="50" cy="50" r="45" fill="none" stroke="#f96b21" stroke-width="6" stroke-linecap="round"
-                                class="progress-circle" data-percent="36" style="stroke-dasharray: 283; stroke-dashoffset: 283;" />
-                    </svg>
-                    <div class="absolute flex items-baseline justify-center">
-                        <span class="text-2xl font-black text-[#0d233f] counter" data-target="36">0</span>
-                        <span class="text-xl font-black text-[#0d233f] ml-0.5">%</span>
-                    </div>
-                </div>
-                <span class="text-xs font-bold text-[#f96b21] uppercase tracking-widest mb-1">PROCUREMENT</span>
-                <p class="text-xs text-gray-500">Otimização de custos e prazos.</p>
+        <div class="max-w-site mx-auto px-6 grid grid-cols-1 lg:grid-cols-[.9fr_1.1fr] gap-10 items-center">
+            <div class="reveal">
+                <span class="text-[10px] font-extrabold tracking-[.2em] text-[#f96b21] uppercase">Atendimento a empresas</span>
+                <h2 class="text-3xl md:text-4xl font-black text-[#0d233f] mt-3 mb-5">Tem uma lista de compras?</h2>
+                <p class="text-gray-600 text-sm leading-relaxed">Envie-nos os produtos, as quantidades e, se possível, as especificações. A equipa poderá analisar o pedido e preparar uma proposta de fornecimento.</p>
+                <a href="#contactos" class="inline-flex items-center gap-3 mt-7 bg-[#0d233f] hover:bg-[#163154] text-white font-bold text-xs uppercase tracking-wider px-7 py-4 transition">
+                    Pedir uma cotação <i class="fa-solid fa-arrow-right"></i>
+                </a>
             </div>
-            <div class="flex flex-col items-center reveal" style="transition-delay: 100ms;">
-                <div class="relative w-32 h-32 flex items-center justify-center mb-4">
-                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                        <circle cx="50" cy="50" r="45" fill="none" stroke="#e5e7eb" stroke-width="6" />
-                        <circle cx="50" cy="50" r="45" fill="none" stroke="#f96b21" stroke-width="6" stroke-linecap="round"
-                                class="progress-circle" data-percent="75" style="stroke-dasharray: 283; stroke-dashoffset: 283;" />
-                    </svg>
-                    <div class="absolute flex items-baseline justify-center">
-                        <span class="text-2xl font-black text-[#0d233f] counter" data-target="75">0</span>
-                        <span class="text-xl font-black text-[#0d233f] ml-0.5">%</span>
-                    </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 reveal">
+                <div class="bg-white p-7 border border-gray-200">
+                    <i class="fa-solid fa-clipboard-list text-2xl text-[#f96b21] mb-5"></i>
+                    <h3 class="font-bold text-[#0d233f] mb-2">Pedidos pontuais</h3>
+                    <p class="text-sm text-gray-500 leading-relaxed">Um equipamento, uma ferramenta ou materiais para uma necessidade específica.</p>
                 </div>
-                <span class="text-xs font-bold text-[#f96b21] uppercase tracking-widest mb-1">CLIENTES</span>
-                <p class="text-xs text-gray-500">Satisfação e fidelização.</p>
-            </div>
-            <div class="flex flex-col items-center reveal" style="transition-delay: 200ms;">
-                <div class="relative w-32 h-32 flex items-center justify-center mb-4">
-                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                        <circle cx="50" cy="50" r="45" fill="none" stroke="#e5e7eb" stroke-width="6" />
-                        <circle cx="50" cy="50" r="45" fill="none" stroke="#f96b21" stroke-width="6" stroke-linecap="round"
-                                class="progress-circle" data-percent="68" style="stroke-dasharray: 283; stroke-dashoffset: 283;" />
-                    </svg>
-                    <div class="absolute flex items-baseline justify-center">
-                        <span class="text-2xl font-black text-[#0d233f] counter" data-target="68">0</span>
-                        <span class="text-xl font-black text-[#0d233f] ml-0.5">%</span>
-                    </div>
+                <div class="bg-[#0d233f] p-7 text-white sm:translate-y-8">
+                    <i class="fa-solid fa-boxes-stacked text-2xl text-[#f96b21] mb-5"></i>
+                    <h3 class="font-bold mb-2">Fornecimento regular</h3>
+                    <p class="text-sm text-gray-300 leading-relaxed">Materiais e produtos para apoiar as compras e operações da sua empresa.</p>
                 </div>
-                <span class="text-xs font-bold text-[#f96b21] uppercase tracking-widest mb-1">PROJETOS</span>
-                <p class="text-xs text-gray-500">Concluídos com sucesso.</p>
             </div>
         </div>
     </section>
 
-    <!-- FAQ Section (Antes do Contacto) -->
+        <!-- Setores e produtos -->
+    <section class="py-24 relative overflow-hidden bg-white">
+        <div class="watermark">SECTORES</div>
+        <div class="max-w-site mx-auto px-6 relative z-10">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-12 reveal">
+                <div>
+                    <span class="text-[10px] font-extrabold tracking-[.2em] text-[#f96b21] uppercase">Áreas de fornecimento</span>
+                    <h2 class="section-title mt-3">Diferentes necessidades.<br>Um só contacto.</h2>
+                </div>
+                <p class="text-sm text-gray-500 max-w-sm leading-relaxed">A GPM trabalha com pedidos de vários sectores. Se não encontrar o artigo no catálogo, pode solicitar uma cotação.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <article class="sector-card reveal">
+                    <div class="overflow-hidden h-56"><img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=700&auto=format&fit=crop" class="w-full h-full object-cover" loading="lazy" alt="Materiais para construção"></div>
+                    <div class="pt-5 flex items-center justify-between gap-3"><h3 class="font-bold text-[#0d233f]">Construção</h3><span class="text-[#f96b21]">01</span></div>
+                    <p class="text-xs text-gray-500 mt-2">Materiais, ferramentas e consumíveis para obras.</p>
+                </article>
+                <article class="sector-card reveal" style="transition-delay: 80ms;">
+                    <div class="overflow-hidden h-56"><img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=700&auto=format&fit=crop" class="w-full h-full object-cover" loading="lazy" alt="Equipamentos industriais"></div>
+                    <div class="pt-5 flex items-center justify-between gap-3"><h3 class="font-bold text-[#0d233f]">Indústria</h3><span class="text-[#f96b21]">02</span></div>
+                    <p class="text-xs text-gray-500 mt-2">Equipamentos e insumos para operações profissionais.</p>
+                </article>
+                <article class="sector-card reveal" style="transition-delay: 160ms;">
+                    <div class="overflow-hidden h-56"><img src="https://images.unsplash.com/photo-1556911220-bff31c812dba?q=80&w=700&auto=format&fit=crop" class="w-full h-full object-cover" loading="lazy" alt="Cozinha profissional"></div>
+                    <div class="pt-5 flex items-center justify-between gap-3"><h3 class="font-bold text-[#0d233f]">Restauração</h3><span class="text-[#f96b21]">03</span></div>
+                    <p class="text-xs text-gray-500 mt-2">Fogões industriais e equipamentos para cozinhas.</p>
+                </article>
+                <article class="sector-card reveal" style="transition-delay: 240ms;">
+                    <div class="overflow-hidden h-56"><img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=700&auto=format&fit=crop" class="w-full h-full object-cover" loading="lazy" alt="Armazenamento e logística"></div>
+                    <div class="pt-5 flex items-center justify-between gap-3"><h3 class="font-bold text-[#0d233f]">Logística</h3><span class="text-[#f96b21]">04</span></div>
+                    <p class="text-xs text-gray-500 mt-2">Artigos e equipamentos para armazenagem e transporte.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+        <!-- Diferenciais de atendimento -->
+    <section class="py-20 bg-[#0d233f] relative overflow-hidden">
+        <div class="absolute -right-24 -top-24 w-80 h-80 rounded-full border border-white/10"></div>
+        <div class="absolute -right-10 -top-10 w-52 h-52 rounded-full border border-white/10"></div>
+        <div class="max-w-site mx-auto px-6 relative z-10">
+            <div class="max-w-2xl mb-12 reveal">
+                <span class="text-[10px] font-extrabold tracking-[.2em] text-[#f96b21] uppercase">O nosso compromisso</span>
+                <h2 class="text-3xl md:text-4xl font-black text-white mt-3">Comprar bem começa com informação clara.</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="border-t border-white/20 pt-6 reveal">
+                    <i class="fa-solid fa-magnifying-glass text-[#f96b21] text-2xl mb-5"></i>
+                    <h3 class="font-bold text-white mb-2">Pesquisa adequada</h3>
+                    <p class="text-sm text-gray-300 leading-relaxed">Procuramos produtos e fornecedores de acordo com as especificações do pedido.</p>
+                </div>
+                <div class="border-t border-white/20 pt-6 reveal" style="transition-delay: 100ms;">
+                    <i class="fa-solid fa-file-invoice-dollar text-[#f96b21] text-2xl mb-5"></i>
+                    <h3 class="font-bold text-white mb-2">Condições transparentes</h3>
+                    <p class="text-sm text-gray-300 leading-relaxed">A cotação permite avaliar preços, características e condições antes de avançar.</p>
+                </div>
+                <div class="border-t border-white/20 pt-6 reveal" style="transition-delay: 200ms;">
+                    <i class="fa-solid fa-truck-fast text-[#f96b21] text-2xl mb-5"></i>
+                    <h3 class="font-bold text-white mb-2">Acompanhamento</h3>
+                    <p class="text-sm text-gray-300 leading-relaxed">Mantemos o contacto durante o processo de fornecimento e entrega.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- FAQ Section (Antes do Contacto) -->
     <section class="py-24 bg-white" id="faqs">
         <div class="max-w-site mx-auto px-6">
             <h2 class="text-3xl md:text-4xl font-black text-[#0d233f] text-center mb-12 reveal">Perguntas Frequentes</h2>
@@ -823,7 +845,7 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
                         <span class="accordion-icon text-[#f96b21] font-bold text-xl">+</span>
                     </button>
                     <div class="accordion-content text-sm text-gray-500">
-                        <p class="pb-5">Sim. Atuamos como representantes comerciais e facilitamos a importação de equipamentos e materiais específicos que não estejam disponíveis no mercado nacional, tratando de toda a logística.</p>
+                        <p class="pb-5">Sim. Podemos analisar pedidos de produtos importados e apresentar as opções de fornecimento e as condições disponíveis para cada caso.</p>
                     </div>
                 </div>
 
@@ -833,7 +855,7 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
                         <span class="accordion-icon text-[#f96b21] font-bold text-xl">+</span>
                     </button>
                     <div class="accordion-content text-sm text-gray-500">
-                        <p class="pb-5">Pode preencher o formulário de contacto abaixo, enviar-nos um e-mail ou contactar-nos através do WhatsApp. A nossa equipa responderá no prazo máximo de 24 horas úteis.</p>
+                        <p class="pb-5">Pode preencher o formulário de contacto abaixo, enviar-nos um e-mail ou contactar-nos através do WhatsApp. A nossa equipa analisará o pedido e entrará em contacto para dar seguimento à cotação.</p>
                     </div>
                 </div>
             </div>
@@ -873,8 +895,12 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
                                 <input id="email" name="email" type="email" maxlength="190" required placeholder="E-mail *" value="<?= e((string) ($_POST['email'] ?? '')) ?>" class="w-full text-sm border border-gray-300 focus:border-[#f96b21] focus:ring-[#f96b21] p-3 bg-white">
                             </div>
                         </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <input id="telefone" name="telefone" type="tel" maxlength="40" placeholder="Telefone / WhatsApp" value="<?= e((string) ($_POST['telefone'] ?? '')) ?>" class="w-full text-sm border border-gray-300 focus:border-[#f96b21] focus:ring-[#f96b21] p-3 bg-white">
+                            <input id="assunto" name="assunto" type="text" maxlength="180" placeholder="Assunto do pedido" value="<?= e((string) ($_POST['assunto'] ?? '')) ?>" class="w-full text-sm border border-gray-300 focus:border-[#f96b21] focus:ring-[#f96b21] p-3 bg-white">
+                        </div>
                         <div>
-                            <textarea id="mensagem" name="mensagem" maxlength="5000" required placeholder="Mensagem *" class="w-full text-sm border border-gray-300 focus:border-[#f96b21] focus:ring-[#f96b21] p-3 bg-white min-h-[150px]"><?= e((string) ($_POST['mensagem'] ?? '')) ?></textarea>
+                            <textarea id="mensagem" name="mensagem" maxlength="5000" required placeholder="Conte-nos o que precisa: produto, quantidade e especificações *" class="w-full text-sm border border-gray-300 focus:border-[#f96b21] focus:ring-[#f96b21] p-3 bg-white min-h-[150px]"><?= e((string) ($_POST['mensagem'] ?? '')) ?></textarea>
                         </div>
                         <button type="submit" class="bg-[#0d233f] hover:bg-[#163154] text-white font-bold text-xs uppercase tracking-wider px-8 py-4 transition w-full">
                             Enviar Mensagem
@@ -923,30 +949,11 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
                             </div>
                         </div>
 
-                        <!-- Redes Sociais -->
-                        <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 bg-[#f96b21]/10 text-[#f96b21] flex items-center justify-center rounded-full flex-shrink-0">
-                                <i class="fa-solid fa-share-nodes text-xl"></i>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-[#0d233f] text-lg mb-2">Redes Sociais</h3>
-                                <div class="flex gap-3">
-                                    <a href="#" class="w-10 h-10 bg-white border border-gray-200 flex items-center justify-center rounded text-gray-600 hover:text-[#f96b21] hover:border-[#f96b21] transition">
-                                        <i class="fa-brands fa-facebook-f"></i>
-                                    </a>
-                                    <a href="#" class="w-10 h-10 bg-white border border-gray-200 flex items-center justify-center rounded text-gray-600 hover:text-[#f96b21] hover:border-[#f96b21] transition">
-                                        <i class="fa-brands fa-instagram"></i>
-                                    </a>
-                                    <a href="#" class="w-10 h-10 bg-white border border-gray-200 flex items-center justify-center rounded text-gray-600 hover:text-[#f96b21] hover:border-[#f96b21] transition">
-                                        <i class="fa-brands fa-linkedin-in"></i>
-                                    </a>
-                                    <a href="#" class="w-10 h-10 bg-white border border-gray-200 flex items-center justify-center rounded text-gray-600 hover:text-[#f96b21] hover:border-[#f96b21] transition">
-                                        <i class="fa-brands fa-whatsapp"></i>
-                                    </a>
-                                </div>
-                            </div>
+                        <div class="border-t border-gray-200 pt-6">
+                            <p class="text-xs text-gray-500 leading-relaxed">Para pedidos de cotação, indique os produtos, quantidades e especificações no formulário. A equipa entrará em contacto através dos dados que fornecer.</p>
                         </div>
-                    </div>
+
+                        </div>
                 </div>
 
             </div>
