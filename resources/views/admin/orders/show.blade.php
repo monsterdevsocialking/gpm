@@ -29,7 +29,22 @@
                     @endif
                     <p class="text-[11px] text-gray-400 mt-3">As alterações ficam registadas no histórico. O acompanhamento não desconta stock nem inicia pagamentos.</p>
                 </div>
-                <div class="border-t border-gray-100 mt-6 pt-5"><h3 class="font-bold text-sm text-gpm-navy mb-3">Proformas</h3>@forelse($order->proformas->sortByDesc('id') as $proforma)<div class="flex justify-between items-center text-xs py-2"><span>{{ $proforma->proforma_number }} · {{ $proforma->status }}</span><span>{{ number_format((float)$proforma->total,2,',','.') }} Kz</span></div>@empty<p class="text-xs text-gray-400">Sem proformas.</p>@endforelse</div><p class="text-[11px] text-gray-400 mt-6">Esta vista é de consulta do histórico legado. As ações de confirmação, stock e faturação serão migradas depois de validar o novo fluxo comercial.</p></aside>
+                <div class="border-t border-gray-100 mt-6 pt-5">
+                    <h3 class="font-bold text-sm text-gpm-navy mb-3">Proformas emitidas</h3>
+                    @forelse($order->proformas->sortByDesc('id') as $proforma)
+                        <a href="{{ route('admin.proformas.show',$proforma) }}" class="flex justify-between items-center text-xs py-3 border-b border-gray-100 hover:text-gpm-orange"><span>{{ $proforma->proforma_number }} · {{ $proforma->status }}</span><strong>{{ number_format((float)$proforma->total,2,',','.') }} {{ $proforma->currency ?? $order->currency ?? 'AOA' }}</strong></a>
+                    @empty
+                        <p class="text-xs text-gray-400">Ainda não foram emitidas proformas.</p>
+                    @endforelse
+                    @if(in_array($order->status,['confirmed','preparing','shipped','completed'],true))
+                        <form method="post" action="{{ route('admin.orders.proformas.store',$order) }}" class="mt-5 border-t border-gray-100 pt-5" onsubmit="return confirm('Emitir uma proforma com os valores desta encomenda?');">@csrf
+                            <h4 class="text-xs font-bold text-gpm-navy mb-3">Emitir nova proforma</h4>
+                            <label class="block text-xs font-bold text-gpm-navy">Válida até (opcional)<input type="date" name="valid_until" min="{{ today()->toDateString() }}" class="w-full border-gray-200 text-sm mt-2"></label>
+                            <label class="block text-xs font-bold text-gpm-navy mt-3">Observações<textarea name="notes" rows="2" maxlength="5000" class="w-full border-gray-200 text-sm mt-2"></textarea></label>
+                            <button class="w-full bg-gpm-orange text-white text-xs font-bold uppercase py-3 mt-4">Emitir proforma</button>
+                        </form>
+                    @endif
+                </div></aside>
         </div>
     </main>
 </div>
