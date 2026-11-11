@@ -32,4 +32,9 @@ class QuoteRequest extends Model
     {
         return $this->hasMany(QuoteRequestStatusHistory::class);
     }
+
+    public function supplierInquiries(): HasMany
+    {
+        return $this->hasMany(SupplierInquiry::class);
+    }
 }
