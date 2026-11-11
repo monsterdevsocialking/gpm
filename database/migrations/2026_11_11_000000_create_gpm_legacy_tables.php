@@ -143,6 +143,7 @@ return new class extends Migration
                 $table->string('delivery_reference')->nullable();
                 $table->index(['customer_id', 'ordered_at']);
                 $table->index(['status', 'ordered_at']);
+                $table->index('responsible_user_id');
             });
         }
 
@@ -172,6 +173,7 @@ return new class extends Migration
                 $table->text('note')->nullable();
                 $table->timestamp('created_at')->useCurrent();
                 $table->index(['order_id', 'created_at']);
+                $table->index('user_id');
             });
         }
 
@@ -186,6 +188,7 @@ return new class extends Migration
                 $table->timestamps();
                 $table->index('customer_id');
                 $table->index('assigned_user_id');
+                $table->index('last_message_at');
             });
         }
 
