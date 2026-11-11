@@ -146,6 +146,13 @@ class QuoteCartController extends Controller
                 'submitted_at' => now(),
             ]);
 
+            $quoteRequest->statusHistory()->create([
+                'user_id' => null,
+                'old_status' => null,
+                'new_status' => 'submitted',
+                'note' => 'Pedido enviado pelo cliente.',
+            ]);
+
             foreach ($cart as $id => $line) {
                 $product = $products->get((int) $id);
 
