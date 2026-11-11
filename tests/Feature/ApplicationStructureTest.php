@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminActivityLogController;
 use App\Http\Controllers\AdminCompanyController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminCustomerController;
@@ -64,6 +65,7 @@ class ApplicationStructureTest extends TestCase
             CustomerProposalController::class,
             StaffAuthController::class,
             AdminDashboardController::class,
+            AdminActivityLogController::class,
             AdminCompanyController::class,
             AdminUserController::class,
             AdminCustomerController::class,
