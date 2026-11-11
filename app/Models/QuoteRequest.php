@@ -37,4 +37,9 @@ class QuoteRequest extends Model
     {
         return $this->hasMany(SupplierInquiry::class);
     }
+
+    public function proposal(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Proposal::class);
+    }
 }
