@@ -3,6 +3,7 @@
 namespace App\Services\Integrations;
 
 use App\Models\IntegrationEvent;
+use InvalidArgumentException;
 
 class IntegrationEventRecorder
 {
@@ -20,13 +21,25 @@ class IntegrationEventRecorder
         ?string $aggregateType = null,
         ?int $aggregateId = null,
     ): IntegrationEvent {
+        $provider = strtolower(trim($provider));
+        $eventId = trim($eventId);
+        $eventType = trim($eventType);
+
+        if ($provider === '' || $eventId === '' || $eventType === '') {
+            throw new InvalidArgumentException('Provider, event ID and event type are required.');
+        }
+
+        if (mb_strlen($provider) > 60 || mb_strlen($eventId) > 190 || mb_strlen($eventType) > 150) {
+            throw new InvalidArgumentException('Provider event identifiers exceed the supported length.');
+        }
+
         return IntegrationEvent::query()->firstOrCreate(
             [
-                'provider' => strtolower(trim($provider)),
-                'event_id' => trim($eventId),
+                'provider' => $provider,
+                'event_id' => $eventId,
             ],
             [
-                'event_type' => trim($eventType),
+                'event_type' => $eventType,
                 'aggregate_type' => $aggregateType,
                 'aggregate_id' => $aggregateId,
                 'status' => 'received',
