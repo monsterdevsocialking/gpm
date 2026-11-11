@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\CustomerAuthController;
 use App\Http\Controllers\CustomerOrderController;
 use App\Http\Controllers\CustomerPortalController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketplaceController;
 use App\Http\Controllers\ProductMediaController;
+use App\Http\Controllers\StaffAuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -40,4 +43,22 @@ Route::middleware(['auth:customer', 'customer.active'])->prefix('conta')->name('
     Route::get('/pedidos/{order}', [CustomerOrderController::class, 'show'])->whereNumber('order')->name('orders.show');
     Route::get('/proformas/{proforma}', [CustomerOrderController::class, 'showProforma'])->whereNumber('proforma')->name('proformas.show');
     Route::post('/sair', [CustomerAuthController::class, 'logout'])->name('logout');
+});
+
+Route::get('/admin/entrar', [StaffAuthController::class, 'showLogin'])->name('admin.login');
+Route::post('/admin/entrar', [StaffAuthController::class, 'login'])
+    ->middleware('throttle:10,1')
+    ->name('admin.login.store');
+
+Route::middleware(['auth:web', 'staff.active'])->prefix('admin')->name('admin.')->group(function (): void {
+    Route::post('/sair', [StaffAuthController::class, 'logout'])->name('logout');
+
+    Route::middleware('staff.role:admin,seller,stock_manager')->group(function (): void {
+        Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+    });
+
+    Route::middleware('staff.role:admin,seller')->prefix('pedidos')->name('orders.')->group(function (): void {
+        Route::get('/', [AdminOrderController::class, 'index'])->name('index');
+        Route::get('/{order}', [AdminOrderController::class, 'show'])->whereNumber('order')->name('show');
+    });
 });
