@@ -32,7 +32,8 @@ jobs:
         run: composer validate --no-check-publish
 
       - name: Run all migrations on a clean SQLite database
-        run: DB_CONNECTION=sqlite DB_DATABASE=:memory: php artisan migrate --force
+        run: |
+          DB_CONNECTION=sqlite DB_DATABASE=:memory: php artisan migrate --force
 
       - name: Validate registered routes
         run: php artisan route:list --except-vendor
