@@ -402,7 +402,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['gpm_ultimo_pedido_id'] = $pedidoId;
             unset($_SESSION['gpm_cart']);
 
-            flash('success', 'Pedido criado com sucesso.');
+            flash('Pedido criado com sucesso.');
 
             redirect('pedido.php?id=' . $pedidoId);
             exit;
