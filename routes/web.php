@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminQuoteRequestController;
+use App\Http\Controllers\AdminSupplierController;
 use App\Http\Controllers\CustomerAuthController;
 use App\Http\Controllers\CustomerOrderController;
 use App\Http\Controllers\CustomerPortalController;
@@ -77,20 +78,30 @@ Route::middleware(['auth:web', 'staff.active'])->prefix('admin')->name('admin.')
         Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
     });
 
-    Route::middleware('staff.role:admin,seller')->prefix('solicitacoes')->name('requests.')->group(function (): void {
-        Route::get('/', [AdminQuoteRequestController::class, 'index'])->name('index');
-        Route::get('/{quoteRequest}', [AdminQuoteRequestController::class, 'show'])
-            ->whereNumber('quoteRequest')
-            ->name('show');
-        Route::patch('/{quoteRequest}/estado', [AdminQuoteRequestController::class, 'updateStatus'])
-            ->whereNumber('quoteRequest')
-            ->name('status.update');
-    });
+    Route::middleware('staff.role:admin,seller')->group(function (): void {
+        Route::prefix('fornecedores')->name('suppliers.')->group(function (): void {
+            Route::get('/', [AdminSupplierController::class, 'index'])->name('index');
+            Route::post('/', [AdminSupplierController::class, 'store'])->name('store');
+            Route::put('/{supplier}', [AdminSupplierController::class, 'update'])
+                ->whereNumber('supplier')
+                ->name('update');
+        });
 
-    Route::middleware('staff.role:admin,seller')->prefix('pedidos')->name('orders.')->group(function (): void {
-        Route::get('/', [AdminOrderController::class, 'index'])->name('index');
-        Route::get('/{order}', [AdminOrderController::class, 'show'])
-            ->whereNumber('order')
-            ->name('show');
+        Route::prefix('solicitacoes')->name('requests.')->group(function (): void {
+            Route::get('/', [AdminQuoteRequestController::class, 'index'])->name('index');
+            Route::get('/{quoteRequest}', [AdminQuoteRequestController::class, 'show'])
+                ->whereNumber('quoteRequest')
+                ->name('show');
+            Route::patch('/{quoteRequest}/estado', [AdminQuoteRequestController::class, 'updateStatus'])
+                ->whereNumber('quoteRequest')
+                ->name('status.update');
+        });
+
+        Route::prefix('pedidos')->name('orders.')->group(function (): void {
+            Route::get('/', [AdminOrderController::class, 'index'])->name('index');
+            Route::get('/{order}', [AdminOrderController::class, 'show'])
+                ->whereNumber('order')
+                ->name('show');
+        });
     });
 });
