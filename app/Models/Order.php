@@ -14,7 +14,7 @@ class Order extends Model
         'customer_name', 'customer_nif', 'customer_phone', 'customer_email',
         'delivery_address', 'delivery_city', 'delivery_province',
         'delivery_street', 'delivery_neighborhood', 'delivery_reference',
-        'delivery_fee', 'discount', 'subtotal', 'total', 'payment_method',
+        'delivery_fee', 'discount', 'subtotal', 'total', 'currency', 'proposal_version_id', 'payment_method',
         'payment_status', 'status', 'notes', 'stock_deducted', 'ordered_at',
         'confirmed_at', 'completed_at', 'cancelled_at',
     ];
