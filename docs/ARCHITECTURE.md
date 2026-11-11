@@ -40,7 +40,13 @@ The staff area now includes protected catalog and category management, image upl
 stock movements, customer and supplier directories, supplier inquiry/response capture,
 supply-request review, versioned commercial proposals, internal user administration,
 company settings, contact inbox, order conversations and an activity audit log.
-Customer and staff conversations are scoped to the order/customer relationship.
+The customer portal includes profile/contact editing and a current-password-verified
+password change. Customer and staff conversations are scoped to the order/customer
+relationship.
+
+Both public and internal layouts load the shared GPM design system through Vite and
+Tailwind CSS 4. Brand colours, typography and the site container are defined as CSS
+theme tokens so production builds and local development use the same styling.
 Issued proposal versions are immutable, and customers can record one decision
 (accept, reject, or request revision) against that exact version. A replacement version
 can be prepared after a customer request/rejection or an unanswered proposal expires.
