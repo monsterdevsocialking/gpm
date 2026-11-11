@@ -121,10 +121,8 @@ class AdminSupplierInquiryController extends Controller
                 ]);
             }
 
-            $record->update([
-                'status' => 'responded',
-                'responded_at' => now(),
-            ]);
+            $record->update(['status' => 'responded']);
+            $record->forceFill(['responded_at' => now()])->save();
         });
 
         return redirect()->route('admin.supplier-inquiries.show', $record)
