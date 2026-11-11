@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminCatalogController;
 use App\Http\Controllers\AdminCategoryController;
 use App\Http\Controllers\AdminCompanyController;
+use App\Http\Controllers\AdminCustomerController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminProposalController;
@@ -109,6 +110,11 @@ Route::middleware(['auth:web', 'staff.active'])->prefix('admin')->name('admin.')
     });
 
     Route::middleware('staff.role:admin,seller')->group(function (): void {
+        Route::get('/clientes', [AdminCustomerController::class, 'index'])->name('customers.index');
+        Route::patch('/clientes/{customer}/estado', [AdminCustomerController::class, 'toggleActive'])
+            ->whereNumber('customer')
+            ->name('customers.toggle-active');
+
         Route::get('/catalogo', [AdminCatalogController::class, 'index'])->name('catalog.index');
         Route::post('/catalogo', [AdminCatalogController::class, 'store'])->name('catalog.store');
         Route::put('/catalogo/{product}', [AdminCatalogController::class, 'update'])
