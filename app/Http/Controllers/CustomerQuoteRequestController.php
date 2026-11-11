@@ -12,7 +12,7 @@ class CustomerQuoteRequestController extends Controller
     {
         $quoteRequest = QuoteRequest::query()
             ->where('customer_id', Auth::guard('customer')->id())
-            ->with('items')
+            ->with(['items', 'proposal.latestVersion'])
             ->findOrFail($quoteRequest);
 
         return view('customer.requests.show', compact('quoteRequest'));
