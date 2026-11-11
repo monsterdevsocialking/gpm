@@ -4,10 +4,14 @@ namespace Tests\Feature;
 
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminOrderController;
+use App\Http\Controllers\AdminProposalController;
 use App\Http\Controllers\AdminQuoteRequestController;
+use App\Http\Controllers\AdminSupplierController;
+use App\Http\Controllers\AdminSupplierInquiryController;
 use App\Http\Controllers\CustomerAuthController;
 use App\Http\Controllers\CustomerOrderController;
 use App\Http\Controllers\CustomerPortalController;
+use App\Http\Controllers\CustomerProposalController;
 use App\Http\Controllers\CustomerQuoteRequestController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketplaceController;
@@ -17,14 +21,22 @@ use App\Http\Controllers\StaffAuthController;
 use App\Http\Middleware\EnsureCustomerIsActive;
 use App\Http\Middleware\EnsureStaffIsActive;
 use App\Http\Middleware\EnsureStaffRole;
+use App\Models\Proposal;
+use App\Models\ProposalDecision;
+use App\Models\ProposalItem;
+use App\Models\ProposalVersion;
 use App\Models\QuoteRequest;
 use App\Models\QuoteRequestItem;
 use App\Models\QuoteRequestStatusHistory;
+use App\Models\Supplier;
+use App\Models\SupplierInquiry;
+use App\Models\SupplierResponse;
+use App\Models\SupplierResponseItem;
 use Tests\TestCase;
 
 class ApplicationStructureTest extends TestCase
 {
-    public function test_http_controllers_and_supply_request_models_are_autoloadable(): void
+    public function test_http_controllers_and_domain_models_are_autoloadable(): void
     {
         foreach ([
             HomeController::class,
@@ -35,16 +47,28 @@ class ApplicationStructureTest extends TestCase
             CustomerPortalController::class,
             CustomerOrderController::class,
             CustomerQuoteRequestController::class,
+            CustomerProposalController::class,
             StaffAuthController::class,
             AdminDashboardController::class,
             AdminOrderController::class,
             AdminQuoteRequestController::class,
+            AdminSupplierController::class,
+            AdminSupplierInquiryController::class,
+            AdminProposalController::class,
             EnsureCustomerIsActive::class,
             EnsureStaffIsActive::class,
             EnsureStaffRole::class,
             QuoteRequest::class,
             QuoteRequestItem::class,
             QuoteRequestStatusHistory::class,
+            Supplier::class,
+            SupplierInquiry::class,
+            SupplierResponse::class,
+            SupplierResponseItem::class,
+            Proposal::class,
+            ProposalVersion::class,
+            ProposalItem::class,
+            ProposalDecision::class,
         ] as $class) {
             $this->assertTrue(class_exists($class), "Expected {$class} to autoload.");
         }
