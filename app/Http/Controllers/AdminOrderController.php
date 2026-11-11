@@ -38,7 +38,7 @@ class AdminOrderController extends Controller
     public function show(int $order): View
     {
         $order = Order::query()
-            ->with(['customer', 'items', 'proformas', 'statusHistory.user', 'conversation.messages'])
+            ->with(['customer', 'items', 'proformas', 'statusHistory.user', 'conversation.messages', 'proposalVersion.proposal'])
             ->findOrFail($order);
 
         return view('admin.orders.show', compact('order'));
