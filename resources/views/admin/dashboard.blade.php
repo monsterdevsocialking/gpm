@@ -10,6 +10,7 @@
         <nav class="mt-10 space-y-2 text-sm">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 bg-white/10 px-4 py-3 text-white"><i class="fa-solid fa-chart-line w-4 text-gpm-orange"></i>Visão geral</a>
             @if(auth()->user()->role === 'admin')
+                <a href="{{ route('admin.activity.index') }}" class="flex items-center gap-3 px-4 py-3 text-white/70 hover:bg-white/10"><i class="fa-solid fa-clock-rotate-left w-4"></i>Registo de atividade</a>
                 <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 px-4 py-3 text-white/70 hover:bg-white/10"><i class="fa-solid fa-user-shield w-4"></i>Utilizadores</a>
                 <a href="{{ route('admin.company.edit') }}" class="flex items-center gap-3 px-4 py-3 text-white/70 hover:bg-white/10"><i class="fa-solid fa-building w-4"></i>Dados da empresa</a>
             @endif
