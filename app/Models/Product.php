@@ -36,6 +36,11 @@ class Product extends Model
         return $this->hasMany(ProductImage::class)->orderBy('sort_order');
     }
 
+    public function quoteRequestItems(): HasMany
+    {
+        return $this->hasMany(QuoteRequestItem::class);
+    }
+
     public function stockMovements(): HasMany
     {
         return $this->hasMany(StockMovement::class);
