@@ -24,7 +24,16 @@
             <div class="text-2xl font-black text-gpm-navy mt-7">{{ number_format((float)$product->price, 2, ',', '.') }} Kz</div>
             <p class="text-xs text-gray-500 mt-2">Preço indicativo. Confirme disponibilidade, condições e prazo com a equipa GPM.</p>
             <div class="border-t border-b border-gray-100 py-5 my-7"><h2 class="text-xs font-black uppercase text-gpm-navy mb-3">Descrição</h2><div class="text-sm text-gray-600 leading-7 whitespace-pre-line">{{ $product->description ?: 'Consulte a equipa GPM para obter mais informações sobre este produto.' }}</div></div>
-            <div class="flex flex-wrap gap-3"><a href="{{ route('home') }}#contactos" class="bg-gpm-orange hover:bg-orange-700 text-white font-bold text-xs uppercase tracking-wider px-7 py-4 transition"><i class="fa-solid fa-envelope mr-2"></i>Solicitar informações</a><a href="{{ route('marketplace.index') }}" class="border border-gpm-navy text-gpm-navy font-bold text-xs uppercase tracking-wider px-7 py-4 hover:bg-gpm-navy hover:text-white transition">Continuar a explorar</a></div>
+            <form method="post" action="{{ route('cart.items.store', $product) }}" class="bg-gpm-soft border border-gray-100 p-5 mt-7">
+                @csrf
+                <h2 class="font-black text-sm text-gpm-navy">Adicionar ao pedido de fornecimento</h2>
+                <div class="grid sm:grid-cols-[130px_1fr] gap-3 mt-4">
+                    <label class="text-[10px] font-bold uppercase text-gray-500">Quantidade<input type="number" name="quantity" min="0.001" step="0.001" value="1" required class="w-full border-gray-200 text-sm mt-1"></label>
+                    <label class="text-[10px] font-bold uppercase text-gray-500">Especificações / observações<input name="notes" maxlength="1000" placeholder="Marca, modelo, medidas, requisitos..." class="w-full border-gray-200 text-sm mt-1"></label>
+                </div>
+                <button type="submit" class="bg-gpm-orange hover:bg-orange-700 text-white font-bold text-xs uppercase tracking-wider px-7 py-4 mt-4 transition"><i class="fa-solid fa-plus mr-2"></i>Adicionar ao pedido</button>
+            </form>
+            <div class="flex flex-wrap gap-3 mt-4"><a href="{{ route('cart.index') }}" class="border border-gpm-navy text-gpm-navy font-bold text-xs uppercase tracking-wider px-7 py-4 hover:bg-gpm-navy hover:text-white transition">Ver pedido</a><a href="{{ route('home') }}#contactos" class="text-gpm-orange font-bold text-xs uppercase px-3 py-4">Falar com a GPM</a></div>
         </section>
     </div>
 </main>
