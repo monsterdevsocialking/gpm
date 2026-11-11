@@ -7,7 +7,7 @@
 <header class="sticky top-0 z-40 bg-white border-b border-gray-100">
     <div class="max-w-site mx-auto px-6 h-[76px] flex items-center justify-between">
         <a href="{{ route('home') }}" class="font-black text-2xl tracking-tighter text-gpm-navy">GPM<span class="text-gpm-orange">.</span></a>
-        <nav class="flex items-center gap-5 text-xs font-bold uppercase text-gpm-navy"><a href="{{ route('home') }}" class="hover:text-gpm-orange">Início</a><a href="{{ route('marketplace.index') }}" class="text-gpm-orange">Marketplace</a></nav>
+        <nav class="flex items-center gap-5 text-xs font-bold uppercase text-gpm-navy"><a href="{{ route('home') }}" class="hover:text-gpm-orange">Início</a><a href="{{ route('marketplace.index') }}" class="text-gpm-orange">Marketplace</a><a href="{{ route('cart.index') }}" class="hover:text-gpm-orange"><i class="fa-solid fa-clipboard-list mr-1"></i>Pedido</a></nav>
     </div>
 </header>
 <section class="bg-gpm-navy text-white py-12 md:py-16">
