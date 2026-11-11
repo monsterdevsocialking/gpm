@@ -36,7 +36,8 @@ try {
 
 $partesLocalizacao = array_values(array_filter([$empresa['endereco'], $empresa['cidade'], $empresa['provincia']]));
 $localizacaoEmpresa = $partesLocalizacao ? implode(', ', array_merge($partesLocalizacao, ['Angola'])) : '';
-$urlMapaEmpresa = $localizacaoEmpresa !== '' ? 'https://maps.google.com/maps?q=' . rawurlencode($localizacaoEmpresa) . '&t=&z=15&ie=UTF8&iwloc=&output=embed' : '';
+$consultaMapaEmpresa = $localizacaoEmpresa !== '' ? $localizacaoEmpresa : 'Angola';
+$urlMapaEmpresa = 'https://maps.google.com/maps?q=' . rawurlencode($consultaMapaEmpresa) . '&t=&z=6&ie=UTF8&iwloc=&output=embed';
 
 $produtos = [];
 $erroContacto = '';
@@ -226,29 +227,38 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* --- ANIMAÇÃO INFINITA DOS LOGOS --- */
-        @keyframes scroll-logos {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+        /* Faixa de marcas: movimento contínuo, sem saltos */
+        @keyframes gpm-brand-scroll {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
         }
-        .logos-track {
+        .brand-marquee-viewport { overflow: hidden; width: 100%; }
+        .brand-marquee-track {
             display: flex;
-            width: 200%;
-            animation: scroll-logos 30s linear infinite;
+            width: max-content;
+            animation: gpm-brand-scroll 42s linear infinite;
+            will-change: transform;
         }
-        .logos-container:hover .logos-track {
-            animation-play-state: paused;
-        }
-        .logos-half {
+        .brand-marquee-group {
             display: flex;
-            width: 50%;
-        }
-        .logo-item {
-            flex: 1;
-            display: flex;
-            justify-content: center;
+            flex: 0 0 auto;
             align-items: center;
+            gap: clamp(2.5rem, 5vw, 5rem);
+            padding: 0 clamp(1.25rem, 3vw, 3rem);
         }
+        .brand-name {
+            flex: 0 0 auto;
+            color: rgba(255,255,255,.88);
+            font-size: clamp(1rem, 1.8vw, 1.45rem);
+            font-weight: 900;
+            letter-spacing: -.045em;
+            white-space: nowrap;
+            transition: color .2s ease, transform .2s ease;
+        }
+        .brand-name:nth-child(even) { color: #f96b21; }
+        .brand-name:hover { color: #fff; transform: translateY(-3px); }
+        .brand-marquee:hover .brand-marquee-track,
+        .brand-marquee-viewport:focus-within .brand-marquee-track { animation-play-state: paused; }
 
         /* --- GRÁFICOS CIRCULARES ANIMADOS --- */
         .progress-circle {
@@ -370,7 +380,12 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
             .team-image-overlay { opacity: 1; transform: none; }
             .logos-container { padding-top: 1.4rem; padding-bottom: 1.4rem; }
         }
+        @media (max-width: 767px) {
+            .brand-marquee { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+            .brand-marquee-group { gap: 2.25rem; }
+        }
         @media (prefers-reduced-motion: reduce) {
+            .brand-marquee-track { animation: none; }
             html { scroll-behavior: auto; }
             *, *::before, *::after {
                 animation-duration: .01ms !important;
@@ -441,7 +456,7 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
     <section class="relative bg-white pt-20 pb-32 overflow-hidden" id="inicio">
         <div class="absolute top-0 right-0 w-3/4 h-full bg-gray-50 z-0 hidden md:block" style="clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);"></div>
         <div class="absolute right-0 top-0 w-1/2 h-full z-0 hidden lg:block">
-             <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1200&auto=format&fit=crop" 
+             <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=1400&auto=format&fit=crop" 
                   class="w-full h-full object-cover shadow-2xl" 
                   style="clip-path: polygon(25% 0, 100% 0, 100% 100%, 0% 100%);" 
                   alt="Fornecimento e Logística">
@@ -608,22 +623,48 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
         </div>
     </section>
 
-    <!-- Faixa de áreas de atuação -->
-    <section class="bg-[#f96b21] py-7 overflow-hidden logos-container" aria-label="Áreas de atuação da GPM">
-        <div class="max-w-site mx-auto px-6">
-            <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-white">
-                <span class="text-[10px] font-extrabold tracking-[.2em] uppercase text-white/75">O que fornecemos</span>
-                <span class="font-bold text-sm md:text-base">Materiais de construção</span>
-                <span class="hidden md:block w-1 h-1 rounded-full bg-white/60"></span>
-                <span class="font-bold text-sm md:text-base">Equipamentos industriais</span>
-                <span class="hidden md:block w-1 h-1 rounded-full bg-white/60"></span>
-                <span class="font-bold text-sm md:text-base">Cozinhas profissionais</span>
-                <span class="hidden md:block w-1 h-1 rounded-full bg-white/60"></span>
-                <span class="font-bold text-sm md:text-base">Ferramentas e insumos</span>
-                <span class="hidden md:block w-1 h-1 rounded-full bg-white/60"></span>
-                <span class="font-bold text-sm md:text-base">Importação</span>
+    <!-- Marcas e fabricantes de referência: faixa contínua -->
+    <section class="brand-marquee bg-[#0d233f] py-8 overflow-hidden" aria-label="Marcas de referência no mercado">
+        <div class="max-w-site mx-auto px-6 mb-5 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
+            <div>
+                <span class="text-[10px] font-extrabold tracking-[.22em] uppercase text-[#f96b21]">Universo de fornecimento</span>
+                <h2 class="text-white text-lg md:text-xl font-extrabold mt-1">Marcas e fabricantes de referência</h2>
+            </div>
+            <p class="text-white/55 text-[11px]">Disponibilidade e fornecimento sob consulta.</p>
+        </div>
+        <div class="brand-marquee-viewport" tabindex="0" aria-label="Faixa de marcas em movimento">
+            <div class="brand-marquee-track">
+                <div class="brand-marquee-group">
+                    <span class="brand-name">BOSCH</span>
+                    <span class="brand-name">Makita</span>
+                    <span class="brand-name">CATERPILLAR</span>
+                    <span class="brand-name">SIEMENS</span>
+                    <span class="brand-name">3M</span>
+                    <span class="brand-name">Schneider Electric</span>
+                    <span class="brand-name">SAMSUNG</span>
+                    <span class="brand-name">LG</span>
+                    <span class="brand-name">HONEYWELL</span>
+                    <span class="brand-name">Kärcher</span>
+                    <span class="brand-name">Milwaukee</span>
+                    <span class="brand-name">STANLEY</span>
+                </div>
+                <div class="brand-marquee-group" aria-hidden="true">
+                    <span class="brand-name">BOSCH</span>
+                    <span class="brand-name">Makita</span>
+                    <span class="brand-name">CATERPILLAR</span>
+                    <span class="brand-name">SIEMENS</span>
+                    <span class="brand-name">3M</span>
+                    <span class="brand-name">Schneider Electric</span>
+                    <span class="brand-name">SAMSUNG</span>
+                    <span class="brand-name">LG</span>
+                    <span class="brand-name">HONEYWELL</span>
+                    <span class="brand-name">Kärcher</span>
+                    <span class="brand-name">Milwaukee</span>
+                    <span class="brand-name">STANLEY</span>
+                </div>
             </div>
         </div>
+        <p class="max-w-site mx-auto px-6 mt-4 text-[10px] text-white/40">Marcas apresentadas como referências de fabricantes do mercado; não representam necessariamente parcerias ou autorizações comerciais.</p>
     </section>
 
         <!-- Featured Solutions -->
@@ -634,7 +675,7 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="md:col-span-2 relative group reveal overflow-hidden h-[400px]">
-                    <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Equipamentos">
+                    <img src="https://images.unsplash.com/photo-1581092334651-ddf26d9a09d0?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Equipamentos">
                     <div class="absolute inset-0 bg-[#0d233f]/80 flex flex-col justify-end p-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <h3 class="text-2xl font-bold text-white mb-2">Equipamentos Especializados</h3>
                         <p class="text-gray-300 text-sm">As melhores marcas para o seu negócio.</p>
@@ -662,7 +703,7 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
                 </div>
 
                 <div class="relative group reveal h-[250px]" style="transition-delay: 400ms;">
-                    <img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover" alt="Estruturas">
+                    <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=900&auto=format&fit=crop" class="w-full h-full object-cover" alt="Estruturas">
                 </div>
             </div>
         </div>
@@ -672,7 +713,7 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
     <section class="relative py-24 bg-[#f96b21] overflow-hidden">
         <div class="max-w-site mx-auto px-6 flex flex-col md:flex-row items-center relative z-10">
             <div class="md:w-1/2 mb-10 md:mb-0 reveal">
-                <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=800&auto=format&fit=crop" class="w-full shadow-2xl" alt="Equipa GPM">
+                <img src="https://images.unsplash.com/photo-1494412519320-aa613dfb7738?q=80&w=1000&auto=format&fit=crop" class="w-full shadow-2xl" alt="Equipa GPM">
             </div>
             <div class="md:w-1/2 md:pl-16 text-white reveal" style="transition-delay: 150ms;">
                 <span class="text-xs font-bold tracking-widest uppercase mb-4 block text-white/80">Explore as Funcionalidades</span>
@@ -960,20 +1001,37 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
         </div>
     </section>
 
-    <!-- Localização (Mapa em Largura Total Abaixo do Contacto) -->
-    <?php if ($urlMapaEmpresa !== ''): ?>
-    <section class="w-full h-[400px] relative bg-gray-200">
-        <iframe
-            src="<?= e($urlMapaEmpresa) ?>"
-            width="100%"
-            height="100%"
-            style="border:0;"
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-            title="Localização da <?= e($empresa['nome']) ?>">
-        </iframe>
+    <!-- Google Maps: localização configurável da empresa -->
+    <section class="bg-white py-16" id="mapa">
+        <div class="max-w-site mx-auto px-6">
+            <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-5 mb-7">
+                <div>
+                    <span class="text-[10px] font-extrabold tracking-[.22em] uppercase text-[#f96b21]">Como nos encontrar</span>
+                    <h2 class="text-3xl md:text-4xl font-black text-[#0d233f] mt-2">A nossa localização</h2>
+                    <p class="text-sm text-gray-500 mt-2 max-w-xl">
+                        <?= $localizacaoEmpresa !== '' ? e($localizacaoEmpresa) : 'Angola — a morada exacta da empresa será apresentada aqui assim que for configurada nos dados da empresa.' ?>
+                    </p>
+                </div>
+                <a href="https://www.google.com/maps/search/?api=1&query=<?= rawurlencode($consultaMapaEmpresa) ?>"
+                   target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center justify-center gap-2 bg-[#0d233f] hover:bg-[#163154] text-white text-xs font-bold uppercase tracking-wider px-6 py-4 transition">
+                    <i class="fa-solid fa-map-location-dot"></i> Abrir no Google Maps
+                </a>
+            </div>
+            <div class="h-[320px] md:h-[430px] overflow-hidden rounded-sm border border-gray-200 shadow-lg bg-gray-100">
+                <iframe
+                    src="<?= e($urlMapaEmpresa) ?>"
+                    width="100%"
+                    height="100%"
+                    style="border:0;"
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"
+                    allowfullscreen
+                    title="Mapa do Google Maps — <?= e($empresa['nome']) ?>">
+                </iframe>
+            </div>
+        </div>
     </section>
-    <?php endif; ?>
 
 </main>
 
@@ -1102,7 +1160,7 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
                 sector: 'SETOR: INDÚSTRIA E RESTAURAÇÃO',
                 title: 'Suprimentos, Insumos e Equipamentos',
                 description: 'Atuamos como representante comercial e especialista em procurement, conectando a sua empresa às melhores soluções. Desde insumos industriais até fogões profissionais.',
-                image: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=1000&auto=format&fit=crop'
+                image: 'https://images.unsplash.com/photo-1581092334651-ddf26d9a09d0?q=80&w=1200&auto=format&fit=crop'
             },
             {
                 sector: 'SETOR: ENGENHARIA E EMPRESAS',
@@ -1133,15 +1191,33 @@ $seoDescription = 'GPM Conecta: procurement, representação comercial, fornecim
             }, 300);
         }
 
-        if (prevBtn && nextBtn) {
-            nextBtn.addEventListener('click', () => {
+        if (prevBtn && nextBtn && displayContainer && sectorEl && titleEl && descEl && imgEl) {
+            const showNextProject = () => {
                 currentProject = (currentProject + 1) % projectsData.length;
                 updateProject(currentProject);
-            });
-            prevBtn.addEventListener('click', () => {
+            };
+            const showPreviousProject = () => {
                 currentProject = (currentProject - 1 + projectsData.length) % projectsData.length;
                 updateProject(currentProject);
-            });
+            };
+
+            nextBtn.addEventListener('click', showNextProject);
+            prevBtn.addEventListener('click', showPreviousProject);
+
+            // Avanço automático; pausa quando o visitante interage com o slider.
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                let projectTimer = window.setInterval(showNextProject, 6500);
+                displayContainer.addEventListener('mouseenter', () => window.clearInterval(projectTimer));
+                displayContainer.addEventListener('mouseleave', () => {
+                    window.clearInterval(projectTimer);
+                    projectTimer = window.setInterval(showNextProject, 6500);
+                });
+                displayContainer.addEventListener('focusin', () => window.clearInterval(projectTimer));
+                displayContainer.addEventListener('focusout', () => {
+                    window.clearInterval(projectTimer);
+                    projectTimer = window.setInterval(showNextProject, 6500);
+                });
+            }
         }
 
         const initialProject = projectsData[0];
