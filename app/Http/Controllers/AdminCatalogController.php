@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
@@ -100,6 +101,9 @@ class AdminCatalogController extends Controller
             throw $exception;
         }
 
+        $created = Product::query()->where('slug', $slug)->firstOrFail();
+        $this->logAction($request, 'product_created', $created->id, 'Produto criado: '.$created->name.'.');
+
         return redirect()->route('admin.catalog.index')
             ->with('success', 'Produto criado com sucesso.');
     }
@@ -147,6 +151,8 @@ class AdminCatalogController extends Controller
             $this->deleteStoredFile($oldMainImage);
         }
 
+        $this->logAction($request, 'product_updated', $record->id, 'Dados do produto atualizados: '.$record->name.'.');
+
         return redirect()->route('admin.catalog.index')
             ->with('success', 'Produto atualizado. O stock foi preservado; altere-o no módulo de stock.');
     }
@@ -163,12 +169,16 @@ class AdminCatalogController extends Controller
 
         if ($hasHistory) {
             $record->update(['active' => false]);
+            $this->logAction(request(), 'product_deactivated', $record->id, 'Produto desativado para preservar histórico: '.$record->name.'.');
 
             return redirect()->route('admin.catalog.index')
                 ->with('success', 'O produto tem histórico comercial ou de stock e foi desativado para preservar os registos.');
         }
 
+        $recordId = $record->id;
+        $recordName = $record->name;
         $record->delete();
+        $this->logAction(request(), 'product_deleted', $recordId, 'Produto eliminado: '.$recordName.'.');
 
         $this->deleteStoredFile($mainImage);
         foreach ($extraImages as $imagePath) {
@@ -186,6 +196,7 @@ class AdminCatalogController extends Controller
         $path = $imageRecord->image_path;
         $imageRecord->delete();
         $this->deleteStoredFile($path);
+        $this->logAction(request(), 'product_image_removed', $record->id, 'Imagem adicional removida do produto '.$record->name.'.');
 
         return redirect()->route('admin.catalog.index', ['edit' => $record->id])
             ->with('success', 'Imagem adicional removida.');
@@ -273,6 +284,18 @@ class AdminCatalogController extends Controller
         foreach ($files['extra'] ?? [] as $path) {
             $this->deleteStoredFile($path);
         }
+    }
+
+    private function logAction(Request $request, string $action, int $entityId, string $description): void
+    {
+        ActivityLog::query()->create([
+            'user_id' => Auth::guard('web')->id(),
+            'action' => $action,
+            'entity_type' => 'product',
+            'entity_id' => $entityId,
+            'description' => $description,
+            'ip_address' => $request->ip(),
+        ]);
     }
 
     private function deleteStoredFile(?string $path): void
