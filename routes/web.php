@@ -3,6 +3,8 @@
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminCatalogController;
 use App\Http\Controllers\AdminCategoryController;
+use App\Http\Controllers\AdminCompanyController;
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminProposalController;
 use App\Http\Controllers\AdminQuoteRequestController;
@@ -85,6 +87,16 @@ Route::post('/admin/entrar', [StaffAuthController::class, 'login'])
     ->name('admin.login.store');
 
 Route::middleware(['auth:web', 'staff.active'])->prefix('admin')->name('admin.')->group(function (): void {
+    Route::middleware('staff.role:admin')->group(function (): void {
+        Route::get('/utilizadores', [AdminUserController::class, 'index'])->name('users.index');
+        Route::post('/utilizadores', [AdminUserController::class, 'store'])->name('users.store');
+        Route::patch('/utilizadores/{user}/estado', [AdminUserController::class, 'toggleActive'])
+            ->whereNumber('user')
+            ->name('users.toggle-active');
+        Route::get('/empresa', [AdminCompanyController::class, 'edit'])->name('company.edit');
+        Route::put('/empresa', [AdminCompanyController::class, 'update'])->name('company.update');
+    });
+
     Route::post('/sair', [StaffAuthController::class, 'logout'])->name('logout');
 
     Route::middleware('staff.role:admin,seller,stock_manager')->group(function (): void {
