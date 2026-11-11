@@ -15,6 +15,7 @@
         <div class="grid lg:grid-cols-[1fr_330px] gap-7 items-start mt-8">
             <form method="post" action="{{ route('cart.update') }}" class="bg-white border border-gray-100">
                 @csrf
+                @method('PATCH')
                 <div class="p-5 border-b border-gray-100"><h2 class="font-black text-gpm-navy">Artigos selecionados ({{ $items->count() }})</h2></div>
                 <div class="divide-y divide-gray-100">
                     @foreach($items as $line)
