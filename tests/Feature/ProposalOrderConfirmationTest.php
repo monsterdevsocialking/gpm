@@ -199,11 +199,11 @@ class ProposalOrderConfirmationTest extends TestCase
         $version = ProposalVersion::query()->create([
             'proposal_id' => $proposal->id,
             'version_number' => 1,
-            'status' => 'sent',
+            'status' => 'draft',
             'currency' => 'AOA',
             'subtotal' => 1000,
             'valid_until' => today()->addDays(7),
-            'issued_at' => now(),
+            'issued_at' => null,
             'created_by' => $staff->id,
         ]);
 
@@ -216,6 +216,7 @@ class ProposalOrderConfirmationTest extends TestCase
             'unit_price' => 1000,
             'line_total' => 1000,
         ]);
+        $version->update(['status' => 'sent', 'issued_at' => now()]);
 
         $this->actingAs($customer, 'customer')
             ->post(route('customer.proposals.decide', $version), [
