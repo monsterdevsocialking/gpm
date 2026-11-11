@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminCategoryController;
 use App\Http\Controllers\AdminCompanyController;
 use App\Http\Controllers\AdminCustomerController;
 use App\Http\Controllers\AdminContactController;
+use App\Http\Controllers\AdminConversationController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminProposalController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\AdminSupplierController;
 use App\Http\Controllers\AdminStockController;
 use App\Http\Controllers\AdminSupplierInquiryController;
 use App\Http\Controllers\CustomerAuthController;
+use App\Http\Controllers\CustomerConversationController;
 use App\Http\Controllers\CustomerOrderController;
 use App\Http\Controllers\CustomerPortalController;
 use App\Http\Controllers\CustomerProposalController;
@@ -67,6 +69,16 @@ Route::middleware(['auth:customer', 'customer.active'])->prefix('conta')->name('
     Route::get('/pedidos/{order}', [CustomerOrderController::class, 'show'])
         ->whereNumber('order')
         ->name('orders.show');
+    Route::get('/pedidos/{order}/conversa', [CustomerConversationController::class, 'openForOrder'])
+        ->whereNumber('order')
+        ->name('orders.conversation');
+    Route::get('/conversas/{conversation}', [CustomerConversationController::class, 'show'])
+        ->whereNumber('conversation')
+        ->name('conversations.show');
+    Route::post('/conversas/{conversation}/mensagens', [CustomerConversationController::class, 'send'])
+        ->whereNumber('conversation')
+        ->middleware('throttle:10,1')
+        ->name('conversations.messages.store');
     Route::get('/proformas/{proforma}', [CustomerOrderController::class, 'showProforma'])
         ->whereNumber('proforma')
         ->name('proformas.show');
@@ -112,6 +124,17 @@ Route::middleware(['auth:web', 'staff.active'])->prefix('admin')->name('admin.')
 
     Route::middleware('staff.role:admin,seller')->group(function (): void {
         Route::get('/contactos', [AdminContactController::class, 'index'])->name('contacts.index');
+        Route::get('/conversas', [AdminConversationController::class, 'index'])->name('conversations.index');
+        Route::get('/conversas/{conversation}', [AdminConversationController::class, 'show'])
+            ->whereNumber('conversation')
+            ->name('conversations.show');
+        Route::post('/conversas/{conversation}/mensagens', [AdminConversationController::class, 'send'])
+            ->whereNumber('conversation')
+            ->middleware('throttle:20,1')
+            ->name('conversations.messages.store');
+        Route::patch('/conversas/{conversation}/estado', [AdminConversationController::class, 'toggleStatus'])
+            ->whereNumber('conversation')
+            ->name('conversations.toggle-status');
 
         Route::get('/clientes', [AdminCustomerController::class, 'index'])->name('customers.index');
         Route::patch('/clientes/{customer}/estado', [AdminCustomerController::class, 'toggleActive'])
