@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminConversationController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminProposalController;
+use App\Http\Controllers\AdminProformaController;
 use App\Http\Controllers\AdminQuoteRequestController;
 use App\Http\Controllers\AdminSupplierController;
 use App\Http\Controllers\AdminStockController;
@@ -213,6 +214,13 @@ Route::middleware(['auth:web', 'staff.active'])->prefix('admin')->name('admin.')
                 ->whereNumber('quoteRequest')
                 ->name('status.update');
         });
+
+        Route::post('/pedidos/{order}/proformas', [AdminProformaController::class, 'storeForOrder'])
+            ->whereNumber('order')
+            ->name('orders.proformas.store');
+        Route::get('/proformas/{proforma}', [AdminProformaController::class, 'show'])
+            ->whereNumber('proforma')
+            ->name('proformas.show');
 
         Route::prefix('pedidos')->name('orders.')->group(function (): void {
             Route::get('/', [AdminOrderController::class, 'index'])->name('index');
