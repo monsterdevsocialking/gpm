@@ -36,5 +36,7 @@ Route::group(function (): void {
 
 Route::middleware(['auth:customer', 'customer.active'])->prefix('conta')->name('customer.')->group(function (): void {
     Route::get('/', [CustomerPortalController::class, 'index'])->name('dashboard');
+    Route::get('/pedidos/{order}', [CustomerOrderController::class, 'show'])->whereNumber('order')->name('orders.show');
+    Route::get('/proformas/{proforma}', [CustomerOrderController::class, 'showProforma'])->whereNumber('proforma')->name('proformas.show');
     Route::post('/sair', [CustomerAuthController::class, 'logout'])->name('logout');
 });
