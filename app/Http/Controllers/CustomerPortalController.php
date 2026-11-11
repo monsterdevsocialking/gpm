@@ -22,7 +22,7 @@ class CustomerPortalController extends Controller
 
         $requests = QuoteRequest::query()
             ->where('customer_id', $customer->getKey())
-            ->withCount('items')
+            ->with(['proposal.latestVersion'])->withCount('items')
             ->latest('submitted_at')
             ->limit(10)
             ->get();
