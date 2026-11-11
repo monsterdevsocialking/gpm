@@ -141,6 +141,9 @@ Route::middleware(['auth:web', 'staff.active'])->prefix('admin')->name('admin.')
             Route::get('/{order}', [AdminOrderController::class, 'show'])
                 ->whereNumber('order')
                 ->name('show');
+            Route::patch('/{order}/estado', [AdminOrderController::class, 'updateStatus'])
+                ->whereNumber('order')
+                ->name('status.update');
         });
     });
 });
