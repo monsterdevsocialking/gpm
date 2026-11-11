@@ -11,7 +11,7 @@ if (!$pedidoId || $pedidoId < 1) {
 
 $cliente = cliente_atual();
 if (!$cliente) {
-    $_SESSION['gpm_redirect_after_login'] = 'painel-cliente/chat.php?pedido=' . (int)$pedidoId;
+    $_SESSION['gpm_redirect_after_login'] = 'painel-cliente/index.php';
     header('Location: ../login.php');
     exit;
 }
