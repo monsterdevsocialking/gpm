@@ -10,20 +10,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class AdminSupplierInquiryController extends Controller
 {
     public function storeForRequest(Request $request, int $quoteRequest): RedirectResponse
     {
-        $record = QuoteRequest::query()->findOrFail($quoteRequest);
-
-        if (! in_array($record->status, ['under_review', 'supplier_research'], true)) {
-            return back()->withErrors([
-                'supplier_id' => 'Coloque primeiro o pedido na etapa de análise antes de consultar fornecedores.',
-            ]);
-        }
-
         $validated = $request->validate([
             'supplier_id' => ['required', 'integer', Rule::exists('suppliers', 'id')->where('active', true)],
             'reference' => ['nullable', 'string', 'max:80'],
@@ -31,11 +24,46 @@ class AdminSupplierInquiryController extends Controller
             'response_due_at' => ['nullable', 'date', 'after_or_equal:today'],
         ]);
 
-        $inquiry = $record->supplierInquiries()->create([
-            ...$validated,
-            'created_by' => Auth::guard('web')->id(),
-            'status' => 'draft',
-        ]);
+        $inquiry = DB::transaction(function () use ($quoteRequest, $validated): SupplierInquiry {
+            $record = QuoteRequest::query()
+                ->lockForUpdate()
+                ->findOrFail($quoteRequest);
+
+            if (! in_array($record->status, ['under_review', 'supplier_research'], true)) {
+                throw ValidationException::withMessages([
+                    'supplier_id' => 'Coloque primeiro o pedido na etapa de análise antes de consultar fornecedores.',
+                ]);
+            }
+
+            $supplierIsActive = Supplier::query()
+                ->whereKey($validated['supplier_id'])
+                ->where('active', true)
+                ->exists();
+
+            if (! $supplierIsActive) {
+                throw ValidationException::withMessages([
+                    'supplier_id' => 'Este fornecedor está inativo. Escolha um fornecedor ativo.',
+                ]);
+            }
+
+            $inquiry = $record->supplierInquiries()->create([
+                ...$validated,
+                'created_by' => Auth::guard('web')->id(),
+                'status' => 'draft',
+            ]);
+
+            if ($record->status === 'under_review') {
+                $record->update(['status' => 'supplier_research']);
+                $record->statusHistory()->create([
+                    'user_id' => Auth::guard('web')->id(),
+                    'old_status' => 'under_review',
+                    'new_status' => 'supplier_research',
+                    'note' => 'Consulta a fornecedor iniciada.',
+                ]);
+            }
+
+            return $inquiry;
+        });
 
         return redirect()->route('admin.supplier-inquiries.show', $inquiry)
             ->with('success', 'Consulta ao fornecedor criada. Reveja os dados antes de a marcar como enviada.');
@@ -121,8 +149,10 @@ class AdminSupplierInquiryController extends Controller
                 ]);
             }
 
-            $record->update(['status' => 'responded']);
-            $record->forceFill(['responded_at' => now()])->save();
+            $record->update([
+                'status' => 'responded',
+                'responded_at' => now(),
+            ]);
         });
 
         return redirect()->route('admin.supplier-inquiries.show', $record)
