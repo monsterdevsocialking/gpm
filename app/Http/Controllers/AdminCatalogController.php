@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
 use App\Models\Category;
+use App\Models\CompanySetting;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -38,6 +39,7 @@ class AdminCatalogController extends Controller
             ->withQueryString();
 
         $categories = Category::query()->orderBy('name')->get();
+        $currency = CompanySetting::query()->value('currency') ?: 'AOA';
         $editing = $request->filled('edit')
             ? Product::query()->with('images')->findOrFail($request->integer('edit'))
             : null;
@@ -47,7 +49,8 @@ class AdminCatalogController extends Controller
             'categories',
             'editing',
             'search',
-            'categoryId'
+            'categoryId',
+            'currency'
         ));
     }
 
