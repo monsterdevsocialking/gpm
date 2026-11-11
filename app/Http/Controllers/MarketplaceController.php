@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\CompanySetting;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -36,7 +37,9 @@ class MarketplaceController extends Controller
             ->paginate(12)
             ->withQueryString();
 
-        return view('marketplace.index', compact('categories', 'products', 'search', 'categoryId'));
+        $currency = CompanySetting::query()->value('currency') ?: 'AOA';
+
+        return view('marketplace.index', compact('categories', 'products', 'search', 'categoryId', 'currency'));
     }
 
     public function show(int $product): View
@@ -46,6 +49,8 @@ class MarketplaceController extends Controller
             ->with(['category', 'images'])
             ->findOrFail($product);
 
-        return view('marketplace.show', compact('product'));
+        $currency = CompanySetting::query()->value('currency') ?: 'AOA';
+
+        return view('marketplace.show', compact('product', 'currency'));
     }
 }
