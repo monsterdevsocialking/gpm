@@ -14,8 +14,8 @@ class ProductMediaController extends Controller
         }
 
         foreach (['produtos', 'products'] as $directory) {
-            $path = realpath(base_path('gpm2/uploads/'.$directory.'/'.$filename));
-            $root = realpath(base_path('gpm2/uploads/'.$directory));
+            $path = realpath(base_path('gpm2/public/uploads/'.$directory.'/'.$filename));
+            $root = realpath(base_path('gpm2/public/uploads/'.$directory));
 
             if ($path && $root && str_starts_with($path, $root.DIRECTORY_SEPARATOR) && is_file($path)) {
                 return response()->file($path, [
