@@ -29,6 +29,7 @@
             <a href="#solucoes" class="hover:text-gpm-orange">Soluções</a><a href="#processo" class="hover:text-gpm-orange">Como trabalhamos</a>
             <a href="#contactos" class="hover:text-gpm-orange">Contactos</a>
             <a href="{{ route('marketplace.index') }}" class="text-gpm-orange">Marketplace <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i></a>
+            @auth('customer')<a href="{{ route('customer.dashboard') }}" class="hover:text-gpm-orange">A minha conta</a>@else<a href="{{ route('customer.login') }}" class="hover:text-gpm-orange">Entrar</a>@endauth
         </nav>
         <div class="flex items-center gap-4">
             <a href="{{ route('marketplace.index') }}" class="text-gpm-navy hover:text-gpm-orange text-sm font-bold"><i class="fa-solid fa-store mr-2"></i><span class="hidden sm:inline">Marketplace</span></a>
@@ -38,6 +39,7 @@
     <nav id="gpm-mobile-menu" class="hidden flex-col gap-5 px-6 py-5 border-t border-gray-100 text-xs font-bold uppercase text-gpm-navy lg:hidden">
         <a href="#inicio">Início</a><a href="#servicos">Serviços</a><a href="#solucoes">Soluções</a><a href="#processo">Como trabalhamos</a><a href="#contactos">Contactos</a>
         <a class="text-gpm-orange" href="{{ route('marketplace.index') }}">Ir ao Marketplace</a>
+        @auth('customer')<a href="{{ route('customer.dashboard') }}">A minha conta</a>@else<a href="{{ route('customer.login') }}">Entrar na conta</a>@endauth
     </nav>
 </header>
 
@@ -98,7 +100,7 @@
                                 <i class="fa-solid fa-box-open text-gray-300 text-5xl"></i>
                             @endif
                         </a>
-                        <div class="p-5 flex-1"><h3 class="font-bold text-sm text-gpm-navy">{{ $product->name }}</h3><p class="text-xs text-gray-500 mt-2 line-clamp-2">{{ Str::limit(strip_tags((string) $product->description), 70) }}</p><div class="text-lg font-black text-gpm-navy mt-4">{{ number_format((float) $product->price, 2, ',', '.') }} Kz</div></div>
+                        <div class="p-5 flex-1"><h3 class="font-bold text-sm text-gpm-navy">{{ $product->name }}</h3><p class="text-xs text-gray-500 mt-2 line-clamp-2">{{ \Illuminate\Support\Str::limit(strip_tags((string) $product->description), 70) }}</p><div class="text-lg font-black text-gpm-navy mt-4">{{ number_format((float) $product->price, 2, ',', '.') }} Kz</div></div>
                         <div class="px-5 pb-5"><a href="{{ route('marketplace.products.show', $product) }}" class="block text-center bg-gpm-navy hover:bg-slate-800 text-white text-xs font-bold uppercase py-3 transition">Ver detalhes</a></div>
                     </article>
                 @empty
