@@ -1,0 +1,29 @@
+name: GPM PHP syntax check
+
+on:
+  push:
+    branches:
+      - preview/gpm2-organizado
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  php-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Install PHP CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y php-cli
+
+      - name: Check active GPM PHP files
+        run: |
+          find gpm2/admin gpm2/cliente gpm2/app gpm2/config gpm2/database -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+          php -l gpm2/index.php
