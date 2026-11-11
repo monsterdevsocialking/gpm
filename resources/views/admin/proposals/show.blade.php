@@ -56,7 +56,7 @@
                     <section class="bg-white border border-gpm-orange/30 p-6">
                         <span class="text-[10px] uppercase font-bold tracking-wider text-gpm-orange">Aceitação recebida</span>
                         <h2 class="font-black text-gpm-navy mt-2">Confirmar encomenda</h2>
-                        <p class="text-xs text-gray-500 mt-2">A proposta foi aceite pelo cliente. Esta ação cria a encomenda e regista o funcionário responsável. Não inicia pagamentos nem desconta stock.</p>
+                        <p class="text-xs text-gray-500 mt-2">A proposta foi aceite pelo cliente. Esta ação cria a encomenda e regista o funcionário responsável. Não inicia pagamentos nem desconta stock.</p><p class="text-[11px] text-gray-400 mt-3">Nesta versão, a encomenda copia o subtotal aprovado. Entrega, impostos e descontos não são calculados separadamente; confirme que os custos aplicáveis estão refletidos nos preços ou nas condições da proposta antes de avançar.</p>
                         <form method="post" action="{{ route('admin.proposals.confirm-order',$version) }}" class="mt-4" onsubmit="return confirm('Confirmar agora a encomenda a partir desta proposta aceite?');">@csrf<button class="w-full bg-gpm-orange text-white text-xs font-bold uppercase py-4">Confirmar encomenda</button></form>
                     </section>
                 @endif
