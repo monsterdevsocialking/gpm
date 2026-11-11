@@ -14,6 +14,7 @@ use App\Http\Controllers\AdminCatalogController;
 use App\Http\Controllers\AdminCategoryController;
 use App\Http\Controllers\AdminStockController;
 use App\Http\Controllers\AdminOrderController;
+use App\Http\Controllers\AdminProformaController;
 use App\Http\Controllers\AdminProposalController;
 use App\Http\Controllers\AdminQuoteRequestController;
 use App\Http\Controllers\AdminSupplierController;
@@ -35,6 +36,7 @@ use App\Models\ContactMessage;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\IntegrationEvent;
+use App\Models\Proforma;
 use App\Models\Proposal;
 use App\Models\ProposalDecision;
 use App\Models\ProposalItem;
@@ -76,6 +78,7 @@ class ApplicationStructureTest extends TestCase
             AdminCategoryController::class,
             AdminStockController::class,
             AdminOrderController::class,
+            AdminProformaController::class,
             AdminQuoteRequestController::class,
             AdminSupplierController::class,
             AdminSupplierInquiryController::class,
@@ -90,6 +93,7 @@ class ApplicationStructureTest extends TestCase
             SupplierInquiry::class,
             SupplierResponse::class,
             SupplierResponseItem::class,
+            Proforma::class,
             Proposal::class,
             ProposalVersion::class,
             ProposalItem::class,
