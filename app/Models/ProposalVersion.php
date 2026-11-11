@@ -60,6 +60,11 @@ class ProposalVersion extends Model
         return $this->hasMany(ProposalDecision::class);
     }
 
+    public function order(): HasOne
+    {
+        return $this->hasOne(Order::class);
+    }
+
     public function isEditable(): bool
     {
         return $this->status === 'draft' && $this->issued_at === null;
