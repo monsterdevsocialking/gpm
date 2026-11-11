@@ -7,6 +7,7 @@ use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminProposalController;
 use App\Http\Controllers\AdminQuoteRequestController;
 use App\Http\Controllers\AdminSupplierController;
+use App\Http\Controllers\AdminStockController;
 use App\Http\Controllers\AdminSupplierInquiryController;
 use App\Http\Controllers\CustomerAuthController;
 use App\Http\Controllers\CustomerOrderController;
@@ -88,6 +89,11 @@ Route::middleware(['auth:web', 'staff.active'])->prefix('admin')->name('admin.')
 
     Route::middleware('staff.role:admin,seller,stock_manager')->group(function (): void {
         Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+    });
+
+    Route::middleware('staff.role:admin,stock_manager')->prefix('stock')->name('stock.')->group(function (): void {
+        Route::get('/', [AdminStockController::class, 'index'])->name('index');
+        Route::post('/', [AdminStockController::class, 'store'])->name('store');
     });
 
     Route::middleware('staff.role:admin,seller')->group(function (): void {
