@@ -72,7 +72,6 @@ class CustomerAccountController extends Controller
 
         $customer->forceFill([
             'password' => $validated['password'],
-            'remember_token' => null,
         ])->save();
 
         $request->session()->regenerate();
