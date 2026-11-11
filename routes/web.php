@@ -82,6 +82,9 @@ Route::middleware(['auth:web', 'staff.active'])->prefix('admin')->name('admin.')
         Route::get('/{quoteRequest}', [AdminQuoteRequestController::class, 'show'])
             ->whereNumber('quoteRequest')
             ->name('show');
+        Route::patch('/{quoteRequest}/estado', [AdminQuoteRequestController::class, 'updateStatus'])
+            ->whereNumber('quoteRequest')
+            ->name('status.update');
     });
 
     Route::middleware('staff.role:admin,seller')->prefix('pedidos')->name('orders.')->group(function (): void {
