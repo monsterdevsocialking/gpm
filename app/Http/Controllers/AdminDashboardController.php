@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\QuoteRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class AdminDashboardController extends Controller
@@ -25,17 +27,23 @@ class AdminDashboardController extends Controller
         $staff = Auth::guard('web')->user();
         $canReviewRequests = in_array($staff?->role, ['admin', 'seller'], true);
         $stats['quote_requests'] = $canReviewRequests ? QuoteRequest::query()->count() : null;
-        $stats['submitted_requests'] = $canReviewRequests ? QuoteRequest::query()->where('status', 'submitted')->count() : null;
+        $stats['submitted_requests'] = $canReviewRequests
+            ? QuoteRequest::query()->where('status', 'submitted')->count()
+            : null;
 
         $recentRequests = $canReviewRequests
             ? QuoteRequest::query()->withCount('items')->latest('submitted_at')->limit(6)->get()
             : collect();
 
-        $recentOrders = Order::query()
-            ->latest('created_at')
-            ->limit(8)
-            ->get();
+        $recentOrders = $canReviewRequests
+            ? Order::query()->latest('created_at')->limit(8)->get()
+            : collect();
 
-        return view('admin.dashboard', compact('stats', 'recentOrders', 'recentRequests', 'canReviewRequests'));
+        return view('admin.dashboard', compact(
+            'stats',
+            'recentOrders',
+            'recentRequests',
+            'canReviewRequests'
+        ));
     }
 }
