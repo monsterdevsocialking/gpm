@@ -36,10 +36,16 @@ Supply requests start in `submitted` and have a controlled status lifecycle:
 `quote_request_status_history`. The current implementation does not create an
 order, charge a customer, or deduct stock when a request is submitted.
 
-The staff area currently provides a protected dashboard and read-only legacy order
-consultation, plus a supply-request review queue. Supplier records, supplier
-responses, versioned proposals, customer decisions, and explicit order confirmation
-remain subsequent implementation stages.
+The staff area currently provides a protected dashboard, legacy order consultation,
+a supplier directory, supplier inquiry/response capture, supply-request review,
+and versioned commercial proposal drafting and issuance. Customers can view an
+issued proposal and record one decision (accept, reject, or request revision) against
+that exact version. A rejection or revision request can lead to a new version after
+staff returns the request to proposal preparation.
+
+Order confirmation remains a separate internal action and is deliberately not
+triggered by customer acceptance. Payment collection and gateway callbacks are not
+active.
 
 ## Planned application areas
 
@@ -61,6 +67,20 @@ payment state.
 
 No gateway is enabled by this foundation. Payment methods, fees, taxes, refund
 rules and provider selection remain business decisions to be approved.
+
+## Database baseline and migration approach
+
+The Laravel migration set now includes a guarded baseline for the legacy GPM tables
+(users, customers, catalog, orders, proformas, conversations, stock and activity).
+When an existing legacy table is already present, the baseline leaves it untouched.
+On a fresh database it creates the corresponding tables before the new supply-request,
+supplier and proposal tables. The baseline rollback is intentionally non-destructive
+because it may represent imported production data.
+
+For a new installation, configure MySQL and run Laravel migrations. For an existing
+installation, take a complete backup first; run migrations only after confirming that
+the imported legacy schema matches the SQL dump. Do not import the sample SQL dump
+into a database containing live tables without a deliberate merge plan.
 
 ## Migration approach
 
