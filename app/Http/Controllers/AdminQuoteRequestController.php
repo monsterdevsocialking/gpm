@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
-use RuntimeException;
+use Illuminate\Validation\ValidationException;
 
 class AdminQuoteRequestController extends Controller
 {
@@ -77,7 +77,7 @@ class AdminQuoteRequestController extends Controller
             }
 
             if (! in_array($newStatus, $transitions[$oldStatus] ?? [], true)) {
-                throw new RuntimeException('Esta alteração de estado não é permitida. Verifique a etapa atual do pedido.');
+                throw ValidationException::withMessages(['status' => 'Esta alteração de estado não é permitida. Verifique a etapa atual do pedido.']);
             }
 
             $record->update(['status' => $newStatus]);
