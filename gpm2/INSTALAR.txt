@@ -1,49 +1,85 @@
-GPM - PAINEL ADMINISTRATIVO INICIAL
-===================================
+GPM — INSTALAÇÃO LOCAL (XAMPP)
+================================
 
-1. EXTRAIR
-   Extraia a pasta gpm para C:\xampp\htdocs, ou extraia o ZIP diretamente em C:\xampp\htdocs.
-   A estrutura final deve incluir C:\xampp\htdocs\gpm\admin e C:\xampp\htdocs\gpm\config.
+1. COLOCAR O PROJETO NA PASTA CORRETA
+   Extrai a pasta do projeto para:
+   C:\xampp\htdocs\gpm2
 
-2. CONFIGURAR A BASE DE DADOS
-   Abra C:\xampp\htdocs\gpm\config\database.php.
-   Confirme DB_HOST, DB_PORT, DB_NAME, DB_USER e DB_PASS.
-   Este pacote assume por defeito a base gpm_mvp_nova, criada pelo SQL anterior.
-   Se criou a base com outro nome, altere DB_NAME.
-   Em XAMPP normal, o utilizador é root e a palavra-passe pode estar vazia.
+   Confirma que estes caminhos existem:
+   C:\xampp\htdocs\gpm2\index.php
+   C:\xampp\htdocs\gpm2\app\bootstrap.php
+   C:\xampp\htdocs\gpm2\cliente\index.php
+   C:\xampp\htdocs\gpm2\admin\login.php
 
-3. CONFIRMAR AS TABELAS
-   Este painel espera o esquema do ficheiro gpm.sql anterior, incluindo as tabelas:
-   users, customers, categories, products, orders, order_items,
-   stock_movements, order_status_history, conversations, messages,
-   proformas e company_settings.
-   Não importe este SQL por cima de uma base de dados com dados reais sem backup.
+2. INICIAR O XAMPP
+   Abre o XAMPP Control Panel e inicia Apache e MySQL.
 
-4. CRIAR UM ADMINISTRADOR SE AINDA NÃO EXISTIR
-   Abra CMD e execute:
-   cd C:\xampp\htdocs\gpm
+3. CRIAR A BASE DE DADOS
+   Abre http://localhost/phpmyadmin
+   Cria uma base de dados chamada gpm_mvp_nova.
+   Seleciona a base e importa o ficheiro:
+   C:\xampp\htdocs\gpm2\gpm_mvp_nova.sql
+
+   Se já tens dados reais nesta base, faz primeiro uma cópia de segurança.
+   Não importes o ficheiro completo por cima de uma base com dados existentes.
+
+4. APLICAR A TABELA DE MENSAGENS DE CONTACTO
+   Depois de importar o esquema, seleciona gpm_mvp_nova no phpMyAdmin,
+   abre o separador SQL e executa o conteúdo de:
+   C:\xampp\htdocs\gpm2\database\patch_contact_messages.sql
+
+   O patch cria apenas a tabela contact_messages caso ainda não exista.
+   Não apaga nem recria as outras tabelas.
+
+5. CONFIGURAR A LIGAÇÃO
+   Abre:
+   C:\xampp\htdocs\gpm2\config\database.php
+
+   Por defeito, o XAMPP local usa:
+   DB_HOST = localhost
+   DB_PORT = 3306
+   DB_NAME = gpm_mvp_nova
+   DB_USER = root
+   DB_PASS = (vazio)
+
+   Se a tua instalação MySQL tiver outra palavra-passe ou nome de base,
+   ajusta as variáveis de ambiente ou os valores de configuração.
+
+6. CRIAR O ADMINISTRADOR
+   Se ainda não existir uma conta administrativa, abre CMD e executa:
+
+   cd C:\xampp\htdocs\gpm2
    C:\xampp\php\php.exe database\create_admin.php
-   Introduza nome, email e palavra-passe com pelo menos 12 caracteres.
+
+   Introduz nome, email e palavra-passe com pelo menos 12 caracteres.
    O script não substitui utilizadores existentes.
-   Se já tem administrador válido na tabela users, não precisa de criar outro.
 
-5. ABRIR O PAINEL
-   Inicie Apache e MySQL no XAMPP.
-   Aceda a http://localhost/gpm/admin/login.php
+7. ABRIR O SISTEMA
+   Página institucional:
+   http://localhost/gpm2/
 
-6. PRIMEIRAS PÁGINAS
-   Visão geral: /admin/index.php
-   Produtos: /admin/products.php
-   Categorias: /admin/categories.php
-   Stock: /admin/stock.php
-   Pedidos: /admin/orders.php
-   Clientes: /admin/customers.php
-   Conversas: /admin/conversations.php
-   Dados da empresa/NIF: /admin/company.php
-   Utilizadores: /admin/users.php
+   Marketplace:
+   http://localhost/gpm2/cliente/
+
+   Painel administrativo:
+   http://localhost/gpm2/admin/login.php
+
+8. ÁREAS PRINCIPAIS
+   - Página institucional: index.php
+   - Marketplace: cliente/
+   - Conta do cliente: cliente/painel-cliente/
+   - Painel administrativo: admin/
+   - Funções comuns: app/bootstrap.php
+   - Ligação à base de dados: config/database.php
 
 NOTAS IMPORTANTES
-- Este é o primeiro pacote do painel administrativo; a loja do cliente será criada depois.
-- Confirme o esquema da base antes de usar em produção.
-- As imagens de produtos, a emissão de proformas em PDF, as mensagens do chat e as integrações com o checkout ainda serão completadas nas próximas etapas.
-- Não publique o sistema sem HTTPS, backups, validação do servidor e testes de segurança.
+-----------------
+- A versão principal do marketplace é gpm2/cliente/.
+- A pasta gpm2/gpm/ é um pacote anterior/alternativo. Não copies o seu conteúdo
+  por cima da versão principal sem comparar os ficheiros.
+- O checkout cria o pedido, os artigos, a proforma e a conversa, mas não baixa stock.
+  O stock é baixado quando a equipa confirma o pedido no painel.
+- Se um pedido confirmado for cancelado, o sistema repõe o stock automaticamente.
+- A proforma é uma visualização HTML imprimível e não substitui uma fatura fiscal.
+- Antes de publicar em produção, configura HTTPS, credenciais seguras, backups
+  e testa todos os fluxos com uma cópia da base de dados.
