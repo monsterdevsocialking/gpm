@@ -46,6 +46,20 @@
             </section>
             <aside class="space-y-6">
                 <section class="bg-white border border-gray-100 p-6"><h2 class="font-black text-gpm-navy mb-4">Histórico de decisões</h2>@forelse($version->decisions as $decision)<div class="border-l-2 border-gpm-orange pl-4 mb-4"><strong class="text-sm text-gpm-navy">{{ ['accepted'=>'Aceite','rejected'=>'Rejeitada','revision_requested'=>'Alterações solicitadas'][$decision->decision] ?? $decision->decision }}</strong><p class="text-xs text-gray-400 mt-1">{{ optional($decision->decided_at)->format('d/m/Y H:i') }}</p>@if($decision->comment)<p class="text-xs text-gray-600 mt-2">{{ $decision->comment }}</p>@endif</div>@empty<p class="text-sm text-gray-400">Ainda não existe uma decisão do cliente para esta versão.</p>@endforelse</section>
+                @if($version->order)
+                    <section class="bg-white border border-emerald-100 p-6">
+                        <span class="text-[10px] uppercase font-bold tracking-wider text-emerald-700">Encomenda confirmada</span>
+                        <h2 class="font-black text-gpm-navy mt-2">{{ $version->order->order_number }}</h2>
+                        <a href="{{ route('admin.orders.show',$version->order) }}" class="block bg-gpm-navy text-white text-xs font-bold uppercase text-center py-3 mt-4">Abrir encomenda</a>
+                    </section>
+                @elseif($version->status === 'sent' && $version->decisions->contains(fn ($decision) => $decision->decision === 'accepted'))
+                    <section class="bg-white border border-gpm-orange/30 p-6">
+                        <span class="text-[10px] uppercase font-bold tracking-wider text-gpm-orange">Aceitação recebida</span>
+                        <h2 class="font-black text-gpm-navy mt-2">Confirmar encomenda</h2>
+                        <p class="text-xs text-gray-500 mt-2">A proposta foi aceite pelo cliente. Esta ação cria a encomenda e regista o funcionário responsável. Não inicia pagamentos nem desconta stock.</p>
+                        <form method="post" action="{{ route('admin.proposals.confirm-order',$version) }}" class="mt-4" onsubmit="return confirm('Confirmar agora a encomenda a partir desta proposta aceite?');">@csrf<button class="w-full bg-gpm-orange text-white text-xs font-bold uppercase py-4">Confirmar encomenda</button></form>
+                    </section>
+                @endif
                 <div class="bg-gpm-soft p-5"><strong class="text-xs text-gpm-navy">Confirmação da encomenda</strong><p class="text-xs text-gray-500 leading-relaxed mt-2">A aceitação do cliente é apenas uma decisão comercial. A encomenda só poderá ser confirmada por um funcionário GPM autorizado num passo separado.</p></div>
             </aside>
         </div>
