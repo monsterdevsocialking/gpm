@@ -18,6 +18,7 @@ class SupplierInquiry extends Model
         return [
             'sent_at' => 'datetime',
             'response_due_at' => 'datetime',
+            'responded_at' => 'datetime',
         ];
     }
 
