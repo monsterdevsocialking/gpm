@@ -71,6 +71,8 @@ class CustomerAuthController extends Controller
 
     public function register(Request $request): RedirectResponse
     {
+        $request->merge(['email' => strtolower(trim((string) $request->input('email')))]);
+
         $validated = $request->validate([
             'customer_type' => ['required', 'in:individual,company'],
             'name' => ['required', 'string', 'max:180'],
