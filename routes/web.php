@@ -109,6 +109,9 @@ Route::middleware(['auth:web', 'staff.active'])->prefix('admin')->name('admin.')
         Route::post('/propostas/{proposalVersion}/emitir', [AdminProposalController::class, 'issue'])
             ->whereNumber('proposalVersion')
             ->name('proposals.issue');
+        Route::post('/propostas/{proposalVersion}/confirmar-encomenda', [AdminProposalController::class, 'confirmOrder'])
+            ->whereNumber('proposalVersion')
+            ->name('proposals.confirm-order');
 
         Route::post('/solicitacoes/{quoteRequest}/consultas-fornecedores', [AdminSupplierInquiryController::class, 'storeForRequest'])
             ->whereNumber('quoteRequest')
