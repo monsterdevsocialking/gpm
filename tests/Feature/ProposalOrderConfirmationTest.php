@@ -248,6 +248,4 @@ class ProposalOrderConfirmationTest extends TestCase
         $this->assertCount(1, $newVersion->items);
         $this->assertSame('Equipamento industrial', $newVersion->items->first()->product_name);
     }
-
-
 }
