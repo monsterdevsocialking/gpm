@@ -43,9 +43,15 @@ issued proposal and record one decision (accept, reject, or request revision) ag
 that exact version. A rejection or revision request can lead to a new version after
 staff returns the request to proposal preparation.
 
-Order confirmation remains a separate internal action and is deliberately not
-triggered by customer acceptance. Payment collection and gateway callbacks are not
-active.
+An accepted proposal can now be converted into an order only through an explicit
+staff action. The transaction checks the decision belongs to the customer on the
+request, locks the proposal/request, creates order and item snapshots, records the
+staff member, and closes the supply request. It does not deduct stock or start a
+payment. The initial conversion uses the approved proposal subtotal as the order
+total; delivery, tax and discount calculations are not yet separate fields and must
+be reflected in the proposal prices/terms until those rules are approved.
+
+Payment collection and gateway callbacks are not active.
 
 ## Planned application areas
 
