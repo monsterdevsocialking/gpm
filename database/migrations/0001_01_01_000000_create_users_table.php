@@ -20,8 +20,8 @@ return new class extends Migration
                 $table->string('email', 190)->unique();
                 $table->timestamp('email_verified_at')->nullable();
                 $table->string('password');
-                $table->string('role', 30)->default('seller')->index();
-                $table->boolean('active')->default(true)->index();
+                $table->string('role', 30)->default('seller');
+                $table->boolean('active')->default(true);
                 $table->boolean('must_change_password')->default(false);
                 $table->index(['role', 'active']);
                 $table->dateTime('last_login_at')->nullable();
