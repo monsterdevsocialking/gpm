@@ -10,11 +10,22 @@
 <main class="max-w-site mx-auto px-6 py-10 md:py-16">
     <nav class="text-xs text-gray-400 mb-8"><a href="{{ route('home') }}">Início</a><span class="mx-2">/</span><a href="{{ route('marketplace.index') }}">Marketplace</a><span class="mx-2">/</span><span class="text-gpm-navy">{{ $product->name }}</span></nav>
     <div class="grid md:grid-cols-2 gap-10 lg:gap-16 items-start">
-        <div class="bg-white border border-gray-100 min-h-[320px] md:min-h-[480px] p-8 flex items-center justify-center">
-            @if($product->main_image)
-                <img src="{{ route('media.products.show', ['filename' => basename($product->main_image)]) }}" alt="{{ $product->name }}" class="max-w-full max-h-[430px] object-contain">
-            @else
-                <i class="fa-solid fa-box-open text-gray-200 text-7xl"></i>
+        <div>
+            <div class="bg-white border border-gray-100 min-h-[320px] md:min-h-[480px] p-8 flex items-center justify-center">
+                @if($product->main_image)
+                    <img src="{{ route('media.products.show', ['filename' => basename($product->main_image)]) }}" alt="{{ $product->name }}" class="max-w-full max-h-[430px] object-contain">
+                @elseif($product->images->isNotEmpty())
+                    <img src="{{ route('media.products.show', ['filename' => basename($product->images->first()->image_path)]) }}" alt="{{ $product->name }}" class="max-w-full max-h-[430px] object-contain">
+                @else
+                    <i class="fa-solid fa-box-open text-gray-200 text-7xl"></i>
+                @endif
+            </div>
+            @if($product->images->isNotEmpty())
+                <div class="flex gap-3 mt-3 flex-wrap">
+                    @foreach($product->images as $image)
+                        <img src="{{ route('media.products.show', ['filename' => basename($image->image_path)]) }}" alt="{{ $image->alt_text ?: $product->name }}" loading="lazy" class="w-20 h-20 bg-white border border-gray-100 p-2 object-contain">
+                    @endforeach
+                </div>
             @endif
         </div>
         <section>
