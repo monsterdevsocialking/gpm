@@ -11,7 +11,7 @@ class Proforma extends Model
         'order_id', 'proforma_number', 'company_name', 'company_nif',
         'company_address', 'company_phone', 'company_email', 'customer_name',
         'customer_nif', 'customer_phone', 'customer_email', 'customer_address',
-        'subtotal', 'delivery_fee', 'discount', 'total', 'status',
+        'subtotal', 'delivery_fee', 'discount', 'total', 'currency', 'status',
         'issue_date', 'valid_until', 'notes', 'created_by',
     ];
 
