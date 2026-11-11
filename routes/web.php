@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminCatalogController;
+use App\Http\Controllers\AdminCategoryController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminProposalController;
 use App\Http\Controllers\AdminQuoteRequestController;
@@ -89,6 +91,30 @@ Route::middleware(['auth:web', 'staff.active'])->prefix('admin')->name('admin.')
     });
 
     Route::middleware('staff.role:admin,seller')->group(function (): void {
+        Route::get('/catalogo', [AdminCatalogController::class, 'index'])->name('catalog.index');
+        Route::post('/catalogo', [AdminCatalogController::class, 'store'])->name('catalog.store');
+        Route::put('/catalogo/{product}', [AdminCatalogController::class, 'update'])
+            ->whereNumber('product')
+            ->name('catalog.update');
+        Route::delete('/catalogo/{product}', [AdminCatalogController::class, 'destroy'])
+            ->whereNumber('product')
+            ->name('catalog.destroy');
+        Route::delete('/catalogo/{product}/imagens/{image}', [AdminCatalogController::class, 'destroyImage'])
+            ->whereNumber('product')
+            ->whereNumber('image')
+            ->name('catalog.images.destroy');
+
+        Route::prefix('categorias')->name('categories.')->group(function (): void {
+            Route::get('/', [AdminCategoryController::class, 'index'])->name('index');
+            Route::post('/', [AdminCategoryController::class, 'store'])->name('store');
+            Route::put('/{category}', [AdminCategoryController::class, 'update'])
+                ->whereNumber('category')
+                ->name('update');
+            Route::delete('/{category}', [AdminCategoryController::class, 'destroy'])
+                ->whereNumber('category')
+                ->name('destroy');
+        });
+
         Route::prefix('fornecedores')->name('suppliers.')->group(function (): void {
             Route::get('/', [AdminSupplierController::class, 'index'])->name('index');
             Route::post('/', [AdminSupplierController::class, 'store'])->name('store');
