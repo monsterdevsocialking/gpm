@@ -24,7 +24,7 @@ $provinciasAngola = [
 
 if (!cliente_atual()) {
     $_SESSION['gpm_redirect_after_login'] = 'finalizar-pedido.php';
-    flash('error', 'Inicia sessão ou cria uma conta para finalizar a compra.');
+    flash('Inicia sessão ou cria uma conta para finalizar a compra.', 'error');
     redirect('login.php');
     exit;
 }
@@ -52,7 +52,7 @@ $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$cliente || !(int) $cliente['active']) {
     unset($_SESSION['gpm_customer']);
     $_SESSION['gpm_redirect_after_login'] = 'finalizar-pedido.php';
-    flash('error', 'A tua conta não está disponível. Verifica os teus dados.');
+    flash('A tua conta não está disponível. Verifica os teus dados.', 'error');
     redirect('login.php');
     exit;
 }
@@ -91,7 +91,7 @@ if (
 }
 
 if (!$carrinho || !is_array($carrinho)) {
-    flash('error', 'O teu carrinho está vazio.');
+    flash('O teu carrinho está vazio.', 'error');
     redirect('index.php');
     exit;
 }
