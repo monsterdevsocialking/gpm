@@ -1,66 +1,124 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# GPM Conecta
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplicação Laravel 12 para o portal institucional, marketplace de fornecimento e operação comercial da GPM Conecta.
 
-## About Laravel
+O projeto mantém o PHP original em `gpm2/` como referência durante a migração. Não elimine essa pasta nem importe o SQL sobre uma base de produção sem backup e plano de migração.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Requisitos
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- PHP 8.2 ou superior e extensões exigidas pelo Laravel 12
+- Composer 2
+- MySQL 8+ ou MariaDB compatível
+- Node.js LTS e npm para compilar os assets
+- Git
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Instalação local
 
-## Learning Laravel
+1. Clone o repositório e entre na pasta:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```bash
+git clone https://github.com/monsterdevsocialking/gpm.git
+cd gpm
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+2. Instale as dependências PHP e crie o ficheiro de ambiente:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+```
 
-## Laravel Sponsors
+No Windows PowerShell, se `cp` não estiver disponível, use:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```powershell
+Copy-Item .env.example .env
+```
 
-### Premium Partners
+3. Crie uma base de dados MySQL vazia e configure `.env`:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+- `DB_DATABASE`
+- `DB_USERNAME`
+- `DB_PASSWORD`
 
-## Contributing
+O projeto usa MySQL por padrão. Não altere para SQLite na instalação normal.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+4. Configure a primeira conta de administrador no `.env`:
 
-## Code of Conduct
+```dotenv
+GPM_ADMIN_NAME="Administrador GPM"
+GPM_ADMIN_EMAIL="admin@seudominio.ao"
+GPM_ADMIN_PASSWORD="uma-palavra-passe-forte-com-12-ou-mais"
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Não use estes exemplos como credenciais reais e nunca envie o seu `.env` para o GitHub.
 
-## Security Vulnerabilities
+5. Execute as migrations e crie o administrador:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+php artisan migrate
+php artisan db:seed
+```
 
-## License
+Se as variáveis `GPM_ADMIN_*` não estiverem preenchidas, o seeder não cria uma conta. Se o email já existir, não altera a palavra-passe nem o perfil.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+6. Instale e compile os assets:
+
+```bash
+npm install
+npm run build
+```
+
+7. Inicie a aplicação:
+
+```bash
+php artisan serve
+```
+
+Abra `http://127.0.0.1:8000`.
+
+## Base de dados existente
+
+Para uma instalação que já tenha dados no sistema PHP:
+
+1. Faça backup completo da base de dados e dos ficheiros de imagens.
+2. Importe o SQL legado para uma base de dados de migração ou confirme que as tabelas existentes correspondem ao dump `gpm_mvp_nova.sql`.
+3. Configure as credenciais dessa base no `.env`.
+4. Execute `php artisan migrate` para criar apenas as tabelas novas em falta.
+
+A migration de base verifica a existência das tabelas antigas e não as recria. O rollback dessa migration é intencionalmente não destrutivo para proteger dados importados. Faça primeiro um ensaio numa cópia da base de dados; não execute `migrate:fresh` numa base com dados reais.
+
+## Fluxo comercial implementado
+
+- Catálogo público, carrinho de fornecimento e registo de pedidos.
+- Gestão interna de produtos, categorias, imagens e stock.
+- Diretório de fornecedores, consultas e registo manual de respostas.
+- Propostas comerciais com versões emitidas imutáveis.
+- Decisão do cliente associada à versão exata da proposta.
+- Confirmação explícita da encomenda por funcionário autorizado.
+- Acompanhamento da encomenda: preparação, expedição e conclusão.
+- Conversas ligadas às encomendas, com isolamento por cliente.
+- Gestão de clientes, utilizadores internos, contactos e dados da empresa.
+
+A aceitação do cliente não cria automaticamente uma encomenda. O pagamento não é iniciado automaticamente e a confirmação não desconta stock. Na conversão inicial, o total da encomenda corresponde ao subtotal aprovado da proposta; taxas de entrega, impostos e descontos ainda não são calculados separadamente.
+
+## APIs e pagamentos
+
+A aplicação tem a estrutura inicial para API versionada, contratos de gateway e registo idempotente de eventos externos. Nenhum gateway ou fornecedor externo está ativo. As credenciais devem ficar apenas no ambiente do servidor.
+
+## Verificações
+
+Execute:
+
+```bash
+php artisan route:list
+php artisan test
+php artisan view:cache
+```
+
+O workflow de CI também verifica a sintaxe PHP, executa as migrations numa base SQLite temporária e corre os testes automatizados.
+
+## Documentação técnica
+
+- `docs/ARCHITECTURE.md` — arquitetura e regras comerciais.
+- `docs/LEGACY_SCHEMA_MAP.md` — mapa da base antiga e estratégia de migração.
