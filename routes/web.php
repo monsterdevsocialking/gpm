@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminCatalogController;
+use App\Http\Controllers\AdminActivityLogController;
 use App\Http\Controllers\AdminCategoryController;
 use App\Http\Controllers\AdminCompanyController;
 use App\Http\Controllers\AdminCustomerController;
@@ -102,6 +103,7 @@ Route::post('/admin/entrar', [StaffAuthController::class, 'login'])
 
 Route::middleware(['auth:web', 'staff.active'])->prefix('admin')->name('admin.')->group(function (): void {
     Route::middleware('staff.role:admin')->group(function (): void {
+        Route::get('/atividade', [AdminActivityLogController::class, 'index'])->name('activity.index');
         Route::get('/utilizadores', [AdminUserController::class, 'index'])->name('users.index');
         Route::post('/utilizadores', [AdminUserController::class, 'store'])->name('users.store');
         Route::patch('/utilizadores/{user}/estado', [AdminUserController::class, 'toggleActive'])
