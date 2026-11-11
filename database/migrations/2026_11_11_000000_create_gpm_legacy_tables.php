@@ -127,6 +127,7 @@ return new class extends Migration
                 $table->decimal('discount', 15, 2)->default(0);
                 $table->decimal('subtotal', 15, 2)->default(0);
                 $table->decimal('total', 15, 2)->default(0);
+                $table->char('currency', 3)->default('AOA');
                 $table->string('payment_method', 80)->nullable();
                 $table->string('payment_status', 20)->default('pending');
                 $table->string('status', 30)->default('pending')->index();
