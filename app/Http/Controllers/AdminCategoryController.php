@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -32,7 +33,8 @@ class AdminCategoryController extends Controller
         $validated['slug'] = $this->uniqueSlug($validated['slug'] ?: $validated['name']);
         $validated['active'] = $request->boolean('active', true);
 
-        Category::query()->create($validated);
+        $record = Category::query()->create($validated);
+        $this->logAction($request, 'category_created', $record->id, 'Categoria criada: '.$record->name.'.');
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Categoria criada com sucesso.');
@@ -46,6 +48,7 @@ class AdminCategoryController extends Controller
         $validated['active'] = $request->boolean('active');
 
         $record->update($validated);
+        $this->logAction($request, 'category_updated', $record->id, 'Categoria atualizada: '.$record->name.'.');
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Categoria atualizada.');
@@ -57,12 +60,16 @@ class AdminCategoryController extends Controller
 
         if ($record->products_count > 0) {
             $record->update(['active' => false]);
+            $this->logAction(request(), 'category_deactivated', $record->id, 'Categoria desativada porque ainda contém produtos: '.$record->name.'.');
 
             return redirect()->route('admin.categories.index')
                 ->with('success', 'A categoria contém produtos e foi desativada para preservar o catálogo.');
         }
 
+        $recordId = $record->id;
+        $recordName = $record->name;
         $record->delete();
+        $this->logAction(request(), 'category_deleted', $recordId, 'Categoria eliminada: '.$recordName.'.');
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Categoria eliminada.');
@@ -74,6 +81,18 @@ class AdminCategoryController extends Controller
             'name' => ['required', 'string', 'max:120'],
             'slug' => ['nullable', 'string', 'max:150', Rule::unique('categories', 'slug')->ignore($ignoreId)],
             'description' => ['nullable', 'string', 'max:5000'],
+        ]);
+    }
+
+    private function logAction(Request $request, string $action, int $entityId, string $description): void
+    {
+        ActivityLog::query()->create([
+            'user_id' => auth()->guard('web')->id(),
+            'action' => $action,
+            'entity_type' => 'category',
+            'entity_id' => $entityId,
+            'description' => $description,
+            'ip_address' => $request->ip(),
         ]);
     }
 
