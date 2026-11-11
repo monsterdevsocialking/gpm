@@ -54,7 +54,7 @@ class CustomerAddressController extends Controller
             }
 
             if (! empty($validated['is_default'])) {
-                $customer->addresses()->whereKeyNot($record->getKey())->update(['is_default' => false]);
+                $customer->addresses()->where('id', '!=', $record->getKey())->update(['is_default' => false]);
             }
 
             $record->update($validated);
