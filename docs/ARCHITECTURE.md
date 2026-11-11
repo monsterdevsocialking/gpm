@@ -36,12 +36,14 @@ Supply requests start in `submitted` and have a controlled status lifecycle:
 `quote_request_status_history`. The current implementation does not create an
 order, charge a customer, or deduct stock when a request is submitted.
 
-The staff area currently provides a protected dashboard, legacy order consultation,
-a supplier directory, supplier inquiry/response capture, supply-request review,
-and versioned commercial proposal drafting and issuance. Customers can view an
-issued proposal and record one decision (accept, reject, or request revision) against
-that exact version. A rejection or revision request can lead to a new version after
-staff returns the request to proposal preparation.
+The staff area now includes protected catalog and category management, image uploads,
+stock movements, customer and supplier directories, supplier inquiry/response capture,
+supply-request review, versioned commercial proposals, internal user administration,
+company settings, contact inbox, order conversations and an activity audit log.
+Customer and staff conversations are scoped to the order/customer relationship.
+Issued proposal versions are immutable, and customers can record one decision
+(accept, reject, or request revision) against that exact version. A replacement version
+can be prepared after a customer request/rejection or an unanswered proposal expires.
 
 An accepted proposal can now be converted into an order only through an explicit
 staff action. The transaction checks the decision belongs to the customer on the
@@ -56,7 +58,7 @@ customer order page displays this history. The initial conversion uses the appro
 total; delivery, tax and discount calculations are not yet separate fields and must
 be reflected in the proposal prices/terms until those rules are approved.
 
-Payment collection and gateway callbacks are not active. A provider-event ledger and recorder are now in place for future integrations: provider + external event ID is unique, duplicate deliveries return the original event, and processing/failure metadata is retained. Incoming payloads must be sanitized before persistence; secrets, signatures and card data must never be stored.
+Payment collection and gateway callbacks are not active. Order confirmation requires an authorized staff action after the customer accepts. The order is linked to the exact proposal version and can then be tracked through preparation, shipment and completion. Stock movements are separately audited; order confirmation does not deduct stock. A provider-event ledger and recorder are now in place for future integrations: provider + external event ID is unique, duplicate deliveries return the original event, and processing/failure metadata is retained. Incoming payloads must be sanitized before persistence; secrets, signatures and card data must never be stored.
 
 ## Planned application areas
 
@@ -88,7 +90,7 @@ On a fresh database it creates the corresponding tables before the new supply-re
 supplier and proposal tables. The baseline rollback is intentionally non-destructive
 because it may represent imported production data.
 
-For a new installation, configure MySQL and run Laravel migrations. For an existing
+For a new installation, configure MySQL, set GPM_ADMIN_NAME / GPM_ADMIN_EMAIL / GPM_ADMIN_PASSWORD and run Laravel migrations followed by the initial administrator seeder. For an existing
 installation, take a complete backup first; run migrations only after confirming that
 the imported legacy schema matches the SQL dump. Do not import the sample SQL dump
 into a database containing live tables without a deliberate merge plan.
