@@ -72,3 +72,19 @@ workflow is intentionally different: a request is reviewed, supplier information
 collected, a proposal version is sent, the customer makes a decision, and authorized
 GPM staff explicitly confirm the resulting order. This distinction must be reflected
 in the new data model rather than hidden inside a generic `orders` table.
+
+
+## Laravel implementation status (11 November 2026)
+
+The repository now has a guarded Laravel baseline migration for the legacy tables. Existing tables are skipped rather than recreated; a clean database receives the legacy structure before the new workflow migrations. The baseline rollback is intentionally non-destructive to protect imported business data.
+
+The contact form table contact_messages is also included in the baseline. It was created separately in the legacy PHP project and is not one of the 15 tables listed in the original SQL inventory.
+
+New workflow tables added after the baseline:
+
+- quote_requests and quote_request_items: a supply request is separate from an order.
+- quote_request_status_history: staff transition audit.
+- suppliers, supplier_inquiries, supplier_responses, and supplier_response_items: manual supplier sourcing and price/availability capture.
+- proposals, proposal_versions, proposal_items, and proposal_decisions: immutable issued versions and customer decisions attached to a specific version.
+
+The current proposal workflow does not create an order when a customer accepts. An explicit staff confirmation workflow is still required before a new order is created from an accepted proposal. Payment integrations remain inactive.
