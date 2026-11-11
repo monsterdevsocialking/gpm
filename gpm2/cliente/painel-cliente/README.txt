@@ -1,24 +1,23 @@
-GPM — PAINEL DO CLIENTE (PHP PURO)
+GPM — PAINEL DO CLIENTE
 
-Ficheiros incluídos:
-- cliente/painel.php
-- cliente/pedidos.php
-- cliente/pedido.php
-- cliente/chat.php
-- cliente/dados.php
-- cliente/alterar-senha.php
+ESTRUTURA ATUAL
+- cliente/painel-cliente/index.php: resumo da conta e compras recentes.
+- cliente/painel-cliente/pedidos.php: lista de encomendas.
+- cliente/painel-cliente/pedido.php: detalhe de uma encomenda.
+- cliente/painel-cliente/chat.php: conversa associada a uma encomenda.
+- cliente/painel-cliente/dados.php: dados pessoais e morada habitual.
+- cliente/painel-cliente/alterar-senha.php: alteração da palavra-passe.
+- cliente/includes/header.php e footer.php: estrutura visual comum desta área.
 
-INSTALAÇÃO
-1. Faz uma cópia de segurança da pasta atual cliente.
-2. Copia os seis ficheiros PHP para C:\xampp\htdocs\gpm2\cliente\
-3. Não substituas includes/iniciar.php, login.php ou cadastro.php.
-4. Confirma que app/bootstrap.php disponibiliza db(), csrf_field() e verify_csrf(), e que cliente/includes/iniciar.php carrega esse bootstrap e define cliente_atual().
-5. Confirma que a tabela customers tem password, address, city, province, updated_at e que as tabelas orders, order_items, conversations, messages e proformas correspondem ao esquema atual.
-6. Abre http://localhost/gpm2/cliente/painel.php após iniciar sessão como cliente.
+ACESSO
+1. Inicia sessão pelo marketplace em /gpm2/cliente/login.php.
+2. A área do cliente abre em /gpm2/cliente/painel-cliente/index.php.
+3. Os links de compras, dados, chat e segurança ficam dentro da pasta painel-cliente.
+4. O link para voltar ao marketplace aponta para /gpm2/cliente/index.php.
 
-IMPORTANTE
-- Os pedidos são sempre filtrados pelo ID do cliente autenticado.
-- O chat só mostra a conversa associada a uma encomenda que pertence ao cliente.
-- O botão Sair aponta para cliente/logout.php. Se esse ficheiro não existir, cria-o conforme instruções na conversa ou adapta o link para o logout de cliente existente.
-- O código espera que customers.password contenha hashes produzidos por password_hash().
-- Se a tua estrutura tiver nomes de colunas diferentes, não executes em produção antes de alinhar o código com o esquema real.
+REGRAS
+- As consultas de encomendas e conversas são sempre filtradas pelo ID do cliente autenticado.
+- O chat só permite enviar mensagens para uma conversa aberta que pertence a uma encomenda do cliente.
+- As alterações de dados e palavra-passe usam proteção CSRF.
+- As palavras-passe são guardadas com password_hash() e verificadas com password_verify().
+- Não copiar este painel para a raiz cliente/ nem substituir os ficheiros do marketplace.
