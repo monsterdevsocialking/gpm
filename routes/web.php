@@ -17,6 +17,7 @@ use App\Http\Controllers\AdminSupplierController;
 use App\Http\Controllers\AdminStockController;
 use App\Http\Controllers\AdminSupplierInquiryController;
 use App\Http\Controllers\CustomerAuthController;
+use App\Http\Controllers\CustomerAccountController;
 use App\Http\Controllers\CustomerConversationController;
 use App\Http\Controllers\CustomerOrderController;
 use App\Http\Controllers\CustomerPortalController;
@@ -87,6 +88,10 @@ Route::middleware(['auth:customer', 'customer.active'])->prefix('conta')->name('
     Route::get('/solicitacoes/{quoteRequest}', [CustomerQuoteRequestController::class, 'show'])
         ->whereNumber('quoteRequest')
         ->name('requests.show');
+    Route::get('/perfil', [CustomerAccountController::class, 'editProfile'])->name('profile.edit');
+    Route::put('/perfil', [CustomerAccountController::class, 'updateProfile'])->name('profile.update');
+    Route::get('/seguranca/palavra-passe', [CustomerAccountController::class, 'editPassword'])->name('password.edit');
+    Route::put('/seguranca/palavra-passe', [CustomerAccountController::class, 'updatePassword'])->name('password.update');
     Route::get('/propostas/{proposalVersion}', [CustomerProposalController::class, 'show'])
         ->whereNumber('proposalVersion')
         ->name('proposals.show');
