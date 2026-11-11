@@ -68,6 +68,35 @@ class CustomerAddressTest extends TestCase
         $this->assertTrue($first->fresh()->is_default);
     }
 
+
+    public function test_customer_can_update_their_own_address(): void
+    {
+        $customer = $this->createCustomer();
+        $address = $customer->addresses()->create([
+            'label' => 'Sede antiga',
+            'address' => 'Rua Antiga',
+            'is_default' => true,
+        ]);
+
+        $this->actingAs($customer, 'customer')
+            ->put(route('customer.addresses.update', $address), [
+                'label' => 'Sede principal',
+                'address' => 'Avenida Nova, n.º 25',
+                'city' => 'Lobito',
+                'province' => 'Benguela',
+            ])
+            ->assertRedirect(route('customer.addresses.index'))
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('customer_addresses', [
+            'id' => $address->id,
+            'customer_id' => $customer->id,
+            'label' => 'Sede principal',
+            'address' => 'Avenida Nova, n.º 25',
+            'is_default' => true,
+        ]);
+    }
+
     public function test_customer_cannot_edit_or_delete_another_customers_address(): void
     {
         $customer = $this->createCustomer();
