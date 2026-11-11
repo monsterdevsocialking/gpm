@@ -15,6 +15,30 @@
             <div class="space-y-6">
                 <section class="bg-white border border-gray-100 p-6"><h2 class="font-black text-gpm-navy mb-5">Lista solicitada</h2><div class="space-y-4">@foreach($quoteRequest->items as $item)<div class="border-b border-gray-100 pb-4 flex justify-between gap-4"><div><strong class="text-sm text-gpm-navy">{{ $item->product_name }}</strong><p class="text-xs text-gray-400 mt-1">{{ $item->product_sku ?: 'Sem SKU' }} · {{ $item->unit }}</p>@if($item->notes)<p class="text-xs text-gray-500 mt-2">Observação: {{ $item->notes }}</p>@endif</div><strong class="text-sm whitespace-nowrap">{{ number_format((float)$item->quantity,3,',',' ') }} {{ $item->unit }}</strong></div>@endforeach</div>@if($quoteRequest->notes)<div class="mt-6"><h3 class="text-xs font-bold uppercase text-gray-400">Observações gerais</h3><p class="text-sm text-gray-600 mt-2 whitespace-pre-line">{{ $quoteRequest->notes }}</p></div>@endif</section>
                 <section class="bg-white border border-gray-100 p-6"><h2 class="font-black text-gpm-navy mb-5">Histórico de alterações</h2>@forelse($quoteRequest->statusHistory->sortBy('created_at') as $event)<div class="border-l-2 border-gpm-orange pl-4 mb-5"><strong class="text-sm text-gpm-navy">{{ $event->old_status ?: '—' }} → {{ $event->new_status }}</strong><p class="text-xs text-gray-400 mt-1">{{ optional($event->created_at)->format('d/m/Y H:i') }} · {{ $event->user?->name ?: 'Utilizador removido' }}</p>@if($event->note)<p class="text-sm text-gray-500 mt-2">{{ $event->note }}</p>@endif</div>@empty<p class="text-sm text-gray-400">Ainda não existem alterações de estado.</p>@endforelse</section>
+                <section class="bg-white border border-gray-100 p-6">
+                    <h2 class="font-black text-gpm-navy mb-5">Consultas a fornecedores</h2>
+                    @forelse($quoteRequest->supplierInquiries as $inquiry)
+                        <a href="{{ route('admin.supplier-inquiries.show',$inquiry) }}" class="block border border-gray-100 p-4 mb-3 hover:border-gpm-orange">
+                            <div class="flex justify-between gap-3"><strong class="text-sm text-gpm-navy">{{ $inquiry->supplier->name }}</strong><span class="text-[10px] uppercase font-bold text-gpm-orange">{{ $inquiry->status }}</span></div>
+                            <p class="text-xs text-gray-400 mt-2">Criada {{ optional($inquiry->created_at)->format('d/m/Y H:i') }} · {{ $inquiry->responses->count() }} resposta(s)</p>
+                        </a>
+                    @empty
+                        <p class="text-sm text-gray-400">Ainda não foram criadas consultas a fornecedores.</p>
+                    @endforelse
+                    @if(in_array($quoteRequest->status,['under_review','supplier_research'],true))
+                        <form method="post" action="{{ route('admin.requests.inquiries.store',$quoteRequest) }}" class="border-t border-gray-100 pt-5 mt-5">
+                            @csrf
+                            <h3 class="font-bold text-sm text-gpm-navy mb-4">Criar nova consulta</h3>
+                            <label class="block text-xs font-bold text-gpm-navy">Fornecedor<select name="supplier_id" required class="w-full border-gray-200 text-sm mt-2"><option value="">Escolha um fornecedor</option>@foreach($suppliers as $supplier)<option value="{{ $supplier->id }}">{{ $supplier->name }}</option>@endforeach</select></label>
+                            <label class="block text-xs font-bold text-gpm-navy mt-3">Referência interna<input name="reference" maxlength="80" class="w-full border-gray-200 text-sm mt-2"></label>
+                            <label class="block text-xs font-bold text-gpm-navy mt-3">Mensagem / especificações<textarea name="message" rows="3" maxlength="5000" class="w-full border-gray-200 text-sm mt-2"></textarea></label>
+                            <label class="block text-xs font-bold text-gpm-navy mt-3">Prazo de resposta pretendido<input type="date" name="response_due_at" min="{{ now()->toDateString() }}" class="w-full border-gray-200 text-sm mt-2"></label>
+                            <button class="w-full bg-gpm-navy text-white text-xs font-bold uppercase py-4 mt-4">Criar consulta</button>
+                        </form>
+                    @else
+                        <p class="text-[11px] text-gray-400 mt-4">Coloque o pedido em análise ou consulta a fornecedores para iniciar novas consultas.</p>
+                    @endif
+                </section>
             </div>
             <aside class="space-y-6">
                 <section class="bg-white border border-gray-100 p-6"><h2 class="font-black text-gpm-navy mb-4">Cliente</h2><p class="font-bold text-sm">{{ $quoteRequest->customer_name }}</p><p class="text-sm text-gray-500 mt-2">{{ $quoteRequest->customer_email }}</p><p class="text-sm text-gray-500">{{ $quoteRequest->customer_phone }}</p><a href="mailto:{{ $quoteRequest->customer_email }}" class="block bg-gpm-navy text-white text-center text-xs font-bold uppercase py-3 mt-6">Contactar cliente</a></section>
