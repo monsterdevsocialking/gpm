@@ -39,6 +39,11 @@ class Order extends Model
         return $this->belongsTo(Customer::class);
     }
 
+    public function proposalVersion(): BelongsTo
+    {
+        return $this->belongsTo(ProposalVersion::class);
+    }
+
     public function responsibleUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'responsible_user_id');
