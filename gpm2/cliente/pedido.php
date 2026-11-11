@@ -23,7 +23,7 @@ $stmt->execute([$pedidoId, $clienteId]);
 $pedido = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$pedido) {
-    flash('error', 'Pedido não encontrado.');
+    flash('Pedido não encontrado.', 'error');
     redirect('painel-cliente/index.php');
     exit;
 }
@@ -54,7 +54,6 @@ function estado_pedido_detalhe(string $estado): string
         'confirmed' => 'Confirmado',
         'preparing' => 'Em preparação',
         'shipped' => 'Enviado',
-        'completed' => 'Entregue',
         'completed' => 'Concluído',
         'cancelled' => 'Cancelado',
     ];
@@ -106,31 +105,31 @@ require_once __DIR__ . '/includes/header-marketplace.php';
                     <div class="absolute top-1/2 left-0 w-full h-0.5 bg-gray-100 -z-10"></div>
                     
                     <div class="flex flex-col items-center gap-2 bg-white px-2">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs <?= in_array($pedido['status'], ['pending','confirmed','preparing','shipped','completed','completed']) ? 'bg-[#f96b21] text-white' : 'bg-gray-200 text-gray-400' ?>">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs <?= in_array($pedido['status'], ['pending','confirmed','preparing','shipped','completed']) ? 'bg-[#f96b21] text-white' : 'bg-gray-200 text-gray-400' ?>">
                             <i class="fa-solid fa-check"></i>
                         </div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider <?= in_array($pedido['status'], ['pending','confirmed','preparing','shipped','completed','completed']) ? 'text-[#0d233f]' : 'text-gray-400' ?>">Pendente</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider <?= in_array($pedido['status'], ['pending','confirmed','preparing','shipped','completed']) ? 'text-[#0d233f]' : 'text-gray-400' ?>">Pendente</span>
                     </div>
 
                     <div class="flex flex-col items-center gap-2 bg-white px-2">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs <?= in_array($pedido['status'], ['preparing','shipped','completed','completed']) ? 'bg-[#f96b21] text-white' : 'bg-gray-200 text-gray-400' ?>">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs <?= in_array($pedido['status'], ['preparing','shipped','completed']) ? 'bg-[#f96b21] text-white' : 'bg-gray-200 text-gray-400' ?>">
                             <i class="fa-solid fa-box"></i>
                         </div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider <?= in_array($pedido['status'], ['preparing','shipped','completed','completed']) ? 'text-[#0d233f]' : 'text-gray-400' ?>">Em Preparação</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider <?= in_array($pedido['status'], ['preparing','shipped','completed']) ? 'text-[#0d233f]' : 'text-gray-400' ?>">Em Preparação</span>
                     </div>
 
                     <div class="flex flex-col items-center gap-2 bg-white px-2">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs <?= in_array($pedido['status'], ['shipped','completed','completed']) ? 'bg-[#f96b21] text-white' : 'bg-gray-200 text-gray-400' ?>">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs <?= in_array($pedido['status'], ['shipped','completed']) ? 'bg-[#f96b21] text-white' : 'bg-gray-200 text-gray-400' ?>">
                             <i class="fa-solid fa-truck"></i>
                         </div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider <?= in_array($pedido['status'], ['shipped','completed','completed']) ? 'text-[#0d233f]' : 'text-gray-400' ?>">Enviado</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider <?= in_array($pedido['status'], ['shipped','completed']) ? 'text-[#0d233f]' : 'text-gray-400' ?>">Enviado</span>
                     </div>
 
                     <div class="flex flex-col items-center gap-2 bg-white px-2">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs <?= in_array($pedido['status'], ['completed','completed']) ? 'bg-[#f96b21] text-white' : 'bg-gray-200 text-gray-400' ?>">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs <?= in_array($pedido['status'], ['completed']) ? 'bg-[#f96b21] text-white' : 'bg-gray-200 text-gray-400' ?>">
                             <i class="fa-solid fa-house-chimney"></i>
                         </div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider <?= in_array($pedido['status'], ['completed','completed']) ? 'text-[#0d233f]' : 'text-gray-400' ?>">Entregue</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider <?= in_array($pedido['status'], ['completed']) ? 'text-[#0d233f]' : 'text-gray-400' ?>">Entregue</span>
                     </div>
                 </div>
                 

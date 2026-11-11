@@ -24,7 +24,7 @@ $provinciasAngola = [
 
 if (!cliente_atual()) {
     $_SESSION['gpm_redirect_after_login'] = 'finalizar-pedido.php';
-    flash('error', 'Inicia sessão ou cria uma conta para finalizar a compra.');
+    flash('Inicia sessão ou cria uma conta para finalizar a compra.', 'error');
     redirect('login.php');
     exit;
 }
@@ -52,7 +52,7 @@ $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$cliente || !(int) $cliente['active']) {
     unset($_SESSION['gpm_customer']);
     $_SESSION['gpm_redirect_after_login'] = 'finalizar-pedido.php';
-    flash('error', 'A tua conta não está disponível. Verifica os teus dados.');
+    flash('A tua conta não está disponível. Verifica os teus dados.', 'error');
     redirect('login.php');
     exit;
 }
@@ -91,7 +91,7 @@ if (
 }
 
 if (!$carrinho || !is_array($carrinho)) {
-    flash('error', 'O teu carrinho está vazio.');
+    flash('O teu carrinho está vazio.', 'error');
     redirect('index.php');
     exit;
 }
@@ -256,18 +256,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     throw new RuntimeException('Stock insuficiente para o produto: ' . $produto['name']);
                 }
 
-                $stmtStock = $pdo->prepare(
-                    "UPDATE products SET stock_quantity = stock_quantity - ?
-                     WHERE id = ? AND stock_quantity >= ? AND active = 1"
-                );
-                $stmtStock->execute([$quantidade, $id, $quantidade]);
-
-                if ($stmtStock->rowCount() !== 1) {
-                    throw new RuntimeException(
-                        'O stock do produto ' . $produto['name'] . ' foi alterado. Atualiza o carrinho e tenta novamente.'
-                    );
-                }
-
                 $preco = (float) $produto['price'];
                 $valorLinha = round($quantidade * $preco, 2);
                 $subtotal += $valorLinha;
@@ -280,8 +268,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'quantity' => $quantidade,
                     'price' => $preco,
                     'subtotal' => $valorLinha,
-                    'stock_before' => (float)$produto['stock_quantity'],
-                    'stock_after' => (float)$produto['stock_quantity'] - $quantidade
                 ];
             }
 
@@ -312,7 +298,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     payment_method, payment_status, status, stock_deducted, notes, ordered_at, created_at, updated_at
                 ) VALUES (
                     ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                    ?, ?, ?, ?, ?, 'pending', 'pending', 1, ?, NOW(), NOW(), NOW()
+                    ?, ?, ?, ?, ?, 'pending', 'pending', 0, ?, NOW(), NOW(), NOW()
                 )"
             );
 
@@ -339,24 +325,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmtItem->execute([
                     $pedidoId, $linha['id'], $linha['name'], $linha['sku'],
                     $linha['quantity'], $linha['unit'], $linha['price'], $linha['subtotal']
-                ]);
-            }
-
-            $stmtMovimento = $pdo->prepare(
-                "INSERT INTO stock_movements (
-                    product_id, user_id, order_id, movement_type,
-                    quantity, stock_before, stock_after, reason, created_at
-                ) VALUES (?, NULL, ?, 'sale', ?, ?, ?, ?, NOW())"
-            );
-
-            foreach ($linhas as $linha) {
-                $stmtMovimento->execute([
-                    $linha['id'],
-                    $pedidoId,
-                    $linha['quantity'],
-                    $linha['stock_before'],
-                    $linha['stock_after'],
-                    'Venda registada no pedido ' . $numeroPedido
                 ]);
             }
 
@@ -434,7 +402,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['gpm_ultimo_pedido_id'] = $pedidoId;
             unset($_SESSION['gpm_cart']);
 
-            flash('success', 'Pedido criado com sucesso.');
+            flash('Pedido criado com sucesso.');
 
             redirect('pedido.php?id=' . $pedidoId);
             exit;

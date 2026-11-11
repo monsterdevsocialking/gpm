@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $pdo->beginTransaction();
 
-        $lock = $pdo->prepare('SELECT status, stock_deducted FROM orders WHERE id = ? FOR UPDATE');
+        $lock = $pdo->prepare('SELECT status, stock_deducted, order_number FROM orders WHERE id = ? FOR UPDATE');
         $lock->execute([$id]);
         $lockedOrder = $lock->fetch(PDO::FETCH_ASSOC);
         if (!$lockedOrder) {
@@ -56,6 +56,102 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($oldStatus === 'cancelled' && $newStatus !== 'cancelled') {
             throw new RuntimeException('Um pedido cancelado não pode ser reaberto automaticamente.');
+        }
+
+        if ($stockDeducted && $newStatus === 'pending') {
+            throw new RuntimeException('Um pedido com stock já reservado não pode voltar ao estado pendente.');
+        }
+
+        $estadosQueConfirmamStock = ['confirmed', 'preparing', 'shipped', 'completed'];
+
+        if (in_array($newStatus, $estadosQueConfirmamStock, true) && !$stockDeducted) {
+            $itemsStmt = $pdo->prepare(
+                'SELECT product_id, quantity, product_name
+                 FROM order_items
+                 WHERE order_id = ?
+                 ORDER BY id ASC'
+            );
+            $itemsStmt->execute([$id]);
+            $items = $itemsStmt->fetchAll(PDO::FETCH_ASSOC);
+
+            if (!$items) {
+                throw new RuntimeException('Este pedido não tem artigos para confirmar.');
+            }
+
+            $itemsWithStock = 0;
+
+            foreach ($items as $item) {
+                $productId = (int)($item['product_id'] ?? 0);
+                $quantity = (float)$item['quantity'];
+
+                if ($productId <= 0) {
+                    continue;
+                }
+
+                if ($quantity <= 0) {
+                    throw new RuntimeException('Quantidade inválida no artigo: ' . $item['product_name']);
+                }
+
+                $productStmt = $pdo->prepare(
+                    'SELECT name, stock_quantity
+                     FROM products
+                     WHERE id = ?
+                     FOR UPDATE'
+                );
+                $productStmt->execute([$productId]);
+                $product = $productStmt->fetch(PDO::FETCH_ASSOC);
+
+                if (!$product) {
+                    throw new RuntimeException('O produto "' . $item['product_name'] . '" já não existe no catálogo.');
+                }
+
+                $before = (float)$product['stock_quantity'];
+
+                if ($before < $quantity) {
+                    throw new RuntimeException(
+                        'Stock insuficiente para confirmar "' . $product['name'] .
+                        '". Disponível: ' . $before . '; solicitado: ' . $quantity . '.'
+                    );
+                }
+
+                $after = $before - $quantity;
+
+                $updateStock = $pdo->prepare(
+                    'UPDATE products
+                     SET stock_quantity = ?
+                     WHERE id = ? AND stock_quantity >= ?'
+                );
+                $updateStock->execute([$after, $productId, $quantity]);
+
+                if ($updateStock->rowCount() !== 1) {
+                    throw new RuntimeException('O stock de "' . $product['name'] . '" foi alterado. Tenta novamente.');
+                }
+
+                $movementStmt = $pdo->prepare(
+                    'INSERT INTO stock_movements
+                     (product_id, user_id, order_id, movement_type, quantity, stock_before, stock_after, reason)
+                     VALUES (?, ?, ?, "sale", ?, ?, ?, ?)'
+                );
+                $movementStmt->execute([
+                    $productId,
+                    (int)current_user()['id'],
+                    $id,
+                    $quantity,
+                    $before,
+                    $after,
+                    'Stock baixado na confirmação do pedido ' . $lockedOrder['order_number'],
+                ]);
+
+                $itemsWithStock++;
+            }
+
+            if ($itemsWithStock === 0) {
+                throw new RuntimeException('Não foi possível associar os artigos deste pedido ao stock.');
+            }
+
+            $pdo->prepare('UPDATE orders SET stock_deducted = 1 WHERE id = ?')
+                ->execute([$id]);
+            $stockDeducted = true;
         }
 
         if ($oldStatus !== $newStatus) {

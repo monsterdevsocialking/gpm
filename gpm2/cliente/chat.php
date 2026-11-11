@@ -23,7 +23,7 @@ $stmt->execute([$pedidoId, $clienteId]);
 $conversa = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$conversa) {
-    flash('error', 'Não tens acesso a esta conversa.');
+    flash('Não tens acesso a esta conversa.', 'error');
     redirect('pedidos.php');
 }
 
@@ -87,7 +87,6 @@ $stmt->execute([$conversaId]);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Conversa | GPM</title>
-    <link rel="stylesheet" href="../assets/css/cliente.css">
     <style>
         body { background:#f5f5f5; }
         .pagina { max-width:850px; margin:25px auto; padding:15px; }
