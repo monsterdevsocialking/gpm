@@ -50,6 +50,24 @@
                     </form>
                     <p class="text-[11px] text-gray-400 mt-4 leading-relaxed">O sistema bloqueia saltos de etapa não permitidos e regista o responsável e a data de cada alteração.</p>
                 </section>
+                @php($proposal = $quoteRequest->proposal)
+                @php($latestProposalVersion = $proposal?->latestVersion)
+                <section class="bg-white border border-gray-100 p-6">
+                    <h2 class="font-black text-gpm-navy mb-3">Proposta comercial</h2>
+                    @if($latestProposalVersion)
+                        <p class="text-xs text-gray-500 mb-3">{{ $proposal->proposal_number }} · Versão {{ $latestProposalVersion->version_number }} · {{ $latestProposalVersion->status }}</p>
+                        <a href="{{ route('admin.proposals.show',$latestProposalVersion) }}" class="block text-center bg-gpm-navy text-white text-xs font-bold uppercase py-3">Abrir proposta</a>
+                        @php($latestDecision = $latestProposalVersion->decisions->sortByDesc('decided_at')->first())
+                        @if($latestDecision)
+                            <p class="text-xs text-gray-500 mt-3">Decisão do cliente: {{ ['accepted'=>'Aceite','rejected'=>'Rejeitada','revision_requested'=>'Alterações solicitadas'][$latestDecision->decision] ?? $latestDecision->decision }}</p>
+                        @endif
+                    @endif
+                    @if($quoteRequest->status === 'proposal_preparation' && (!$latestProposalVersion || ($latestDecision && in_array($latestDecision->decision,['rejected','revision_requested'],true))))
+                        <form method="post" action="{{ route('admin.requests.proposals.store',$quoteRequest) }}" class="{{ $latestProposalVersion ? 'mt-4' : '' }}">@csrf<button class="w-full bg-gpm-orange text-white text-xs font-bold uppercase py-4">{{ $latestProposalVersion ? 'Criar nova versão' : 'Preparar proposta' }}</button></form>
+                    @elseif(!$latestProposalVersion)
+                        <p class="text-xs text-gray-400">Mude o pedido para “Preparação da proposta” para iniciar esta etapa.</p>
+                    @endif
+                </section>
                 <div class="bg-gpm-soft p-4"><strong class="text-xs text-gpm-navy">Regra comercial</strong><p class="text-xs text-gray-500 mt-2 leading-relaxed">A proposta será criada numa etapa própria. A aceitação do cliente não confirma automaticamente uma encomenda.</p></div>
             </aside>
         </div>
