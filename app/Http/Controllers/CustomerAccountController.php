@@ -23,6 +23,7 @@ class CustomerAccountController extends Controller
     public function updateProfile(Request $request): RedirectResponse
     {
         $customer = Auth::guard('customer')->user();
+        $request->merge(['email' => strtolower(trim((string) $request->input('email')))]);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:180'],
