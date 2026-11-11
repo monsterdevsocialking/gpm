@@ -223,7 +223,7 @@ class AdminCatalogController extends Controller
 
         while (Product::query()
             ->where('slug', $slug)
-            ->when($ignoreId, fn ($query) => $query->whereKeyNot($ignoreId))
+            ->when($ignoreId, fn ($query) => $query->where('id', '<>', $ignoreId))
             ->exists()) {
             $slug = $base.'-'.$suffix++;
         }
