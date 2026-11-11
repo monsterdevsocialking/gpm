@@ -91,7 +91,7 @@ class AdminProposalController extends Controller
     public function show(int $proposalVersion): View
     {
         $version = ProposalVersion::query()
-            ->with(['proposal.quoteRequest.customer', 'items', 'decisions.customer'])
+            ->with(['proposal.quoteRequest.customer', 'items', 'decisions.customer', 'order'])
             ->findOrFail($proposalVersion);
 
         return view('admin.proposals.show', compact('version'));
