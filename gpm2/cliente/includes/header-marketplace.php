@@ -113,6 +113,7 @@ if (is_array($carrinho)) {
             class="lg:hidden text-[#0d233f] text-2xl p-2 focus:outline-none flex-shrink-0"
             id="gpm-market-menu-btn"
             aria-label="Abrir menu"
+            aria-controls="gpm-market-nav"
             aria-expanded="false">
             ☰
         </button>
