@@ -18,13 +18,18 @@ class AdminProposalController extends Controller
 {
     public function startDraft(int $quoteRequest): RedirectResponse
     {
-        $requestRecord = QuoteRequest::query()->with(['items', 'proposal.latestVersion.decisions'])->findOrFail($quoteRequest);
+        $version = DB::transaction(function () use ($quoteRequest): ProposalVersion {
+            $requestRecord = QuoteRequest::query()
+                ->with(['items', 'proposal.latestVersion.decisions'])
+                ->lockForUpdate()
+                ->findOrFail($quoteRequest);
 
-        if ($requestRecord->status !== 'proposal_preparation') {
-            return back()->withErrors(['proposal' => 'Coloque o pedido na etapa de preparação da proposta antes de criar uma proposta.']);
-        }
+            if ($requestRecord->status !== 'proposal_preparation') {
+                throw ValidationException::withMessages([
+                    'proposal' => 'Coloque o pedido na etapa de preparação da proposta antes de criar uma proposta.',
+                ]);
+            }
 
-        $version = DB::transaction(function () use ($requestRecord): ProposalVersion {
             $proposal = $requestRecord->proposal;
 
             if (! $proposal) {
@@ -192,13 +197,15 @@ class AdminProposalController extends Controller
             ]);
 
             $proposal = $version->proposal;
-            $proposal->update(['status' => 'sent']);
+            $quoteRequest = QuoteRequest::query()
+                ->lockForUpdate()
+                ->findOrFail($proposal->quote_request_id);
 
-            $quoteRequest = $proposal->quoteRequest;
             if ($quoteRequest->status !== 'proposal_preparation') {
                 throw ValidationException::withMessages(['proposal' => 'O pedido já não está na etapa de preparação da proposta.']);
             }
 
+            $proposal->update(['status' => 'sent']);
             $quoteRequest->update(['status' => 'proposal_sent']);
             $quoteRequest->statusHistory()->create([
                 'user_id' => Auth::guard('web')->id(),
