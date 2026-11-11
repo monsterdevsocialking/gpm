@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\\Database\\Eloquent\\Factories\\HasFactory;
+use Illuminate\\Foundation\\Auth\\User as Authenticatable;
+use Illuminate\\Notifications\\Notifiable;
 
 class User extends Authenticatable
 {
@@ -12,10 +12,8 @@ class User extends Authenticatable
     use Notifiable;
 
     /**
-     * Attributes that may be assigned through validated application flows.
-     *
-     * Privileges and company membership must be managed by dedicated
-     * authorization and membership workflows, never mass-assigned blindly.
+     * Keep privileged fields (role, active and password-change flags) out of
+     * generic mass assignment. They must be changed by authorized workflows.
      *
      * @var list<string>
      */
@@ -25,26 +23,18 @@ class User extends Authenticatable
         'password',
     ];
 
-    /**
-     * Attributes hidden from serialized responses.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Attribute casting.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'active' => 'boolean',
+            'must_change_password' => 'boolean',
+            'last_login_at' => 'datetime',
         ];
     }
 }
