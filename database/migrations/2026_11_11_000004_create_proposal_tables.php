@@ -69,8 +69,8 @@ return new class extends Migration
             $table->string('product_sku', 80)->nullable();
             $table->string('unit', 40)->default('unidade');
             $table->decimal('quantity', 15, 3);
-            $table->decimal('unit_price', 15, 2);
-            $table->decimal('line_total', 15, 2);
+            $table->decimal('unit_price', 15, 2)->nullable();
+            $table->decimal('line_total', 15, 2)->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
         });
