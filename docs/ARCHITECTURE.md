@@ -23,6 +23,24 @@ an order after the customer's decision.
 - Preserve immutable proposal versions and record important state transitions.
 - Do not let a customer acceptance automatically confirm an order.
 
+## Implemented Laravel vertical slice
+
+The current Laravel branch now includes the public institutional page, catalog
+search/category filtering, product details, legacy product image delivery, customer
+registration/login, a customer portal, legacy order/proforma read views, a session
+supply-request cart, and submission of a separate `quote_requests` record.
+
+Supply requests start in `submitted` and have a controlled status lifecycle:
+`under_review`, `supplier_research`, `proposal_preparation`, `proposal_sent`,
+`closed`, or `cancelled`. Staff status changes are recorded in
+`quote_request_status_history`. The current implementation does not create an
+order, charge a customer, or deduct stock when a request is submitted.
+
+The staff area currently provides a protected dashboard and read-only legacy order
+consultation, plus a supply-request review queue. Supplier records, supplier
+responses, versioned proposals, customer decisions, and explicit order confirmation
+remain subsequent implementation stages.
+
 ## Planned application areas
 
 | Area | Responsibility |
