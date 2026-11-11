@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\QuoteRequest;
+use App\Models\Supplier;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
