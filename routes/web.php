@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminQuoteRequestController;
 use App\Http\Controllers\AdminSupplierController;
+use App\Http\Controllers\AdminSupplierInquiryController;
 use App\Http\Controllers\CustomerAuthController;
 use App\Http\Controllers\CustomerOrderController;
 use App\Http\Controllers\CustomerPortalController;
@@ -86,6 +87,19 @@ Route::middleware(['auth:web', 'staff.active'])->prefix('admin')->name('admin.')
                 ->whereNumber('supplier')
                 ->name('update');
         });
+
+        Route::post('/solicitacoes/{quoteRequest}/consultas-fornecedores', [AdminSupplierInquiryController::class, 'storeForRequest'])
+            ->whereNumber('quoteRequest')
+            ->name('requests.inquiries.store');
+        Route::get('/consultas-fornecedores/{inquiry}', [AdminSupplierInquiryController::class, 'show'])
+            ->whereNumber('inquiry')
+            ->name('supplier-inquiries.show');
+        Route::patch('/consultas-fornecedores/{inquiry}/enviar', [AdminSupplierInquiryController::class, 'markSent'])
+            ->whereNumber('inquiry')
+            ->name('supplier-inquiries.mark-sent');
+        Route::post('/consultas-fornecedores/{inquiry}/respostas', [AdminSupplierInquiryController::class, 'storeResponse'])
+            ->whereNumber('inquiry')
+            ->name('supplier-inquiries.responses.store');
 
         Route::prefix('solicitacoes')->name('requests.')->group(function (): void {
             Route::get('/', [AdminQuoteRequestController::class, 'index'])->name('index');
