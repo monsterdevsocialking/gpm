@@ -23,7 +23,7 @@ $stmt->execute([$pedidoId, $clienteId]);
 $pedido = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$pedido) {
-    flash('error', 'Pedido não encontrado.');
+    flash('Pedido não encontrado.', 'error');
     redirect('painel-cliente/index.php');
     exit;
 }
@@ -54,7 +54,6 @@ function estado_pedido_detalhe(string $estado): string
         'confirmed' => 'Confirmado',
         'preparing' => 'Em preparação',
         'shipped' => 'Enviado',
-        'completed' => 'Entregue',
         'completed' => 'Concluído',
         'cancelled' => 'Cancelado',
     ];
