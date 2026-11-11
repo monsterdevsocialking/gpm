@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\Conversation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -70,12 +71,20 @@ class AdminConversationController extends Controller
             ->with('success', 'Mensagem enviada.');
     }
 
-    public function toggleStatus(int $conversation): RedirectResponse
+    public function toggleStatus(Request $request, int $conversation): RedirectResponse
     {
         $record = Conversation::query()->findOrFail($conversation);
         $newStatus = $record->status === 'open' ? 'closed' : 'open';
 
         $record->update(['status' => $newStatus]);
+        ActivityLog::query()->create([
+            'user_id' => Auth::guard('web')->id(),
+            'action' => $newStatus === 'closed' ? 'conversation_closed' : 'conversation_reopened',
+            'entity_type' => 'conversation',
+            'entity_id' => $record->id,
+            'description' => 'Estado da conversa alterado para '.($newStatus === 'closed' ? 'fechada' : 'aberta').'.',
+            'ip_address' => $request->ip(),
+        ]);
 
         return redirect()->route('admin.conversations.show', $conversation)
             ->with('success', $newStatus === 'closed' ? 'Conversa fechada.' : 'Conversa reaberta.');
