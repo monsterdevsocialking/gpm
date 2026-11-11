@@ -17,7 +17,7 @@
                     <label class="text-xs font-bold text-gpm-navy">Nome<input name="name" required maxlength="120" value="{{ old('name',$editing?->name) }}" class="w-full border-gray-200 text-sm mt-2"></label>
                     <label class="text-xs font-bold text-gpm-navy">Slug<input name="slug" maxlength="150" value="{{ old('slug',$editing?->slug) }}" placeholder="Gerado automaticamente se vazio" class="w-full border-gray-200 text-sm mt-2"></label>
                     <label class="text-xs font-bold text-gpm-navy md:col-span-2">Descrição<textarea name="description" rows="3" maxlength="5000" class="w-full border-gray-200 text-sm mt-2">{{ old('description',$editing?->description) }}</textarea></label>
-                    <label class="flex items-center gap-2 text-xs font-bold text-gpm-navy"><input type="checkbox" name="active" value="1" @checked(old('active',$editing?->active ?? true))> Categoria ativa</label>
+                    <label class="flex items-center gap-2 text-xs font-bold text-gpm-navy"><input type="hidden" name="active" value="0"><input type="checkbox" name="active" value="1" @checked(old('active',$editing?->active ?? true))> Categoria ativa</label>
                 </div>
                 <div class="flex gap-3 mt-5"><button class="bg-gpm-orange text-white text-xs font-bold uppercase px-7 py-4">{{ $editing ? 'Guardar alterações' : 'Criar categoria' }}</button>@if($editing)<a href="{{ route('admin.categories.index') }}" class="border border-gray-200 text-gray-600 text-xs font-bold uppercase px-7 py-4">Cancelar</a>@endif</div>
             </form>
