@@ -42,7 +42,7 @@ class AdminSupplierController extends Controller
     public function update(Request $request, int $supplier): RedirectResponse
     {
         $record = Supplier::query()->findOrFail($supplier);
-        $validated = $this->validateSupplier($request, $record->id);
+        $validated = $this->validateSupplier($request);
         $validated['active'] = $request->boolean('active');
 
         $record->update($validated);
@@ -50,7 +50,7 @@ class AdminSupplierController extends Controller
         return redirect()->route('admin.suppliers.index')->with('success', 'Fornecedor atualizado.');
     }
 
-    private function validateSupplier(Request $request, ?int $ignoreId = null): array
+    private function validateSupplier(Request $request): array
     {
         return $request->validate([
             'name' => ['required', 'string', 'max:180'],
