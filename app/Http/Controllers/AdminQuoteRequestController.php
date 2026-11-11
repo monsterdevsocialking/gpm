@@ -46,8 +46,9 @@ class AdminQuoteRequestController extends Controller
             ->findOrFail($quoteRequest);
 
         $statuses = QuoteRequestStatus::cases();
+        $suppliers = Supplier::query()->where('active', true)->orderBy('name')->get();
 
-        return view('admin.requests.show', compact('quoteRequest', 'statuses'));
+        return view('admin.requests.show', compact('quoteRequest', 'statuses', 'suppliers'));
     }
 
     public function updateStatus(Request $request, int $quoteRequest): RedirectResponse
