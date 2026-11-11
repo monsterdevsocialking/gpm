@@ -22,11 +22,20 @@ class AdminDashboardController extends Controller
                 ->count(),
         ];
 
+        $staff = Auth::guard('web')->user();
+        $canReviewRequests = in_array($staff?->role, ['admin', 'seller'], true);
+        $stats['quote_requests'] = $canReviewRequests ? QuoteRequest::query()->count() : null;
+        $stats['submitted_requests'] = $canReviewRequests ? QuoteRequest::query()->where('status', 'submitted')->count() : null;
+
+        $recentRequests = $canReviewRequests
+            ? QuoteRequest::query()->withCount('items')->latest('submitted_at')->limit(6)->get()
+            : collect();
+
         $recentOrders = Order::query()
             ->latest('created_at')
             ->limit(8)
             ->get();
 
-        return view('admin.dashboard', compact('stats', 'recentOrders'));
+        return view('admin.dashboard', compact('stats', 'recentOrders', 'recentRequests', 'canReviewRequests'));
     }
 }
