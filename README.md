@@ -96,6 +96,7 @@ A migration de base verifica a existência das tabelas antigas e não as recria.
 - Propostas comerciais com versões emitidas imutáveis.
 - Decisão do cliente associada à versão exata da proposta.
 - Confirmação explícita da encomenda por funcionário autorizado.
+- Emissão de proformas comerciais ligadas às encomendas.
 - Acompanhamento da encomenda: preparação, expedição e conclusão.
 - Conversas ligadas às encomendas, com isolamento por cliente.
 - Gestão de clientes, utilizadores internos, contactos e dados da empresa.
