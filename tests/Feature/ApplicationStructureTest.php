@@ -3,6 +3,12 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminCompanyController;
+use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\AdminCustomerController;
+use App\Http\Controllers\AdminContactController;
+use App\Http\Controllers\AdminConversationController;
+use App\Http\Controllers\CustomerConversationController;
 use App\Http\Controllers\AdminCatalogController;
 use App\Http\Controllers\AdminCategoryController;
 use App\Http\Controllers\AdminStockController;
@@ -24,6 +30,9 @@ use App\Http\Controllers\StaffAuthController;
 use App\Http\Middleware\EnsureCustomerIsActive;
 use App\Http\Middleware\EnsureStaffIsActive;
 use App\Http\Middleware\EnsureStaffRole;
+use App\Models\ContactMessage;
+use App\Models\Conversation;
+use App\Models\Message;
 use App\Models\IntegrationEvent;
 use App\Models\Proposal;
 use App\Models\ProposalDecision;
@@ -55,6 +64,12 @@ class ApplicationStructureTest extends TestCase
             CustomerProposalController::class,
             StaffAuthController::class,
             AdminDashboardController::class,
+            AdminCompanyController::class,
+            AdminUserController::class,
+            AdminCustomerController::class,
+            AdminContactController::class,
+            AdminConversationController::class,
+            CustomerConversationController::class,
             AdminCatalogController::class,
             AdminCategoryController::class,
             AdminStockController::class,
@@ -78,6 +93,9 @@ class ApplicationStructureTest extends TestCase
             ProposalItem::class,
             ProposalDecision::class,
             IntegrationEvent::class,
+            ContactMessage::class,
+            Conversation::class,
+            Message::class,
             IntegrationEventRecorder::class,
         ] as $class) {
             $this->assertTrue(class_exists($class), "Expected {$class} to autoload.");
