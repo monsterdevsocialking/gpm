@@ -12,8 +12,12 @@ use Illuminate\View\View;
 
 class CustomerAuthController extends Controller
 {
-    public function showLogin(): View
+    public function showLogin(): View|RedirectResponse
     {
+        if (Auth::guard('customer')->check()) {
+            return redirect()->route('customer.dashboard');
+        }
+
         return view('auth.customer-login');
     }
 
@@ -56,8 +60,12 @@ class CustomerAuthController extends Controller
         return redirect()->intended(route('customer.dashboard'));
     }
 
-    public function showRegister(): View
+    public function showRegister(): View|RedirectResponse
     {
+        if (Auth::guard('customer')->check()) {
+            return redirect()->route('customer.dashboard');
+        }
+
         return view('auth.customer-register');
     }
 
