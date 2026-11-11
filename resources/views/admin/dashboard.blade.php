@@ -9,6 +9,9 @@
         <p class="text-[10px] uppercase tracking-[.2em] text-white/45 mt-2">Painel interno</p>
         <nav class="mt-10 space-y-2 text-sm">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 bg-white/10 px-4 py-3 text-white"><i class="fa-solid fa-chart-line w-4 text-gpm-orange"></i>Visão geral</a>
+            @if(in_array(auth()->user()->role, ['admin', 'stock_manager'], true))
+                <a href="{{ route('admin.stock.index') }}" class="flex items-center gap-3 px-4 py-3 text-white/70 hover:bg-white/10"><i class="fa-solid fa-boxes-stacked w-4"></i>Movimentos de stock</a>
+            @endif
             @if($canReviewRequests)
                 <a href="{{ route('admin.catalog.index') }}" class="flex items-center gap-3 px-4 py-3 text-white/70 hover:bg-white/10"><i class="fa-solid fa-box w-4"></i>Produtos</a>
                 <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-3 text-white/70 hover:bg-white/10"><i class="fa-solid fa-layer-group w-4"></i>Categorias</a>
