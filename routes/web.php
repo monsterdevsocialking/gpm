@@ -2,12 +2,14 @@
 
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminOrderController;
+use App\Http\Controllers\AdminProposalController;
 use App\Http\Controllers\AdminQuoteRequestController;
 use App\Http\Controllers\AdminSupplierController;
 use App\Http\Controllers\AdminSupplierInquiryController;
 use App\Http\Controllers\CustomerAuthController;
 use App\Http\Controllers\CustomerOrderController;
 use App\Http\Controllers\CustomerPortalController;
+use App\Http\Controllers\CustomerProposalController;
 use App\Http\Controllers\CustomerQuoteRequestController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketplaceController;
@@ -64,6 +66,13 @@ Route::middleware(['auth:customer', 'customer.active'])->prefix('conta')->name('
     Route::get('/solicitacoes/{quoteRequest}', [CustomerQuoteRequestController::class, 'show'])
         ->whereNumber('quoteRequest')
         ->name('requests.show');
+    Route::get('/propostas/{proposalVersion}', [CustomerProposalController::class, 'show'])
+        ->whereNumber('proposalVersion')
+        ->name('proposals.show');
+    Route::post('/propostas/{proposalVersion}/decisao', [CustomerProposalController::class, 'decide'])
+        ->whereNumber('proposalVersion')
+        ->middleware('throttle:5,1')
+        ->name('proposals.decide');
     Route::post('/sair', [CustomerAuthController::class, 'logout'])->name('logout');
 });
 
@@ -87,6 +96,19 @@ Route::middleware(['auth:web', 'staff.active'])->prefix('admin')->name('admin.')
                 ->whereNumber('supplier')
                 ->name('update');
         });
+
+        Route::post('/solicitacoes/{quoteRequest}/propostas', [AdminProposalController::class, 'startDraft'])
+            ->whereNumber('quoteRequest')
+            ->name('requests.proposals.store');
+        Route::get('/propostas/{proposalVersion}', [AdminProposalController::class, 'show'])
+            ->whereNumber('proposalVersion')
+            ->name('proposals.show');
+        Route::put('/propostas/{proposalVersion}', [AdminProposalController::class, 'updateDraft'])
+            ->whereNumber('proposalVersion')
+            ->name('proposals.update');
+        Route::post('/propostas/{proposalVersion}/emitir', [AdminProposalController::class, 'issue'])
+            ->whereNumber('proposalVersion')
+            ->name('proposals.issue');
 
         Route::post('/solicitacoes/{quoteRequest}/consultas-fornecedores', [AdminSupplierInquiryController::class, 'storeForRequest'])
             ->whereNumber('quoteRequest')
